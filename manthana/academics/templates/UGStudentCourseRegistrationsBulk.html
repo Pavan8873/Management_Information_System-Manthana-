@@ -1,0 +1,140 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>UG Course Details</title>{% endblock %}
+
+{% block page-content %}
+
+<h2 align="center">UG Student Course Registration (Bulk)</h2>
+    <!-- Main Content -->
+    <section class="mt-5 mb-5">
+        <div class="container shadow rounded-3 p-4 bg-white">
+            <form method="POST" id="indexForm" action="/bulkRegisterUGStudentCourses" data-subj-url="{% url 'ajax_ug_load_courses' %}">              
+            {% csrf_token %}
+                <div class="row">
+                    <div class="col-4 mb-4">
+                        <label for="acad_year" class="form-label">
+                            <strong>Academic Year</strong>
+                        </label>
+                        <select name="acad_year" id="acad_year" class="form-select" required>
+                            <option disabled selected>Choose Academic Year</option>
+                            {% for aca_yr in acad_year_tbl %}
+                            <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option>
+                            <!-- <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option> -->
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <input type="text" name="academic_year" id="academic_year" hidden>
+                    <div class="col-6 mb-3">
+                      <label for="courseList" class="form-label">
+                          <strong>Courses to be Registered</strong>
+                      </label>
+                      <select name="courseList" id="courseList" multiple="multiple" class="form-select">
+                      </select>
+                  </div>
+              </div>
+               
+                    <div class="row">
+                    <div class="col-4 mb-3">
+                        <label for="sem" class="form-label">
+                            <strong>Semester</strong>
+                        </label>
+                        <select name="sem" id="sem" class="form-select" required>
+                            <option disabled selected>Choose Semester</option>
+                            <option value="3">3</option> 
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+                </div>
+                <input type="text" name="academic_sem" id="academic_sem" hidden>
+                <div class="col-4 mb-3">
+                  <label for="acad_cal_type" class="form-label"> Academic Type </label>
+                  <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+                  
+                    <option disabled selected>Choose Academic_type</option>
+                    <option value="1">Regular Semester</option>
+                    <option value="2">STC Semester</option>
+                  
+                    
+                  </select>
+                </div>
+               <div class="row">
+                <div class="col-4 mb-3">
+                  <label for="offered_by" class="form-label"> Department: </label>
+                   <select id="offered_by" name="offered_by" value="{{ scheme_details.offered_by_id }}" class="form-select">
+                    <option disabled selected>Choose Branch</option>
+                    {% for d in dept %}
+                      <option value="{{d.dept_id}}">{{d.dept_name}}</option>
+                    {% endfor %}
+                     </select>
+                   </div>
+               </div> 
+                <div class="row">
+                  <div class="d-grid gap-4 col-2 mx-auto col-2 mb-3">
+                    <input type="text" name="btn_clicked" value="register" hidden>
+                    <button type="submit" name="btn_ug_course" id="btn_ug_course" value="register" class="btn btn-primary">Submit</button>
+                  </div>
+                  <div class="d-grid gap-4 col-2 mx-auto col-2 mb-3">
+                    <button type="reset" name="btn_allot_reset" id="btn_allot_reset" value="reset" class="btn btn-primary" onclick="resetPage()">Reset</button>
+                  </div>
+                </div>
+              </div>
+            </form>
+        </div>
+    </section>
+
+    <script src="./plugins/bsmultiselect/js/BsMultiSelect.min.js"></script>
+
+      <script type="text/javascript">
+        function resetPage(){
+          $('#acad_year').prop('disabled',false);
+          $('#offered_by').prop('disabled',true);
+          $('#sem').prop('disabled',true);
+        }
+        $(document).ready(function () {
+        //$('#offered_by').val("");
+        //$('#sem').val("");
+       /* $('#academic_year').val("");
+        $('#academic_sem').val("");*/
+        $('#acad_year').prop('disabled',false);
+        $('#offered_by').prop('disabled',true);
+        $('#sem').prop('disabled',true);   
+
+        $("#acad_year").change(function () {
+                $('#sem').prop('disabled', false);
+        });
+        $("#sem").change(function () {
+                $('#offered_by').prop('disabled', false);
+        });
+        $("#offered_by").change(function () {
+            $('#academic_year').val($('#acad_year').val()); 
+            $('#academic_sem').val($('#sem').val());
+            $("#acad_year").prop('disabled',true);
+            $('#sem').prop('disabled', true);
+            var url1 = $("#indexForm").attr("data-subj-url");  // get the url of the `load_first_year_st_reg_subjects` view
+            var sem = $("#sem").val();  // get the selected programming ID from the HTML input
+            var acad_year = $('#acad_year').val();
+            var offered_by = $(this).val()
+            $.ajax({                       // initialize an AJAX request
+              url: url1,                    // set the url of the request (= localhost:8000/load_first_year_st_reg_subjects)
+              data: {
+                'sem': sem,       // add the programming id to the GET parameters
+                'acad_year' : acad_year,
+                'offered_by' : offered_by
+              },
+              success: function (data) {   // `data` is the return of the `load_first_year_st_reg_subjects` view function
+                $("#courseList").html(data);  // replace the contents of the course input with the data that came from the server
+              },
+              error: function(e){
+                alert("Error"+e)
+              }
+            });
+        });//end of ajax req
+
+    });
+</script>
+{% endblock %}

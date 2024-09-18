@@ -1,0 +1,295 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Student Promotion List</title>{% endblock %}
+
+
+{% block page-content %}
+<!-- Date Range Picker CSS -->
+<link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}" />
+<script src="{% static 'plugins/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+
+<style>
+    .sub-que-tbl {
+        padding: 0px;
+    }
+
+    .head_font {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid white;
+        border-collapse: collapse;
+    }
+</style>
+
+<h3 class="head_font mb-2">Student Promotion List</h3>
+
+<form action="/student_promotion_list" method="POST" id="">
+    {% csrf_token %}
+    {% if eligible_students is None and not_eligible_students is None  %}
+        <section class="mt-5 mb-5">
+            <div class="container shadow rounded-3 p-4 bg-white">
+                
+                <div class="row">
+                         <div class="col-6 mb-3">
+                            <label for="acad_cal_acad_year" class="form-label">
+                                Academic Year
+                            </label>
+                            <select name="acad_cal_acad_year" id="acad_cal_acad_year" class="form-select" required>
+                                {% if acad_cal_obj is None %}
+                                <option value="" disabled selected>-- Choose Academic Year --</option>
+                                {% for aca_yr in academic_year_tbl %}
+                                <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+                                <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option> 
+                                {% endfor %}
+                                {% else %}
+                                {% for aca_yr in academic_year_tbl %}
+                                {% if aca_yr.acayear == acad_cal_obj.acad_cal_acad_year%}
+                                <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+                                <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+                                {% endif %}
+                              {% endfor %}
+                              {% for aca_yr in academic_year_tbl %}
+                                {% if aca_yr.acayear != acad_cal_obj.acad_cal_acad_year%}
+                                <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+                                <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+                                {% endif %}
+                              {% endfor%}
+                              {% endif %}
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="acad_cal_acad_year" class="form-label">
+                                Present Year
+                            </label>
+                            <select name="student_year" id="student_year" class="form-select" required>
+                                <option disabled selected>Choose Year</option>
+                                <!-- <option disabled selected>Choose Academic Year</option> -->
+                                <option value="1-2">1st Year</option>
+                                <option value="3-4">2nd Year</option>
+                                <option value="5-6">3rd Year</option>
+                                <option value="7-8">4th Year</option>
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="department" class="form-label"> Department </label>
+                            <select name="department" id="department" class="form-select" required>
+                                <option value="" disabled selected>Choose Department</option>
+                                {% for department in departments %}
+                                <option value="{{ department.dept_id }}">{{ department.dept_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        
+                        <div class="col-12 mb-3 mt-3 text-center">
+                    <button type="submit" name="btn_clicked" id="btn_clicked" value="eligible_students"
+                        class="btn btn-success btn-sm"><b>Eligible student List</b></button>
+                    <button type="submit" name="btn_clicked" id="btn_clicked" value="not_eligible_students"
+                        class="btn btn-success btn-sm"><b>Not Eligible student List</b></button>
+                    <button type="submit" name="btn_clicked" id="btn_clicked" value="promote_students"
+                        class="btn btn-success btn-sm"><b>Promote Students</b></button>
+                </div>
+                        
+                    </div>
+            </div>
+        </section>
+
+        {% else %}
+
+        <section class="mt-2 mb-5">
+            <div class="container shadow rounded-3 p-4 bg-white">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="tab-content text-center" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-lab" role="tabpanel"
+                                aria-labelledby="pills-lab-tab">
+                                <div class="row mt-2">
+                                    
+                                    <div class="input-group">
+                                        <div class="col-4">
+                                            <label for="acad_cal_see_theory_from" class="form-label">Academic Year: {{ acad_year }}</label>
+                                        </div>
+                                        {% if eligible_students is None %}
+                                        <div class="col-4 text-center">
+                                            <input type="text" name="acad_year" value="{{ acad_year }}" hidden>
+                                            <input type="text" name="department" value="{{ department }}" hidden>
+                                            <button type="submit" name="btn_clicked" id="btn_clicked" value="promot_specific_students" class="btn btn-success btn-sm"><b>Promot</b></button>
+                                        </div>
+                                        {% endif %}
+                                        
+                                        <div class="form-outline">
+                                            <input type="search" id="username" class="form-control" />
+                                        </div>
+                                        <button type="button" class="btn btn-primary">
+                                            <i class="fas fa-search"></i>
+                                        </button>
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr/>
+                {% if not_eligible_students is None %}
+                    <div class="card mt-1 ">
+                        <h5 class="card-header text-center">Students List</h5>
+                        <div class="card-body">
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-lab" role="tabpanel"
+                                    aria-labelledby="pills-lab-tab">
+                                    <div class="row mt-1 text-center">
+                                        <table id="StudentSearchData" class="table table-sm">
+                                            <thead class="table-dark">
+                                                <tr class="header">
+                                                    <th>Sl No.</th>
+                                                    <th>Name</th>
+                                                    <th>UID</th>
+                                                    <th>Department</th>
+                                                    <th>Backlogs</th>
+                                                    <th>CGPA</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for student, details in eligible_students.items %}
+                                                <tr class="username">
+                                                    <td>{{forloop.counter}}</td>
+                                                    <td>{{ student.st_name }}</td>
+                                                    <td>{{ student.st_uid }}</td>
+                                                    <td>{{ branch }}</td>
+                                                    <td>{{ details.backlogcount }}</td>
+                                                    <td>{{ details.cgpa }}</td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+        
+                            </div>
+                        </div>
+                    </div>
+                    
+                {% else %}
+                <input type="text" name="exam_id" value="{{ exam.exam_details_id }}" hidden>
+                <input type="text" name="student_year" value="{{ student_year }}" hidden>
+                <input type="text" name="department" value="{{ department }}" hidden>
+                    
+                    <div class="card mt-4 ">
+                        <h5 class="card-header text-center">Students List</h5>
+                        <div class="card-body">
+                            <div class="tab-content" id="pills-tabContent">
+                                <div class="tab-pane fade show active" id="pills-lab" role="tabpanel"
+                                    aria-labelledby="pills-lab-tab">
+                                    <div class="row mt-2 text-center">
+                                        <table id="StudentSearchData" class="table table-sm">
+                                            <thead class="table-dark">
+                                                <tr class="header">
+                                                    <th>Sl No.</th>
+                                                    <th>Name</th>
+                                                    <th>UID</th>
+                                                    <th>Department</th>
+                                                    <th>Backlogs</th>
+                                                    <th>CGPA</th>
+                                                    <th>Promote</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for student, details in not_eligible_students.items %}
+                                                <tr class="username">
+                                                    <td>{{forloop.counter}}</td>
+                                                    <td>{{ student.st_name }}</td>
+                                                    <td>{{ student.st_uid }}</td>
+                                                    <td>{{ branch.dept_abbr }}</td>
+                                                    <td>{{ details.backlogcount }}</td>
+                                                    <td>{{ details.cgpa }}</td>
+                                                    <td><input class="form-check-input" type="checkbox" name="{{ student.st_uid }}_promote" id="flexCheckDefault"></td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+        
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+                
+            </div>
+        </section>
+
+    {% endif %}
+</form>
+
+
+
+
+<script>
+    $('input').focus(function () {
+        var ele = $(this);
+        $('html, body').animate({
+            scrollTop: ele.offset().top - 450
+        }, 50);
+    });
+    $('.has-clear input[type="text"]').on('input propertychange', function () {
+        var $this = $(this);
+        var visible = Boolean($this.val());
+        $this.siblings('.form-control-clear').toggleClass('hidden', !visible);
+    }).trigger('propertychange');
+
+    $('.form-control-clear').click(function () {
+        $(this).siblings('input[type="text"]').val('')
+            .trigger('propertychange').focus();
+    });
+
+    function checkBox(event){
+        if(event.target.value == "0"){
+            event.target.value = "1";
+        }
+        else{
+            event.target.value = "0";
+        }
+    }
+
+    document.getElementById('username').addEventListener('input', e => {
+        let id = e.target.id;
+
+        let value = e.target.value.toUpperCase();
+
+        document.querySelectorAll('.' + id).forEach(item => {
+
+            if (value == "") {
+                item.style.display = "";
+            } else {
+                if (item.textContent.toUpperCase().indexOf(value) > -1) {
+                    item.style.display = "";
+                    flag = 1;
+
+                } else {
+                    item.style.display = "none";
+                }
+            }
+
+        })
+
+    });
+
+
+
+    /*$(document).ready(function () {
+        window.history.replaceState('', '', window.location.href)
+      }); */
+</script>
+
+{% endblock %}

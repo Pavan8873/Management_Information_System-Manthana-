@@ -1,0 +1,76 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+<title>Scheme Allotment</title>{% endblock %} {% block page-content %}
+<h2 align="center">Scheme Allotment</h2>
+<!-- Main Content -->
+<section class="mt-5 mb-5">
+    <div class="container shadow rounded-3 p-4 bg-white">
+        <form action="/allotScheme" method="POST" id="">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-6 mb-3">
+                    <label for="acad_cal_acad_year" class="form-label">
+                        Academic Year
+                    </label>
+                    <select name="acad_cal_acad_year" id="acad_cal_acad_year" class="form-select" required>
+                        <option value="" disabled selected>Choose Academic Year</option>
+                        {% for aca_yr in acad_year_tbl %}
+                        <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+                        <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6 mb-3">
+                    <label for="course_sem" class="form-label"> Semester </label>
+                    <select name="course_sem" id="course_sem" class="form-select" required>
+                        <option value="" disabled selected>Choose Semester</option>
+                        <option value="1">1st Semester</option>
+                        <option value="2">2nd Semester</option>
+                        <option value="3">3rd Semester</option>
+                        <option value="4">4th Semester</option>
+                        <option value="5">5th Semester</option>
+                        <option value="6">6th Semester</option>
+                        <option value="7">7th Semester</option>
+                        <option value="8">8th Semester</option>
+                    </select>
+                </div>
+                <div class="col-4 mb-3">
+                    <label for="acad_cal_type" class="form-label"> Academic Type </label>
+                    <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+                      {% if acad_cal_obj is None %}
+                      <option disabled selected>Choose Academic_type</option>
+                      <option value="1">Regular Semester</option>
+                      <option value="2">STC Semester</option>
+                    
+                      {% elif acad_cal_obj.acad_cal_type == 1 %}
+                      <option value="1">Regular Semester</option>
+                      <option value="2">STC Semester</option>
+                  
+                      {% elif acad_cal_obj.acad_cal_type == 2 %}
+                      <option value="2">STC Semester</option>
+                      <option value="1">Regular Semester</option>
+                      {% endif%}
+                    </select>
+                  </div>
+                  <div class="row">
+                    <div class="mb-3">
+                        <label for="scheme_series" class="form-label">
+                            Scheme Series:
+                        </label>
+                        <input type="text" id="scheme_series" name="scheme_series" class="form-control"
+                            placeholder="Enter Scheme Series" required />
+                    </div>
+                </div>
+            </div>
+
+            
+            <div class="row">
+                <div class="d-grid gap-4 col-3 mx-auto">
+                    <input type="text" name="btn_clicked" value="register" hidden>
+                    <button type="submit" name="btn_scheme_allot" id="btn_scheme_allot" value="register"
+                        class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+{% endblock %}

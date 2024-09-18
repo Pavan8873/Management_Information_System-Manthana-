@@ -1,0 +1,87 @@
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View PDF</title>
+  </head>
+  <style>
+    @import url("https://fonts.googleapis.com/css?family=Libre+Barcode+39+Extended+Text");
+    @page{
+      size: landscape A4;
+      margin: 2.5cm 1.5cm 3.5cm 1.5cm;
+
+      @top-center {
+        content: "View Registered Students";
+      }
+
+      @bottom-right {
+        content: "Page " counter(page)" of " counter(pages);
+      }
+
+      @bottom-center {
+        content: "SDMCET, Dharwad";
+      }
+    }
+    html {
+      font-family: Arial;
+      font-size: 12px;
+    }
+    .barcode39 {
+      font-family: 'Libre Barcode 39 Extended Text', cursive;
+      font-size: 30px;
+      font-weight: normal;
+      margin: 2px;
+      text-align: center;
+    }
+
+    img {
+      width: 41px;
+      height: 57px
+    }
+    table { 
+      border-collapse: collapse;
+      text-align: center;
+     }
+
+  </style>
+<body>
+<table class="table">
+    <thead class="thead">
+      <tr>
+        <th>Student Photo</th>
+        <th>Academic Year</th>
+        <th>Student UID</th>
+        <th>Student Name</th>
+        <th>Student Branch</th>
+        <th>Mobile No</th>
+        <th>Student DOB</th>
+        <th>Email ID</th>
+
+      </tr>
+    </thead>
+    <tbody class="tbody">
+      {% for st in student %}
+        <tr>
+          <td><img src="media/{{ st.st_profile_pic }}" alt=""></td>
+          <td>{{ st.st_acad_year }}</td>
+          <td>{{ st.st_uid }}</td>
+          <td>{{ st.st_name }}</td>
+          <td>{{ st.st_branch_applied }}</td>
+          <td>{{ st.st_mobile_no }}</td>
+          <td>{{ st.st_dob }}</td>
+          <td>{{ st.st_email_id }}</td>
+        </tr>
+      {% endfor %}
+
+      <tr>
+        <th>
+          Total No.of Students Registered:
+        </th>
+        <th>
+          {{ sum }}
+        </th>
+      </tr>
+    </tbody>
+  </table>
+  </body>
+  </html>

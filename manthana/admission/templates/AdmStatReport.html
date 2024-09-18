@@ -1,0 +1,150 @@
+{% load static %}
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admission Report</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+    @page {
+        size: "A4";
+        margin: 0.5cm;
+    }
+
+    html {
+        font-family: 'Inter', sans-serif;
+        font-size: 12px;
+        text-align: center;
+
+    }
+
+    table,
+    th,
+    td {
+        border: .5px solid black;
+        border-collapse: collapse;
+    }
+
+    th {
+        background-color: #CDD3CE;
+    }
+
+    img {
+        height: 55px;
+        margin: auto;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    h1 {
+        margin: 0;
+        font-size: 18px;
+    }
+
+    .nob {
+        text-align: left;
+        border: none;
+    }
+</style>
+
+<body>
+    <table class="nob" style="box-sizing: border-box; ">
+        <tr class="nob">
+            <td class="nob" style="padding-right: 15px;">
+                <img src="{% static 'images/sdm_logo.jfif' %}">
+            </td>
+            <td class="nob">
+                <h1 style="padding-top: 10px;">Shri Dharmasthala Manjunatheshwara College of Engineering & Technology
+                </h1>
+                <p style="font-size: 10px; text-align: center;">(An Autonomous College under Visvesvaraya Technological
+                    University, Belegavi and Recognised by All India Council for Technical Education, New Delhi)</p>
+            </td>
+        </tr>
+    </table>
+
+    <hr>
+
+    {% if ad_type|stringformat:"s" == '1' %}
+    <p>Admission Report of UG</p>
+    {% endif %}
+    {% if ad_type|stringformat:"s" == '2' %}
+    <p>Admission Report of Lateral Entry</p>
+    {% endif %}
+    {% if ad_type|stringformat:"s" == '3' %}
+    <p>Admission Report of PG</p>
+    {% endif %}
+    <p>Academic Year : {{ac_year}}</p>
+    <table id="StudentSearchData" class="table table-sm">
+        {% if ad_type|stringformat:"s" == '1' %}
+        <thead class="table-dark">
+            <tr class="header">
+                <th>Sl.NO.</th>
+                <th>Branch</th>
+                <th>CET</th>
+                <th>SNQ</th>
+                <th>COMEDK</th>
+                <th>MGMT</th>
+                <th>Total Students</th>
+            </tr>
+        </thead>
+        {% for st in stat %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{st.st_branch_applied_id__dept_name}}</td>
+            <td>{{st.CET}}</td>
+            <td>{{st.SNQ}}</td>
+            <td>{{st.COMEDK}}</td>
+            <td>{{st.MGMT}}</td>
+            <td>{{st.Total_Student}}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        {% if ad_type|stringformat:"s" == '2' %}
+        <thead class="table-dark">
+            <tr class="header">
+                <th>Sl.NO.</th>
+                <th>Branch</th>
+                <th>DCET</th>
+                <th>MGMT</th>
+                <th>Total Students</th>
+            </tr>
+        </thead>
+        {% for st in stat %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{st.st_branch_applied_id__dept_name}}</td>
+            <td>{{st.DCET}}</td>
+            <td>{{st.MGMT}}</td>
+            <td>{{st.Total_Student}}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        {% if ad_type|stringformat:"s" == '3' %}
+        <thead class="table-dark">
+            <tr class="header">
+                <th>Sl.NO.</th>
+                <th>Program</th>
+                <th>PGCET</th>
+                <th>MGMT</th>
+                <th>Total Students</th>
+            </tr>
+        </thead>
+        {% for st in stat %}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{st.st_branch_applied_id__dept_name}}</td>
+            <td>{{st.PGCET}}</td>
+            <td>{{st.MGMT}}</td>
+            <td>{{st.Total_Student}}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+    </table>
+</body>
+
+</html>

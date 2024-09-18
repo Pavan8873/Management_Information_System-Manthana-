@@ -1,0 +1,100 @@
+{% extends 'base_template.html' %} 
+{% load static %} 
+{% block title %}<title>View/Edit MakeUp Students</title>{% endblock %} 
+{% block page-content %}
+<link href="{% static 'fonts/SansationLight/font.css' %}" rel="stylesheet">
+<script src="{% static 'js/validate.js' %}"></script>
+
+{% if username is None %}
+<h3>You are not authorized to view this page!!</h3>
+{% else %}
+<div class="col-md mx-auto text-center h6" style="font-size: 0.9rem;">
+  <h5 align="center"><strong>Enter Student Details to Search</strong></h5>
+  <hr>
+  <form action="/SearchMakeupStudent" method="POST" id="indexForm" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card">
+      <div class="card-body">
+        <table class="table table-borderless table-sm">
+            <tr>
+            <div class="form-group">
+                <td class="text-end"><label>Examination :</label></td>
+                <td>
+                    <select class="form-select form-select-sm" name="exam_descr" id="exam_descr" class="form-control">
+                    <option disabled selected>-- Choose Exam --</option>
+                    {% for exam in exam_list %}
+                            <option value="{{exam.exam_details_id}}">{{exam.description}}</option>
+                    {% endfor %}
+                    </select>
+                </td>
+                <td class="text-end"><label>Branch:</label></td>
+                <td>
+                    <select class="form-select form-select-sm" name="offered_by" id="offered_by" class="form-control">
+                    <option value="0">Select Branch</option>
+                    {% for dept in department %}
+                    <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+                    {% endfor %}
+                    </select>
+                </td>
+                {% comment %} <td class="text-end"><label>Semester :</label></td>
+                <td>
+                <select class="form-select form-select-sm" name="acad_cal_sem" id="acad_cal_sem" class="form-control">
+                    <option value="0">Select Semester</option>
+                    <option value="1">1st Semester</option>
+                    <option value="2">2nd Semester</option>
+                    <option value="3">3rd Semester</option>
+                    <option value="4">4th Semester</option>
+                    <option value="5">5th Semester</option>
+                    <option value="6">6th Semester</option>
+                    <option value="7">7th Semester</option>
+                    <option value="8">8th Semester</option>
+                </select>
+              </td> {% endcomment %}
+          {% comment %} </tr> {% endcomment %}
+          {% comment %} <tr> {% endcomment %}
+                <td class="text-end"><label>Student Uid:</label></td>
+                <td class="text-start"><input class="form-control input-sm" type="text" maxlength="50" name="st_uid"
+                    id="st_uid" value="" placeholder="Enter Student UID (Eg: 20BE0001)"/>
+                </td>
+          </tr>
+          <tr>
+            <td colspan="7">
+              <button type="submit" name="btn_clicked" id="btn_makeup_Search" value="makeup_Search"
+                class="btn btn-success btn-sm" onClick='submitDetailsForm()'><b>Search</b></button>
+            </td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </form>
+</div>
+<div class="card showTable" id="sTable">
+    <div class="card-body">
+    <table id="StudentSearchData" class="table table-sm">
+        <thead class="table-dark">
+            <tr class="header">
+            <th>Sl.No.</th>
+            <th>Student Name</th>
+            <th>Branch</th>
+            <th>Semester</th>
+            <th>Academic Year</th>
+            <th>Subject</th>
+            <th>Option</th>
+            </tr>
+        </thead>
+        {% for name,dept,sem,yr,sub,st in students%}
+        <tr>
+            <td>{{forloop.counter}}</td>
+            <td>{{name}}</td>
+            <td>{{dept}}</td>
+            <td>{{sem}}</td>
+            <td>{{yr}}</td>
+            <td>{{sub}}</td>
+            <td><a href="/EditMakeupExamRegister/{{st}}" class="btn btn-primary btn-sm">Edit</a></td>           
+        </tr>
+        {%endfor%}
+    </table>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

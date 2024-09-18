@@ -1,0 +1,118 @@
+{% extends 'base_template.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+{% block title %}<title>Exam Schedule</title>{% endblock %}
+
+{% block page-content %}
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="{% static 'js/jquery.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css">
+    <script>
+        $(document).ready(function() {
+            $('#academic_year').change(function() {
+                const academicYear = $(this).val();
+                
+                if (academicYear) {
+                    $.ajax({
+                        url: "{% url 'fetch_exams' %}",
+                        method: "GET",
+                        data: { academic_year: academicYear },
+                        success: function(response) {
+                            $('#exam_descr').empty().append('<option value="">-- Choose Exam --</option>');
+                            $.each(response.exams, function(index, exam) {
+                                $('#exam_descr').append('<option value="' + exam.description + '">' + exam.description + '</option>');
+                            });
+                        }
+                    });
+                }
+            });
+
+            $('#semester-select').change(function() {
+                const academicYear = $('#academic_year').val();
+                const semester = $(this).val();
+                
+                if (academicYear && semester) {
+                    $.ajax({
+                        url: "{% url 'fetch_exams' %}",
+                        method: "GET",
+                        data: {
+                            academic_year: academicYear,
+                            semester: semester
+                        },
+                        success: function(response) {
+                            $('#exam_descr').empty().append('<option value="">-- Choose Exam --</option>');
+                            $.each(response.exams, function(index, exam) {
+                                $('#exam_descr').append('<option value="' + exam.description + '">' + exam.description + '</option>');
+                            });
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+    <style>
+        /* Custom CSS to adjust the vertical position */
+        .form-container {
+            margin-top: 50px; /* Adjust as needed */
+        }
+    </style>
+</head>
+
+<body >
+    <div class="d-flex flex-column  align-items-center vh-100 bg-light">
+        <h1 class="mb-4">Exam Schedule</h1>
+        <section class="container form-container">
+            <div class="card shadow-sm rounded-3">
+                <div class="card-body">
+                    <form method="post" action="{% url 'exam_schedule_view' %}">
+                        {% csrf_token %}
+                        
+                        <div class="row mb-3">
+                            <div class="col-md-4">
+                                <label for="academic_year" class="form-label">Academic Year:</label>
+                                <select id="academic_year" name="academic_year" class="form-select" required>
+                                    <option value="">Select Academic Year</option>
+                                    {% for year in academic_years %}
+                                    <option value="{{ year.id }}">{{ year.acayear }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="semester-select" class="form-label">Semester:</label>
+                                <select id="semester-select" name="semester" class="form-select" required>
+                                    <option disabled selected>Choose Semester</option>
+                                    <option value="1">1st Semester</option>
+                                    <option value="2">2nd Semester</option>
+                                    <option value="3">3rd Semester</option>
+                                    <option value="4">4th Semester</option>
+                                    <option value="5">5th Semester</option>
+                                    <option value="6">6th Semester</option>
+                                    <option value="7">7th Semester</option>
+                                    <option value="8">8th Semester</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4">
+                                <label for="exam_descr" class="form-label">Examination:</label>
+                                <select id="exam_descr" name="exam_descr" class="form-select" required>
+                                    <option value="">-- Choose Exam --</option>
+                                </select>
+                            </div>
+                        </div>
+                    
+                        <button type="submit" class="btn btn-primary">View Schedule</button>
+                        
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+
+</html>
+{% endblock %}

@@ -1,0 +1,259 @@
+{% load static %}
+<!-- revaluation -->
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Scheme of Teaching and Examination </title>
+    
+
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+    @page{
+        size:landscape;
+
+        }
+    html {
+      font-family: 'Inter', sans-serif;
+      font-weight: bold;
+      font-size: 9.0px;
+    }
+    table{
+        width: 100%;
+    }
+
+    h1{
+        margin-top: 0;
+        font-size: 10px;
+    }
+    table, th, td {
+        text-align: center;
+        
+        
+    }
+    .hello
+    {
+        border: 1px solid black;
+        text-align: left;
+    }
+    .hello1
+    {
+        border: 1px solid black;
+        text-align: center;
+    }
+    .box{
+        margin-left: 50px;
+        
+    }
+    h4{
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    h3{
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    .box1{
+        height: 10px;
+    }
+    .hr{
+        border: 1px solid black;
+        border-collapse:collapse;
+
+    }
+    .college{
+        padding: 0px 40px;
+    }
+    .lbl{
+        height: 15px;
+    }
+    
+    .box {
+        display: flex;
+        align-items: stretch;
+      }
+
+      .spec_table {
+        border: none !important;
+       
+        }
+     
+    hr.new3 {
+        border: 1px dotted rgb(5, 5, 5);
+      }
+
+
+      td.course_grade{
+        width: 5px;
+      }
+      .student_list{
+        height: 400px;
+      }
+</style>
+
+<body>
+    
+    <table>
+        <tr>
+            <td><div class="college">
+                <h2> Shri Dharmasthala Manjunatheshwara College of Engineering & Technology, Dhavalagiri, Dharwad - 580002 </h2>
+                <div>
+                    <h2> Department of {{name}}</h2>
+                </div>
+                <div>
+                    <h2>{{sem}} Semester</h2>
+                </div>
+                <div>
+                   <h2>Scheme of Teaching and Examination </h2>
+                </div>
+               
+            </div></td>
+            
+        </tr>
+    </table>
+
+    <table class ="hr" id="table1">
+        <tr>
+            <td class = "hr" style="background-color: #33A1DE;"><h3>Course Code</h3></td>
+            <td class = "hr" style="background-color: #33A1DE;"><h3>Course Category</h3></td>
+            <td class = "hr" style="background-color: #33A1DE;"><h3>Course Title</h3></td>
+            <td class = "hr" style="background-color: #33A1DE;"><h3>LTP</h3></td>
+            <td class = "hr" style="background-color: #33A1DE;"><h3>Credits</h3></td>
+            <td class = "hr" style="background-color: #33A1DE;"><h3>CIE marks</h3></td>
+            <td class = "hr" style="background-color: #33A1DE;"><h3>Max SEE marks</h3></td>
+            <td class = "hr" style="background-color: #33A1DE;"><h3>Duration of SEE</h3></td>
+            <td class = "hr" style="background-color: #33A1DE;"><h3>Max practical marks</h3></td>
+            <td class = "hr" style="background-color: #33A1DE;"><h3>Duration of Practical</h3></td>
+
+
+
+        </tr>
+
+        {% for i in pro %}
+        <tr>
+            <td class = "hr">{{i.0}}</td>
+            <td class = "hr">{{i.1}}</td>
+            <td class = "hr">{{i.2}}</td>
+            <td class = "hr">{{i.3}}</td>
+            <td class = "hr">{{i.4}}</td>
+            <td class = "hr">{{i.9}}</td>
+            <td class = "hr">{{i.5}}</td>
+            <td class = "hr">{{i.11}}</td>
+            <td class = "hr">{{i.7}}</td>
+            <td class = "hr">{{i.10}}</td>
+
+        </tr>
+        {%endfor%}
+        <tr>
+            <td colspan="4" class = "hr">Total</td>
+            <td class = "hr">{{total_credits}}</td>
+            <td class = "hr">{{total_cie}}</td>
+            <td class = "hr">{{total_see}}</td>
+            <td class = "hr"></td>
+            <td class = "hr">{{total_par}}</td>
+
+
+        </tr>
+                
+
+
+
+        
+    </table>
+{% if len1 != 0 %}
+<br>
+<h2 style="text-align: center;">OPEN ELECTIVE 1</h2>
+<table class ="hr">
+    {% for i in pro1 %}
+        <tr>
+            <td class = "hr" style="width: 90px;">{{i.0}}</td>
+            <td class = "hr" style="width: 94px;">{{i.1}}</td>
+            <td class = "hr" style="width: 120px;">{{i.2}}</td>
+            <td class = "hr" style="width: 54px;">{{i.3}}</td>
+            <td class = "hr" style="width: 54px;">{{i.4}}</td>
+            <td class = "hr" style="width: 74px;">{{i.9}}</td>
+            <td class = "hr" style="width: 94px;">{{i.5}}</td>
+            <td class = "hr" style="width: 104px;">{{i.11}}</td>
+            <td class = "hr" style="width: 118px;">{{i.7}}</td>
+            <td class = "hr">{{i.10}}</td>
+        </tr>
+        {%endfor%}
+    </table>
+{% endif %}
+{% if len2 != 0 %}
+<br>
+<h2 style="text-align: center;">OPEN ELECTIVE 2</h2>
+<table class ="hr">
+    {% for i in pro2 %}
+        <tr>
+            <td class = "hr" style="width: 90px;">{{i.0}}</td>
+            <td class = "hr" style="width: 94px;">{{i.1}}</td>
+            <td class = "hr" style="width: 120px;">{{i.2}}</td>
+            <td class = "hr" style="width: 54px;">{{i.3}}</td>
+            <td class = "hr" style="width: 54px;">{{i.4}}</td>
+            <td class = "hr" style="width: 74px;">{{i.9}}</td>
+            <td class = "hr" style="width: 94px;">{{i.5}}</td>
+            <td class = "hr" style="width: 104px;">{{i.11}}</td>
+            <td class = "hr" style="width: 118px;">{{i.7}}</td>
+            <td class = "hr">{{i.10}}</td>
+
+        </tr>
+        {%endfor%}
+    </table>
+{% endif %}
+{% if len3 != 0 %}
+<br>
+<h2 style="text-align: center;">PROGRAM ELECTIVE 1</h2>
+<table class ="hr">
+    {% for i in pro3 %}
+        <tr>
+            <td class = "hr" style="width: 90px;">{{i.0}}</td>
+            <td class = "hr" style="width: 94px;">{{i.1}}</td>
+            <td class = "hr" style="width: 120px;">{{i.2}}</td>
+            <td class = "hr" style="width: 54px;">{{i.3}}</td>
+            <td class = "hr" style="width: 54px;">{{i.4}}</td>
+            <td class = "hr" style="width: 74px;">{{i.9}}</td>
+            <td class = "hr" style="width: 94px;">{{i.5}}</td>
+            <td class = "hr" style="width: 104px;">{{i.11}}</td>
+            <td class = "hr" style="width: 118px;">{{i.7}}</td>
+            <td class = "hr">{{i.10}}</td>
+
+        </tr>
+        {%endfor%}
+    </table>
+{% endif %}
+{% if len4 != 0 %}
+<br>
+<h2 style="text-align: center;">PROGRAM ELECTIVE 2</h2>
+<table class ="hr">
+    {% for i in pro4 %}
+        <tr>
+            <td class = "hr" style="width: 90px;">{{i.0}}</td>
+            <td class = "hr" style="width: 94px;">{{i.1}}</td>
+            <td class = "hr" style="width: 120px;">{{i.2}}</td>
+            <td class = "hr" style="width: 54px;">{{i.3}}</td>
+            <td class = "hr" style="width: 54px;">{{i.4}}</td>
+            <td class = "hr" style="width: 74px;">{{i.9}}</td>
+            <td class = "hr" style="width: 94px;">{{i.5}}</td>
+            <td class = "hr" style="width: 104px;">{{i.11}}</td>
+            <td class = "hr" style="width: 118px;">{{i.7}}</td>
+            <td class = "hr">{{i.10}}</td>
+
+        </tr>
+        {%endfor%}
+    </table>
+{% endif %}
+<br>
+<br>
+<br>
+<h4>PC:Program Core,LA:Laboratory,PO:Program Elective,OE:Open Elcetive</h4>
+<br>
+<h4>SEE for theory courses is conducted for 100 marks and reduced to 50 marks</h4>
+</body>
+
+</html>
+
+
+

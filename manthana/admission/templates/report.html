@@ -1,0 +1,136 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Report Generator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        form {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        button {
+            padding: 8px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        select {
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            width: 200px;
+        }
+
+        .column {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Generate Student Report</h1>
+        <form id="columnForm" action="/reportPage" method="POST" >
+            <label for="num_columns">Enter the number of columns:</label>
+            <input type="number" id="num_columns" name="num_columns" min="1" max="50" required oninput="generateDropdowns()">
+            
+        <div id="dropdowns"></div>
+
+        
+            <button type="submit">Submit Report</button>
+        </form>
+        
+    </div>
+
+    <script>
+        function generateDropdowns() {
+            var numColumns = document.getElementById('num_columns').value;
+            var dropdownsDiv = document.getElementById('dropdowns');
+            dropdownsDiv.innerHTML = '';
+
+            for (var i = 0; i < numColumns; i++) {
+                var columnDiv = document.createElement('div');
+                columnDiv.classList.add('column');
+
+                var dropdownLabel = document.createElement('label');
+                dropdownLabel.textContent = 'Column ' + (i + 1) + ' : ';
+
+                var dropdown = document.createElement('select');
+                dropdown.name = 'column_' + i;
+                dropdown.id = 'column_' + i;
+
+                // Add options (you may populate them dynamically from backend)
+                var defaultOption = document.createElement('option');
+                defaultOption.text = '-- Select Field --';
+                dropdown.add(defaultOption);
+
+                // Add field names as options (you can fetch these from backend)
+                var fieldNames = [
+                    "ID", "Profile pic", "UID", "USN Old", "USN New",
+                    "Name", "Branch", "Academic Year", "Admission Date", "Admission Quota", "Medium",
+                    "DOB", "Gender", "Locality", "Blood Group", "Place of Birth",
+                    "Mother Tongue", "Nationality", "Religion", "Caste", "Sub Caste",
+                    "Category", "Mobile No", "Email ID", "Aadhar No", "Extracurricular Activity",
+                    "Father Name", "Mother Name", "Father Occupation", "Mother Occupation", "Father Income",
+                    "Mother Income", "Father Mobile No", "Mother Mobile No", "Father PAN", "Mother PAN",
+                    "Father Email ID", "Mother Email ID", "Parent Address", "Parent Address City", "Parent Address District",
+                    "Parent Address State", "Parent Address Pincode", "Postal Address", "Postal Address City", "Postal Address District",
+                    "Postal Address State", "Postal Address Pincode", "Local Guardian Address", "Guardian Mobile No", "Health Issues",
+                    "Guardian Email", "Admission Date", "Total Fees", "RT No", "Created by",
+                    "Created Time", "Last Edited By", "Last Edited Time"
+                ];
+
+                for (var j = 0; j < fieldNames.length; j++) {
+                    var option = document.createElement('option');
+                    option.text = fieldNames[j];
+                    dropdown.add(option);
+                }
+
+                dropdownLabel.appendChild(dropdown);
+                columnDiv.appendChild(dropdownLabel);
+                dropdownsDiv.appendChild(columnDiv);
+            }
+        }
+    </script>
+</body>
+</html>
+{% endblock %}

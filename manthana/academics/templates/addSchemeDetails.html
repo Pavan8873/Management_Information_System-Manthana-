@@ -1,0 +1,529 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Scheme Details</title>{% endblock %}
+
+{% block page-content %}
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scrollable Table</title>
+  <style>
+    .scrollable-table-container {
+      width: 100%;
+      height: 120px;
+      /* Adjust based on the row height to display exactly 3 rows */
+      overflow-y: auto;
+      border: 1px solid #ddd;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th,
+    td {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: left;
+      box-sizing: border-box;
+      /* Ensures padding and border are included in the width/height */
+    }
+
+    th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+
+
+
+
+
+
+
+
+<section class="mt-5 mb-5">
+
+  <div class="container mt-4">
+    <div class="scrollable-table-container">
+      <table class="table table-striped table-bordered mytable">
+        <thead class="thead-dark">
+          <tr>
+            <th>Name</th>
+            <th>Code</th>
+          </tr>
+        </thead>
+        <tbody id="course_table_body">
+          <!-- Course rows will be inserted here by AJAX -->
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <h2 align="center"> Scheme Details Entry </h2>
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <form action="{% url 'addSchemedetails'%}" method="POST" id="register_form" enctype="multipart/form-data"  data-course-url="{% url 'ajax_displaycourses' %}">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-4 mb-3">
+          <label for="course_code" class="form-label"> Course Code: </label>
+          {%if scheme is None%}
+          <input type="text" id="course_code" name="course_code" required class="form-control"
+            placeholder="Eg. 18UC3C100" />
+          {%else%}
+          <input type="text" id="course_code" name="course_code" required class="form-control"
+            value="{{scheme.course_code}}" />
+          {%endif%}
+        </div>
+        <div class="col-4 mb-3">
+          <label for="course_title" class="form-label">
+            Course Title:
+          </label>
+          {%if scheme is None%}
+          <input type="text" id="course_title" name="course_title" required class="form-control"
+            placeholder="Eg. Data Structure" />
+          {% else %}
+          <input type="text" id="course_title" name="course_title" required class="form-control"
+            value="{{scheme.course_title}}" />
+          {%endif%}
+
+        </div>
+        <div class="col-4 mb-3">
+          <label for="course_type" class="form-label"> Course Type: </label>
+          {% if scheme is None%}
+          <select id="course_type" name="course_type" required class="form-select">
+            <option disabled selected>Choose Course Type</option>
+            <option value="1">Theory</option>
+            <option value="2">Practical</option>
+            <option value="3">Project</option>
+            <option value="4">Seminar</option>
+            <option value="5">Program Elective</option>
+            <option value="6">Open Elective</option>
+            <option value="7">Internship</option>
+            <option value="8">Ability Enhancement</option>
+          </select>
+          {% elif scheme.course_type == "1"%}
+          <select id="course_type" name="course_type" required class="form-select">
+            <option value="1" selected>Theory</option>
+            <option value="2">Practical</option>
+            <option value="3">Project</option>
+            <option value="4">Seminar</option>
+            <option value="5">Program Elective</option>
+            <option value="6">Open Elective</option>
+          </select>
+          {% elif scheme.course_type == "2"%}
+          <select id="course_type" name="course_type" required class="form-select">
+            <option value="1">Theory</option>
+            <option value="2" selected>Practical</option>
+            <option value="3">Project</option>
+            <option value="4">Seminar</option>
+            <option value="5">Program Elective</option>
+            <option value="6">Open Elective</option>
+          </select>
+          {% elif scheme.course_type == "3"%}
+          <select id="course_type" name="course_type" required class="form-select">
+            <option value="1">Theory</option>
+            <option value="2">Practical</option>
+            <option value="3" selected>Project</option>
+            <option value="4">Seminar</option>
+            <option value="5">Program Elective</option>
+            <option value="6">Open Elective</option>
+          </select>
+          {% elif scheme.course_type == "4"%}
+          <select id="course_type" name="course_type" required class="form-select">
+            <option value="1">Theory</option>
+            <option value="2">Practical</option>
+            <option value="3">Project</option>
+            <option value="4" selected>Seminar</option>
+            <option value="5">Program Elective</option>
+            <option value="6">Open Elective</option>
+          </select>
+          {% elif scheme.course_type == "5"%}
+          <select id="course_type" name="course_type" required class="form-select">
+            <option value="1">Theory</option>
+            <option value="2">Practical</option>
+            <option value="3">Project</option>
+            <option value="4">Seminar</option>
+            <option value="5" selected>Program Elective</option>
+            <option value="6">Open Elective</option>
+          </select>
+          {% elif scheme.course_type == "6"%}
+          <select id="course_type" name="course_type" required class="form-select">
+            <option value="1">Theory</option>
+            <option value="2">Practical</option>
+            <option value="3">Project</option>
+            <option value="4">Seminar</option>
+            <option value="5">Program Elective</option>
+            <option value="6" selected>Open Elective</option>
+          </select>
+          {%endif%}
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-4 mb-3">
+          <label for="sem_allotted" class="form-label">
+            Semester Allotted :
+          </label>
+          {%if scheme.sem_allotted is None%}
+          <select id="sem_allotted" name="sem_allotted" required class="form-select">
+            <option disabled selected>Choose Semester</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+          {% elif scheme.sem_allotted == 1 %}
+          <select id="sem_allotted" name="sem_allotted" required class="form-select">
+            <option value="1" selected>1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+          {% elif scheme.sem_allotted == 2 %}
+          <select id="sem_allotted" name="sem_allotted" required class="form-select">
+            <option value="2" selected>2</option>
+            <option value="1">1</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+          {% elif scheme.sem_allotted == 3 %}
+          <select id="sem_allotted" name="sem_allotted" required class="form-select">
+            <option value="3" selected>3</option>
+            <option value="2">2</option>
+            <option value="1">1</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+          {% elif scheme.sem_allotted == 4 %}
+          <select id="sem_allotted" name="sem_allotted" required class="form-select">
+            <option value="4" selected>4</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="1">1</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+          {% elif scheme.sem_allotted == 5 %}
+          <select id="sem_allotted" name="sem_allotted" required class="form-select">
+            <option value="5" selected>5</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="1">1</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+          {% elif scheme.sem_allotted == 6 %}
+          <select id="sem_allotted" name="sem_allotted" required class="form-select">
+            <option value="6" selected>6</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="1">1</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+          {% elif scheme.sem_allotted == 7 %}
+          <select id="sem_allotted" name="sem_allotted" required class="form-select">
+            <option value="7" selected>7</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="1">1</option>
+            <option value="8">8</option>
+          </select>
+          {% elif scheme.sem_allotted == 8 %}
+          <select id="sem_allotted" name="sem_allotted" required class="form-select">
+            <option value="8" selected>8</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="1">1</option>
+          </select>
+
+          {% endif %}
+
+        </div>
+
+        <div class="col-4 mb-3">
+          <label for="is_credit">Credit/Audit : &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;
+            Deduction: </label>
+          <div class="row">
+            <div class="custom-control custom-radio col-4 mb-3">
+              {%if scheme is None%}
+              <input type="radio" class="custom-control-input" id="course_type_1" required name="is_credit"
+                value="True">
+              {%else%}
+              <input type="radio" class="custom-control-input" id="course_type_1" required name="is_credit" value="True"
+                checked>
+              {%endif%}
+              <label class="custom-control-label" for="course_type_1">Credit</label>
+            </div>
+            <div class="custom-control custom-radio col-4 mb-3">
+              <input type="radio" class="custom-control-input" id="course_type_2" required name="is_credit"
+                value="False">
+              <label class="custom-control-label" for="course_type_2">Audit</label>
+            </div>
+            <div class="custom-control custom-radio col-4 mb-3">
+              &emsp;&emsp;<input type="checkbox" class="custom-control-input" id="deduction" name="deduction" value="1">
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-4 mb-4">
+          <label for="credits" class="form-label"> Credits: </label>
+          {%if scheme is None%}
+          <input type="number" id="credits" name="credits" min="0" max="4" required class="form-control"
+            placeholder="Eg. 4" onkeydown="onlyNumberKey(event)" disabled="disabled" />
+          {%else%}
+          <input type="number" id="credits" name="credits" min="0" max="4" required class="form-control"
+            placeholder="Eg. 4" onkeydown="onlyNumberKey(event)" value="{{scheme.credits}}" />
+          {%endif%}
+        </div>
+
+        <div class="col-4 mb-3">
+          <label for="ltps" class="form-label"> L-T-P-S: </label>
+          {%if scheme is None%}
+          <input type="text" id="ltps" name="ltps" required class="form-control" placeholder="Eg. 3-0-2-0" />
+          {%else%}
+          <input type="text" id="ltps" name="ltps" required class="form-control" value="{{scheme.ltps}}" />
+          {%endif%}
+        </div>
+
+        <div class="col-4 mb-3">
+          <label for="scheme_series" class="form-label">
+            Scheme Series :
+          </label>
+          {%if scheme is None%}
+          <input type="number" id="scheme_series" name="scheme_series" min="11" max="99" required class="form-control"
+            placeholder="Eg. 18,21" onkeydown="onlyNumberKey(event)" onclick="copy()" />
+          {%else%}
+          <input type="number" id="scheme_series" name="scheme_series" min="11" max="99" required class="form-control"
+            onkeydown="onlyNumberKey(event)" onclick="copy()" value="{{scheme.scheme_series}}" />{%endif%}
+        </div>
+
+        <div class="col-4 mb-3">
+          <label for="offered_by" class="form-label w-60"> Offered By : </label>
+
+          {% if scheme is None%}
+
+          <select id="offered_by" name="offered_by" value="{{ scheme_details.offered_by }}" required
+            class="form-select">
+            <option disabled selected>Choose Branch</option>
+            {% if department %}
+            {% for dept in department %}
+            <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+            {% endfor %}
+            {% endif%}
+          </select>
+          {% else%}
+          <select id="offered_by" name="offered_by" value="{{ scheme_details.offered_by }}" required
+class="form-select">
+
+            <h1>{{dept.dept_name}}</h1>
+            {% for dept in department %}
+
+            {% if dept.dept_name == scheme.offered_by %}
+
+
+            <option value="{{dept.dept_id}}" selected>{{scheme.offered_by}}</option>
+            {%else%}
+            <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+            {%endif%}
+            {% endfor %}
+            {%endif%}
+          </select>
+
+        </div>
+
+        <div class="row">
+          <div class="col-3 mb-3">
+            <label for="max_cie_marks" class="form-label"> Max CIE Marks: </label>
+            {%if scheme is None%}
+            <input type="number" id="max_cie_marks" name="max_cie_marks" value="50" min="50" max="100" required
+              class="form-control" placeholder="Eg. 50" onkeydown="onlyNumberKey(event)" />
+            {%else%}
+            <input type="number" id="max_cie_marks" name="max_cie_marks" value="50" min="50" max="100" required
+              class="form-control" value="{{scheme.max_cie_marks}}" onkeydown="onlyNumberKey(event)" />
+            {% endif%}
+          </div>
+          <div class="col-3 mb-3">
+
+            <label for="min_cie_marks" class="form-label"> Min CIE Marks: </label>
+            {% if scheme is None%}
+            <input type="number" id="min_cie_marks" name="min_cie_marks" min="20" max="100" value="20" required
+              class="form-control" placeholder="Eg. 20" onkeydown="onlyNumberKey(event)" />
+            {%else%}
+            <input type="number" id="min_cie_marks" name="min_cie_marks" min="20" max="100" value="20" required
+              class="form-control" value="{{scheme.min_cie_marks}}" onkeydown="onlyNumberKey(event)" />
+            {% endif%}
+          </div>
+          <div class="col-3 mb-3">
+            <label for="max_see_marks" class="form-label"> Max SEE Marks: </label>
+            {% if scheme is None%}
+            <input type="number" id="max_see_marks" name="max_see_marks" min="0" max="100" class="form-control"
+              placeholder="Eg. 100" onkeydown="onlyNumberKey(event)" />
+            {%else%}
+
+            <input type="number" id="max_see_marks" name="max_see_marks" min="0" max="100" class="form-control"
+              onkeydown="onlyNumberKey(event)" value="{{scheme.max_see_marks}}" />
+            {%endif%}
+          </div>
+          <div class="col-3 mb-3">
+            <label for="min_see_marks" class="form-label"> Min SEE Marks: </label>
+            {% if scheme is None%}
+            <input type="number" id="min_see_marks" name="min_see_marks" min="0" max="100" class="form-control"
+              placeholder="Eg. 40" onkeydown="onlyNumberKey(event)" disabled="disabled" required />
+            {% else %}
+            <input type="number" id="min_see_marks" name="min_see_marks" min="0" max="100" class="form-control"
+              placeholder="Eg. 40" onkeydown="onlyNumberKey(event)" value="{{scheme.min_see_marks}}" required />
+            {% endif%}
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-3 mb-3">
+          <div>
+            <label for="min_see_marks" class="form-label">Open Elective:</label>&emsp;&emsp;
+            <input type="checkbox" id="enableDropdownCheckbox" name="enableDropdownCheckbox" onchange="toggleDropdown()"
+              value="True">
+            <select id="myDropdown" name="myDropdown" class="form-select" disabled>
+              <option value="0">None</option>
+              <option value="1">Open Elective 1</option>
+              <option value="2">Open Elective 2</option>
+              <option value="3">Open Elective 3</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="col-3 mb-3">
+          <div>
+            <label for="min_see_marks" class="form-label">Program Elective:</label>&emsp;&emsp;
+            <input type="checkbox" id="enableDropdownCheckbox1" name="enableDropdownCheckbox1"
+              onchange="toggleDropdown1()" value="True">
+            <select id="myDropdown1" name="myDropdown1" class="form-select" disabled>
+              <option value="0">None</option>
+              <option value="1">Program Elective 1</option>
+              <option value="2">Program Elective 2</option>
+              <option value="3">Program Elective 3</option>
+            </select>
+          </div>
+        </div>
+      </div>
+  </div>
+
+  <div class="row">
+    <div class="d-grid gap-4 col-3 mx-auto">
+      {%if scheme is None%}
+      <input type="text" name="btn_clicked" value="register" hidden>
+      <button type="submit" name="btn_scheme_detail" id="btn_scheme_detail" value="register"
+        class="btn btn-primary">Submit</button>
+      {%else%}
+      <input type="text" name="btn_clicked" value="update" hidden>
+      <button type="submit" name="btn_scheme_detail" value="update" id="btn_scheme_detail"
+        class="btn btn-primary">Update</button> {% endif %}
+    </div>
+  </div>
+
+  </form>
+  </div>
+</section>
+
+<div>
+
+
+  {% for message in messages %}
+  <h4>{{message}}</h4>
+  {% endfor %}
+</div>
+<script>
+  $(document).ready(function() {
+    $("#offered_by").change(function () {
+      // Get the URL of the `displaycourses` view from the data attribute
+      var url = $("#register_form").attr("data-course-url");
+      
+      // Get the values from the dropdowns
+      var offered_by = $('#offered_by').val();
+      var sem_allotted = $('#sem_allotted').val();
+      console.log("Offered By: ", offered_by, "Semester Allotted: ", sem_allotted);
+      
+      $.ajax({
+        url: url,  // Set the URL of the AJAX request
+        data: {
+          'offered_by': offered_by,  // Pass the selected department ID
+          'sem_allotted': sem_allotted  // Pass the selected semester
+        },
+        success: function (response) {
+          // Prepare HTML content for the table body
+          var courseTableBodyHtml = '';
+          if (response.data.length > 0) {
+            $.each(response.data, function(index, course) {
+              courseTableBodyHtml += '<tr><td>' + course.course_title + '</td><td>' + course.course_code + '</td></tr>';
+            });
+          } else {
+            courseTableBodyHtml = '<tr><td colspan="2">No courses found.</td></tr>';
+          }
+          // Replace the contents of the table body with the new HTML
+          $("#course_table_body").html(courseTableBodyHtml);
+        },
+        error: function (xhr, status, error) {
+          console.error("AJAX error: ", status, error);
+          $("#course_table_body").html('<tr><td colspan="2">Error loading courses.</td></tr>');
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+  function toggleDropdown() {
+    var checkbox = document.getElementById("enableDropdownCheckbox");
+    var dropdown = document.getElementById("myDropdown");
+
+    if (checkbox.checked) {
+      dropdown.disabled = false;
+    } else {
+      dropdown.disabled = true;
+    }
+  }
+  function toggleDropdown1() {
+    var checkbox = document.getElementById("enableDropdownCheckbox1");
+    var dropdown = document.getElementById("myDropdown1");
+
+    if (checkbox.checked) {
+      dropdown.disabled = false;
+    } else {
+      dropdown.disabled = true;
+    }
+  }
+</script>
+{% endblock %}

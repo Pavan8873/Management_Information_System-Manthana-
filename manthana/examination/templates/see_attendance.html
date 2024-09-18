@@ -1,0 +1,109 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>SEE Student Attendance</title>{% endblock %}
+
+{% block page-content %}
+
+
+<body class="bg-light">
+  <h2 align="center">SEE Student Attendance</h2>
+  <!-- Main Content -->
+  <section class="mt-5 mb-5">
+    <div class="container shadow rounded-3 p-4 bg-white">
+      <form action="/seeattendance" method="POST" id="">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-6 mb-3">
+            <!-- <label for="acad_year" class="form-label">Academic Year</label>
+            <select name="acad_year" id="acad_year" class="form-select" required>
+              <option value="">Choose Academic Year</option>
+              {% for cal in calender %}
+              <option value="{{cal.acad_cal_acad_year}}">{{cal.acad_cal_acad_year}}</option>
+              {% endfor %}
+            </select> -->
+
+            <label for="exam_desc" class="form-label">Exam Description</label>
+            <!--<select name="exam_desc" id="exam_desc" required class="form-select">
+              <option value="" disabled selected>Exam Description</option>
+              <option value="SEE Regular Odd Sem 20-21">SEE Regular Odd Sem 20-21 </option>
+              <option value="SEE Regular Even Sem 20-21">SEE Regular Even Sem 20-21</option>
+              <option value="SEE MakeUp 20-21">SEE MakeUp 20-21</option>
+              <option value="STC 21-21">STC 20-21</option>
+            </select> -->
+            <select name="exam_desc" id="exam_desc" required class="form-select">
+            <option value="" disabled selected>Exam Description</option>
+            {% for exam in exams %}
+            <option value="{{ exam.description }}">{{ exam.description }}</option>
+            {% endfor %}
+            </select>
+
+          </div>
+
+          <div class="col-6 mb-3">
+            <label name="dept" for="dept" class="form-label"> Department : </label>
+            <select name="dept" id="dept" class="form-select" required>
+              <option value="">Choose Department</option>
+              {% for dept in department %}
+              <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-6 mb-3>
+            <label name="sem" for="sem" class="form-label"> Sem </label>
+            <select name="sem" id="sem" required class="form-select">
+              <option value="" disabled selected>Sem</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+              <option value="6">6</option>
+              <option value="7">7</option>
+              <option value="8">8</option>
+            </select>
+          </div>
+
+          <div class="col-6 mb-3">
+            <label name="Subject" for="subject" class="form-label"> Subject : </label>
+            <select name="subject" id="subject" class="form-select" required>
+              <option value="">Choose Subject</option>
+              {% for subj in course_obj %}
+              <option value="{{subj.scheme_details_id}}">{{subj.course_code}} - {{subj.course_title}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+       
+     
+          
+        </div>
+
+        <div class="row">
+          <div class="d-grid gap-4 col-1 mx-auto">
+            <input type="text" name="btn_clicked" value="register" hidden>
+            <br>
+            <button type="submit" name="btn_div_allot" id="btn_div_allot" value="register"
+              class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+
+
+  </section>
+
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="vendor/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Option 2: jQuery -->
+  <script src="plugins/jquery/jquery-3.6.0.min.js"></script>
+</body>
+
+
+{% endblock %}

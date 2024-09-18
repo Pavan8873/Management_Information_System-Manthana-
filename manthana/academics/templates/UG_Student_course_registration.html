@@ -1,0 +1,128 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Student FirstYearCourse Details </title>{% endblock %}
+
+{% block page-content %}
+
+<h2 align="center">UG Student Course Registration (Bulk)</h2>
+    <section class="mt-5 mb-5">
+        <div class="container shadow rounded-3 p-4 bg-white">
+        <form action="/bulkRegisterUGStudentCourses" method="POST" id="indexForm"  data-course-url="{% url 'ajax_ug_load_courses' %}">
+        {% csrf_token %}
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label for="academic-year" class="form-label">
+                            Academic Year
+                        </label>
+                        <select id="academic_year" name="academic_year" class="form-select" required>
+                          <option disabled selected>Choose Academic Year</option>
+                          {% for aca_yr in acad_year_tbl %}
+                          <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option>
+                          <!-- <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option> -->
+                          {% endfor %}
+                        </select>
+                    </div>
+                    <input type="text" name="acad_year" id="acad_year" hidden>
+                    <div class="col-6 mb-3">
+                        <label for="semester-select" class="form-label">
+                            Semester
+                        </label>
+                        <select id="sem" name="sem" class="form-select">
+                            <option disabled selected>Choose Semester</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                            <option value="6">6</option>
+                            <option value="7">7</option>
+                            <option value="8">8</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-4 mb-3">
+                  <label for="acad_cal_type" class="form-label"> Academic Type </label>
+                  <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+                  
+                    <option disabled selected>Choose Academic_type</option>
+                    <option value="1">Regular Semester</option>
+                    <option value="2">STC Semester</option>
+                  
+                    
+                  </select>
+                </div>
+                <div class="row">
+                  <div class="col-6 mb-3">
+                    <label for="offered_by" class="form-label"> Department: </label>
+                    <select id="offered_by" name="offered_by" value="{{ scheme_details.offered_by_id }}" class="form-select" required>
+                      <option disabled selected>Choose Branch</option>
+                      {% for i in dept %}
+                        <option value="{{i.dept_id}}">{{i.dept_name}}</option>
+                      {% endfor %}
+                  </select>
+                </div>  
+                <input type="text" name="branch" id="branch" hidden>
+                <div class="col-6 mb-3">
+                  <label for="courseList" class="form-label">
+                      <strong>Courses to be registered for</strong>
+                  </label>
+                  <select name="courseList" id="courselist" multiple="multiple" class="form-select">
+                  </select>
+              </div>     
+                </div>
+                <div class="row">
+                  <div class="d-grid gap-2 col-3 mx-auto">
+                      <input type="text" name="btn_clicked" value="register" hidden>
+                      <button type="submit" name="btn_allot_detail" id="btn_allot_detail" value="register" class="btn btn-primary">Bulk register</button>
+                      <button type="reset" name="btn_allot_reset" id="btn_allot_reset" value="reset" class="btn btn-primary" onclick="resetPage()">Reset</button>
+                  </div>
+                </div>
+            </form>
+        </div>
+    </section>
+    <script src="{% static '/plugins/bsmultiselect/js/BsMultiSelect.min.js' %}"></script>
+
+    <script>
+      function resetPage(){
+        $('#offered_by').prop('disabled',true);
+        $('#sem').prop('disabled',true);
+        $('#academic_year').prop('disabled',false);
+      }
+      $(document).ready(function () {
+        $('#offered_by').val("");
+        $('#sem').val("");
+        $('#academic_year').val("");
+        
+        $('#academic_year').prop('disabled',false);
+        $('#offered_by').prop('disabled',true);
+        $('#sem').prop('disabled',true);
+        
+        $("#academic_year").change(function () {
+          $('#offered_by').prop('disabled', false);
+        });
+        $("#offered_by").change(function () {
+          $('#sem').prop('disabled', false);
+        });
+      $("#sem").change(function (){
+        $('#acad_year').val($('#academic_year').val());
+        $('#branch').val($('#offered_by').val());
+        $('#offered_by').prop('disabled',true);
+        $('#academic_year').prop('disabled',true);
+          var sem = $(this).val();  // get the selected programming ID from the HTML input
+          var url1 = $("#indexForm").attr("data-course-url");
+          var branch = $('#branch').val();
+          var acad_year = $('#acad_year').val();
+          $.ajax({                       
+            url: url1,                   
+            data: {
+              'branch': branch,
+              'sem': sem,
+              'acad_year': acad_year   
+            },
+            success: function (data) {   
+              $("#courselist").html(data);  
+            }
+          });
+        });
+      });
+</script>
+{% endblock %}

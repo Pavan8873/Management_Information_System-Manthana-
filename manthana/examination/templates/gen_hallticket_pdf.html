@@ -1,0 +1,344 @@
+{% load static %}
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Hallticket</title>
+    
+
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+    @page{
+      size: "A4";
+      margin: 0.5cm;
+    }
+    html {
+      font-family: 'Inter', sans-serif;
+      font-size: 8.0px;
+    }
+    table{
+        width: 100%;
+    }
+    
+    img {
+        width: 80px;
+        height : 80px;
+        max-height: 100%;
+        max-width: 100%;
+    }
+    h1{
+        margin-top: 0;
+        font-size: 10px;
+    }
+    table, th, td {
+        text-align: center;
+        
+    }
+    
+    .table-border{
+        border: .5px solid black;
+        border-collapse: collapse; 
+        text-align: center;
+        
+    }
+    .box{
+        margin-left: 50px;
+        
+    }
+    h4{
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    h3{
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    .box1{
+        height: 10px;
+    }
+    hr{
+        border: 1px solid black;
+    }
+    .college{
+        padding: 0px 40px;
+    }
+    .lbl{
+        height: 15px;
+    }
+    
+    .box {
+        display: flex;
+        align-items: stretch;
+      }
+
+      .spec_table {
+        border: none !important;
+       
+        }
+      
+    .instructions{
+        height: 300px;
+    }
+    .inst-desc{
+        padding: 20px 0px;
+        color: rgb(255, 0, 0);
+    }
+    hr.new3 {
+        border: 1px dotted rgb(5, 5, 5);
+      }
+
+    .outer-border{
+        max-height: 130mm;
+        border: .5px solid black;
+        padding: 15px;
+    }
+    td{
+        padding: 0px;
+    }
+    .course_align{
+        padding-left: 5px;
+        text-align: left;
+        white-space: nowrap; 
+        overflow: hidden;
+        text-overflow: ellipsis; 
+    }
+    .img1 {
+        border: .2px solid black;
+        width: 65px;
+        height: 90px;
+      }
+</style>
+
+<body>
+
+    {% for usn, details in ht_list.items %}
+        <div class="outer-border">
+            <table>
+                <tr>
+                    <td> <img src="{% static 'images/sdm_logo.jfif' %}" alt=""></td>
+                    <td><div class="college">
+                        <h2> Shri Dharmasthala Manjunatheshwara College of Engineering & Technology, Dhavalagiri, Dharwad - 580002 </h2>
+                        <div>
+                            <h3>Hall Ticket - {{exam.description}}</h3>
+                        </div>
+                        <div>
+                            <h3>PROGRAM : {{program}} {{dept.dept_name}}</h3>
+                        </div>
+                    </div></td>
+                    <td class="img1">
+                        {% comment %} <img src="{% static 'images/man.png' %}" alt=""></td> {% endcomment %}
+                        <img src="/media/{{details.student.st_profile_pic}}" alt="">
+                </tr>
+            </table>
+        
+            <hr>
+        
+            <table>
+                <tr>
+                    <td colspan="3">
+                        <h4>(Office Copy)</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>UID : {{ details.student.st_uid }}</h4>
+                    </td>
+                    
+                    <td>
+                        <h4>Name : {{details.student.st_name}}</h4>
+                    </td>
+                    <td>
+                        <h4> Phone No. : {{details.student.st_mobile_no}}</h4>
+                    </td>
+                </tr>
+            </table>
+            <div class="box1"></div>
+            <div class="instructions">
+                <table class="table-border spec_table">
+                    <tr class="lbl">
+                        <th class="spec_table" colspan="3">
+                        SUBJECTS APPLIED
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <tr class="lbl">
+                        <th class="table-border">Sl. no</th>
+                        <th class="table-border">Course Code</th>
+                        <th class="table-border">Credits</th>
+                        <th class="table-border" colspan="3">Course Title</th>
+                    
+                        </th><th class="table-border" colspan="2">
+                            INVIGILATOR SIGNATIURE WITH DATE
+                        </th>
+                    </tr>
+                    
+                    
+                        {% for index, course in details.courses.items %}
+                        <tr  class="lbl">
+                            <td class="table-border">
+                                {{ forloop.counter }}
+                            </td>
+                            <td class="table-border">
+                                {{course.course_code}}
+                            </td class="table-border">
+                            <td class="table-border">
+                                {{course.credits}}:0:0:0
+                            </td>
+                            <td class="table-border course_align" colspan="3">
+                                {{course.course_title}}
+                                
+                            </td >
+                            <td class="table-border" colspan="2">
+                            
+                            </td></tr>
+                        {% endfor %}
+                    
+                </table>
+            
+                <div class="inst-desc">
+                    #instructions
+                </div>
+            </div>
+            
+        
+            <table class="signature">
+                <tr>
+                    <td> <h4>Signature of Candidate</h4></td>
+                    <td><div class="college">
+                        <h4>Controller of Examinations</h4>
+                    </div></td>
+                    <td ><h4>Principal</h4></td>
+                </tr>
+            </table>
+        </div>
+
+
+        <div class="box1">
+        </div>
+        <div class="box1">
+        </div>
+
+        
+        <hr class="new3">
+        <div class="box1">
+        </div>
+        <div class="box1">
+        </div>
+   
+
+
+        <div class="outer-border">
+            <table>
+                <tr>
+                    <td> <img src="{% static 'images/sdm_logo.jfif' %}" alt=""></td>
+                    <td><div class="college">
+                        <h2> Shri Dharmasthala Manjunatheshwara College of Engineering & Technology, Dhavalagiri, Dharwad - 580002 </h2>
+                        <div>
+                            <h3>Hall Ticket - {{exam.description}}</h3>
+                        </div>
+                        <div>
+                            <h3>PROGRAM : {{program}} {{dept.dept_name}}</h3>
+                        </div>
+                    </div></td>
+                    <td class="img1">
+                        <img src="/media/{{details.student.st_profile_pic}}" alt="">
+                </tr>
+            </table>
+        
+            <hr>
+        .
+            <table>
+                <tr>
+                    <td colspan="3">
+                        <h4>(Student Copy)</h4>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>UID : {{ details.student.st_uid }}</h4>
+                    </td>
+                    
+                    <td>
+                        <h4>Name : {{details.student.st_name}}</h4>
+                    </td>
+                    <td>
+                        <h4> Phone No. : {{details.student.st_mobile_no}}</h4>
+                    </td>
+                </tr>
+            </table>
+            <div class="box1"></div>
+            <div class="instructions">
+                <table class="table-border spec_table">
+                    <tr class="lbl">
+                        <th class="spec_table" colspan="3">
+                        SUBJECTS APPLIED
+                        </th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                    <tr class="lbl">
+                        <th class="table-border">Sl. no</th>
+                        <th class="table-border">Course Code</th>
+                        <th class="table-border">Credits</th>
+                        <th class="table-border" colspan="3">Course Title</th>
+                    
+                        </th><th class="table-border" colspan="2">
+                            INVIGILATOR SIGNATIURE WITH DATE
+                        </th>
+                    </tr>
+                    
+                    
+                        {% for index, course in details.courses.items %}
+                        <tr  class="lbl">
+                            <td class="table-border">
+                                {{ forloop.counter }}
+                            </td>
+                            <td class="table-border">
+                                {{course.course_code}}
+                            </td class="table-border">
+                            <td class="table-border">
+                                {{course.credits}}:0:0:0
+                            </td>
+                            <td class="table-border course_align" colspan="3">
+                                {{course.course_title}}
+                                
+                            </td >
+                            
+                            <td class="table-border" colspan="2">
+                            
+                            </td>
+                        </tr>
+                        {% endfor %}
+                  
+                </table>
+            
+                <div class="inst-desc">
+                    #instructions
+                </div>
+            </div>
+            
+        
+            <table class="signature">
+                <tr>
+                    <td> <h4>Signature of Candidate</h4></td>
+                    <td><div class="college">
+                        <h4>Controller of Examinations</h4>
+                    </div></td>
+                    <td ><h4>Principal</h4></td>
+                </tr>
+            </table>
+        </div>
+
+    {% endfor %}
+    
+    
+</body>
+
+</html>

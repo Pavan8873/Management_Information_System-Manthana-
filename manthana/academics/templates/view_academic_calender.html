@@ -1,0 +1,98 @@
+{% extends 'base_template.html' %}
+
+{% block title %}<title>View & Edit Academic Calender </title>{% endblock %}
+
+{% block page-content %}
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  #myInput {
+    background-image: url('/css/searchicon.png');
+    background-position: 10px 10px;
+    background-repeat: no-repeat;
+    width: 100%;
+    font-size: 16px;
+    padding: 12px 20px 12px 40px;
+    border: 1px solid #ddd;
+    margin-bottom: 12px;
+  }
+
+  #myTable {
+    border-collapse: collapse;
+    width: 100%;
+    border: 1px solid #ddd;
+    font-size: 18px;
+  }
+
+  #myTable th,
+  #myTable td {
+    text-align: left;
+    padding: 12px;
+  }
+
+  #myTable tr {
+    border-bottom: 1px solid #ddd;
+  }
+
+  #myTable tr.header,
+  #myTable tr:hover {
+    background-color: #f1f1f1;
+  }
+</style>
+<script>
+  function myFunction() {
+    var input, filter, table, tr, td, i, txtValue;
+    input = document.getElementById("myInput");
+    filter = input.value.toUpperCase();
+    table = document.getElementById("myTable");
+    tr = table.getElementsByTagName("tr");
+    for (i = 0; i < tr.length; i++) {
+      td = tr[i].getElementsByTagName("td")[1];
+      if (td) {
+        txtValue = td.textContent || td.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+</script>
+{% if userName is None %}
+<h3>You are not authorized to view this page!!</h3>
+{% else %}
+<label>Search Calender:</label><input type="text" id="myInput" onkeyup="myFunction()"
+  placeholder="Search by Academic Year.." title="Type in a Academic Year"><br />
+<h2>Academic Calender Details</h2>
+<table id="myTable">
+  <tr class="header">
+    <th>Calender ID</th>
+    <th>Academic Year</th>
+    <th>Semester</th>
+    <th>Academic Type</th>
+    <th>Edit</th>
+    <th>Print</th>
+  </tr>
+  {% for ac in acad_cal_obj %}
+  <tr>
+    <td>{{ac.acad_cal_id}}</td>
+    <td>{{ac.acad_cal_acad_year}}</td>
+    <td>{{ac.acad_cal_sem}}</td>
+    <td>{{ac.acad_cal_type}}</td>
+    <td><a href="/EditAcadCalender/{{ ac.acad_cal_id }}" class="btn btn-success">Edit</a></td>
+    <td><a href="/print_calender/{{ ac.acad_cal_id }}" class="btn btn-success">Print</a></td>
+  </tr>
+  {% endfor %}
+</table>
+<div class="row">
+  <div class="col">
+    <br> <a href="{% url 'PDFStudents' %}" class="btn btn-info" target="_blank">Export PDF</a>
+    <a href="{% url 'ExportExcel' %}" class="btn btn-info" target="_blank">Export Excel</a>
+    <a href="{% url 'ExportCSV' %}" class="btn btn-info" target="_blank">Export CSV</a>
+  </div>
+</div>
+{% endif %}
+{% endblock %}

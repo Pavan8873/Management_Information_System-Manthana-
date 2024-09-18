@@ -1,0 +1,263 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Course Mapping Details</title>{% endblock %}
+
+{% block page-content %}
+
+<h2 align="center">Course Mapping Details</h2>
+<!-- Main Content -->
+<section class="mt-5 mb-5">
+    <div class="container shadow rounded-3 p-4 bg-white">
+        <form method="POST" id="indexForm" action="{% url 'map_co_po' %}" data-subj-url="{% url 'load_courses_co_po' %}">
+            {% csrf_token %}
+            <input type="hidden" name="num_co" id="num_co" value="0">
+            <div class="row">
+                <div class="col-6 mb-3">
+                    <label for="acad_year" class="form-label"><strong>Academic Year</strong></label>
+                    <select name="acad_year" id="acad_year" class="form-select" required>
+                        <option value="" disabled selected>Choose Academic Year</option>
+                        {% for aca_yr in acad_year_tbl %}
+                        <option value="{{ aca_yr.id }}">{{ aca_yr.acayear }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-6 mb-3">
+                    <label for="first_year_sem" class="form-label"><strong>Semester</strong></label>
+                    <select name="first_year_sem" id="first_year_sem" class="form-select" required>
+                        <option value="" disabled selected>Choose Semester</option>
+                        <option value="1">1st Sem</option>
+                        <option value="2">2nd Sem</option>
+                        <option value="3">3rd Sem</option>
+                        <option value="4">4th Sem</option>
+                        <option value="5">5th Sem</option>
+                        <option value="6">6th Sem</option>
+                        <option value="7">7th Sem</option>
+                        <option value="8">8th Sem</option>
+                    </select>
+                </div>
+                <div class="col-4 mb-3">
+                    <label for="acad_cal_type" class="form-label">Academic Type</label>
+                    <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+                        <option value="" disabled selected>Choose Academic Type</option>
+                        <option value="1">Regular Semester</option>
+                        <option value="2">STC Semester</option>
+                    </select>
+                </div>
+                <div class="col-6 mb-3">
+                    <label for="first_year_cycle" class="form-label"><strong>Department</strong></label>
+                    <select name="first_year_cycle" id="first_year_cycle" class="form-select" required>
+                        <option value="" disabled selected>Choose Department</option>
+                        {% for div in departments %}
+                        <option value="{{ div.dept_id }}">{{ div.dept_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <label for="courseList" class="form-label"><strong>Select Courses</strong></label>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Course</th>
+                                <th>Select</th>
+                            </tr>
+                        </thead>
+                        <tbody id="courseList">
+                            <!-- Courses will be loaded here by AJAX -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="mt-3 mb-3">
+                <div id="selectedCourses">
+                  <!-- Selected courses will be added here as hidden inputs -->
+                </div>
+                <button type="button" class="btn btn-primary" id="generateCOs">Generate COs</button>
+            </div>
+            <div class="mt-3 mb-3">
+                <input type="text" name="btn_clicked" value="register" hidden>
+                <button type="submit" class="btn btn-primary" id="btn_clicked" name="btn_clicked" value="generate_report"> Generate Report</button>
+            </div>
+            <!-- Batch selection section -->
+            <div id="labbatches" style="display:none;">
+                <!-- Add your batch selection form elements here -->
+                <label for="batchSelection" class="form-label"><strong>Select Batch</strong></label>
+                <select name="batch_selection" id="batchSelection" class="form-select">
+                    <option value="" disabled selected>Select Batch</option>
+                    <option value="A">Batch A</option>
+                    <option value="B">Batch B</option>
+                </select>
+            </div>
+            <div id="mappingSection" style="display: none;">
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label for="co_mapping" class="form-label"><strong>CO Mapping</strong></label>
+                        <div id="coContainer">
+                            <!-- CO mapping elements will be appended here -->
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-12">
+                        <label for="po_mapping" class="form-label"><strong>PO Mapping</strong></label>
+                        <table class="table po-table">
+                            <thead>
+                                <tr>
+                                    <th>CO</th>
+                                    {% for po_num in po_range %}
+                                    <th>PO {{ po_num }}</th>
+                                    {% endfor %}
+                                </tr>
+                            </thead>
+                            <tbody id="poMappingTable">
+                                <!-- PO mapping elements will be appended here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="d-grid gap-4 col-3 mx-auto">
+                        <button type="submit" class="btn btn-primary" id="btn_clicked" name="btn_clicked" value="register">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+
+<style>
+    /* Adjust font size for table headers */
+    .po-table thead th {
+        font-size: 14px; /* Adjust as needed */
+    }
+    /* Adjust font size for table cells */
+    .po-table tbody td {
+        font-size: 12px; /* Adjust as needed */
+    }
+</style>
+
+<script src="{% static 'plugins/bsmultiselect/js/BsMultiSelect.min.js' %}"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#first_year_cycle').prop('disabled', true);
+        $('#first_year_sem').prop('disabled', true);
+        $('#acad_cal_type').prop('disabled', true);
+        
+        $("#acad_year").change(function () {
+            $('#first_year_sem').prop('disabled', false);
+        });
+
+        $("#first_year_sem").change(function () {
+            $('#acad_cal_type').prop('disabled', false);
+        });
+
+        $("#acad_cal_type").change(function () {
+            $('#first_year_cycle').prop('disabled', false);
+        });
+
+        $("#first_year_cycle").change(function () {
+            if ($('#acad_year').val() && $('#first_year_cycle').val() && $('#first_year_sem').val() && $('#acad_cal_type').val()) {
+                var url1 = $("#indexForm").attr("data-subj-url");
+                var semester = $('#first_year_sem').val();
+                var acadYrID = $('#acad_year').val();
+                var deptID = $('#first_year_cycle').val();
+                var acadType = $('#acad_cal_type').val();
+
+                $.ajax({
+                    url: url1,
+                    data: {
+                        'sem': semester,
+                        'acad_year': acadYrID,
+                        'offered_by': deptID,
+                        'acad_cal_type': acadType
+                    },
+                    success: function (response) {
+                        // Populate courses
+                        $("#courseList").html(response.html);
+                        
+                        // Populate CO and PO mappings
+                        $("#coContainer").html(response.co_mappings);
+                        
+                        // Prepare PO Mapping Table
+                        $("#poMappingTable").html(response.po_mappings);
+                        
+                        $("#mappingSection").show(); // Show mapping section
+                    },
+                    error: function (error) {
+                        alert("Error: Courses not loaded");
+                        $("#mappingSection").hide(); // Hide mapping section on error
+                    }
+                });
+            }
+        });
+
+        $("#generateCOs").click(function () {
+            var numCOs = prompt("Enter the number of COs:");
+            if (numCOs && !isNaN(numCOs) && numCOs > 0) {
+                $("#num_co").val(numCOs); // Set the hidden field with the number of COs
+                var coHTML = '';
+                var poMappingHTML = '';
+                for (var i = 1; i <= numCOs; i++) {
+                    coHTML += `
+                        <div class="mb-3">
+                            <label for="co${i}_desc" class="form-label"><strong>CO ${i} Description</strong></label>
+                            <input type="text" class="form-control" id="co${i}_desc" name="co${i}_desc" placeholder="Enter CO ${i} description">
+                        </div>`;
+                    
+                    // Add a row for each CO
+                    poMappingHTML += `<tr>
+                        <td>CO${i}</td>`;
+                    
+                    // Add 12 POs for each CO
+                    for (var j = 1; j <= 12; j++) {
+                        poMappingHTML += `
+                            <td>
+                                <input type="checkbox" name="co${i}_po${j}_substantial" value="3"> Substant(3)
+                                <input type="checkbox" name="co${i}_po${j}_moderate" value="2"> Moderate (2)
+                                <input type="checkbox" name="co${i}_po${j}_slight" value="1"> Slight (1)
+                            </td>`;
+                    }
+                    poMappingHTML += `</tr>`;
+                }
+                $("#coContainer").html(coHTML);
+                $("#poMappingTable").html(poMappingHTML);
+            }
+        });
+
+        $('#courseList').on('change', 'input[type="checkbox"]', function() {
+            let selectedCourses = $('#courseList input[type="checkbox"]:checked');
+            let showBatchSelection = false;
+
+            // Loop through each selected course
+            selectedCourses.each(function() {
+                let courseId = $(this).val();
+
+                // Check if the course ID contains 'L'
+                if (courseId.includes("L")) {
+                    showBatchSelection = true;
+                    return false; // Break the loop if we find a course with 'L'
+                }
+            });
+
+            // Show or hide the batch selection based on the condition
+            if (showBatchSelection) {
+                $("#labbatches").show();
+            } else {
+                $("#labbatches").hide();
+            }
+
+            // Update the hidden inputs for the selected courses
+            let selectedCoursesContainer = $('#selectedCourses');
+            selectedCoursesContainer.empty();
+            selectedCourses.each(function() {
+                let courseId = $(this).val();
+                selectedCoursesContainer.append('<input type="hidden" name="course_ids" value="' + courseId + '">');
+            });
+        });
+    });
+</script>
+
+{% endblock %}

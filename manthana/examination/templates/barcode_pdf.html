@@ -1,0 +1,157 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Hallticket</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+        @page {
+            size: A4;
+            margin: 0.5cm;
+        }
+
+        html {
+            font-family: 'Inter', sans-serif;
+            font-size: 10px;
+        }
+
+        body {
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1, h2, h3, h4 {
+            margin: 0.5em 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        img {
+            width: 80px;
+            height: 80px;
+        }
+
+        .table-border, .table-border th, .table-border td {
+            border: 1px solid black;
+            text-align: center;
+            padding: 8px;
+        }
+
+        .barcode39 {
+            font-family: 'Libre Barcode 39 Text', cursive;
+            font-size: 30px;
+            font-weight: lighter;
+            text-align: center;
+            color: rgb(0, 0, 0);
+        }
+
+        .college {
+            padding: 0 40px;
+        }
+
+        .box1 {
+            height: 10px;
+        }
+
+        hr {
+            border: 1px solid black;
+        }
+
+        .center {
+            text-align: center;
+            border: 3px solid black;
+            padding: 10px;
+            margin: 10px 0;
+        }
+
+        .instructions {
+            padding: 20px 0;
+        }
+
+        .inst-desc {
+            padding: 20px 0;
+            color: rgb(255, 0, 0);
+        }
+
+        hr.new3 {
+            border: 1px dotted rgb(5, 5, 5);
+        }
+
+        .outer-border {
+            border: 1px solid black;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        td {
+            padding: 8px;
+        }
+
+        .font-lbl {
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="outer-border">
+        <table>
+            <tr>
+                <td>
+                    <img src="{% static 'images/sdm_logo.jfif' %}" alt="College Logo">
+                </td>
+                <td>
+                    <div class="college">
+                        <h1>Shri Dharmasthala Manjunatheshwara College of Engineering & Technology, Dhavalagiri, Dharwad - 580002</h1>
+                        <div>
+                            <h2>Bar Code - {{ exam.description }}</h2>
+                        </div>
+                        <div>
+                            <h2>PROGRAM : {{ program }} - {{ dept.dept_name }}</h2>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        </table>
+        <hr>
+        <div class="box1"></div>
+        {% for course, barcode_list in barcodes.items %}
+            <div class="center">
+                <h2>{{ course.course_title }} - {{ course.course_code }}</h2>
+            </div>
+            <div class="instructions">
+                <table class="table-border spec_table">
+                    <tr class="lbl">
+                        <th class="font-lbl">Serial No.</th>
+                        <th class="font-lbl">UID</th>
+                        <th class="font-lbl">Barcode</th>
+                    </tr>
+                    {% for barcode in barcode_list %}
+                        <tr class="lbl">
+                            <td class="font-lbl">{{ forloop.counter }}</td>
+                            <td class="font-lbl">{{ barcode.st_id.st_uid }}</td>
+                            <td>
+                                <div class="barcode">
+                                    <span class="barcode39">*{{ barcode.barcode }}*</span>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        {% endfor %}
+    </div>
+</body>
+
+</html>

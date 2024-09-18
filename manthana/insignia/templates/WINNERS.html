@@ -1,0 +1,138 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+{% endblock %} {% block page-content %}
+<!DOCTYPE html>
+<form action="{% url 'win'%}" method="POST" id="register_form" enctype="multipart/form-data">
+    {% csrf_token %}
+<html>
+<head>
+    <title>Event Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Light Sky Blue */
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"], input[type="number"], input[type="submit"], select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .eventName {
+            font-size: 20px;
+            color: #007bff; /* Blue */
+            margin-bottom: 10px;
+            text-align: center;
+            text-transform: uppercase;
+        }
+        .errorIcon {
+            font-size: 24px;
+            margin-right: 5px;
+        }
+        #saveMessage {
+            display: none;
+            text-align: center;
+            color: green;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 class="eventName">Add Winers</h2>
+        <form id="eventForm">
+            <label for="eventName">Event Name:</label>
+            <br>
+            <input type="text" id="searchInput" onkeyup="filterOptions()" placeholder="Search for competition..">
+            <select id="eventName" name="eventName" required>
+                {% for aca_yr in eve %}
+                <option value="{{aca_yr.id}}">{{aca_yr.name}}</option>
+                {% endfor %}</select><br><br>
+            <label for="numberOfWinners">Number of Winners:</label>
+            <input type="number" id="numberOfWinners" name="numberOfWinners" min="1" required><br><br>
+            <div id="winnersContainer" name="winnersContainer"></div>
+            <div id="errorMessage" style="color: red; display: none;">
+                <span class="errorIcon">&#9888;</span> Maximum winners should be 3.
+            </div>
+            <div id="saveMessage">Winners' information saved.</div>
+            <div style="text-align:center;">  
+                <input type="submit" value="Save" id="saveButton"/>  
+            </div>
+        </form>
+    </div>
+
+    <script>
+        document.getElementById('numberOfWinners').addEventListener('input', function() {
+            var numberOfWinners = parseInt(this.value);
+            var winnersContainer = document.getElementById('winnersContainer');
+            winnersContainer.innerHTML = ''; // Clear previous inputs
+
+            if (numberOfWinners > 3) {
+                document.getElementById('errorMessage').style.display = 'block';
+            } else {
+                document.getElementById('errorMessage').style.display = 'none';
+
+                for (var i = 1; i <= numberOfWinners; i++) {
+                    var input = document.createElement('input');
+                    input.type = 'text';
+                    input.id = 'winner' + i;
+                    input.name = 'winner' + i;
+                    input.placeholder = 'Winner ' + i + ' id';
+                    input.required = true;
+                    winnersContainer.appendChild(input);
+                    winnersContainer.appendChild(document.createElement('br'));
+                }
+            }
+        });
+
+        document.getElementById('eventForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Simulate saving winners' information
+            document.getElementById('saveMessage').style.display = 'block';
+        });
+        function filterOptions() {
+            // Get input value and convert it to lowercase for case-insensitive comparison
+            var filter = document.getElementById('searchInput').value.toLowerCase();
+            // Get all options in the select element
+            var options = document.getElementById('eventName').options;
+            // Iterate over options and hide those that don't match the filter
+            for (var i = 0; i < options.length; i++) {
+              var optionText = options[i].text.toLowerCase();
+              if (optionText.indexOf(filter) > -1) {
+                options[i].style.display = ''; // Show option
+              } else {
+                options[i].style.display = 'none'; // Hide option
+              }
+            }
+          }
+    </script>
+</body>
+</html>
+</form>
+{% endblock %} 

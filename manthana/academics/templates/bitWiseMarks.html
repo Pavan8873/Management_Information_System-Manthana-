@@ -1,0 +1,565 @@
+{% extends 'base_template.html' %}
+
+{% load static %}
+
+{% block title %}<title>Bit Wise Marks</title>{% endblock %}
+
+{% block page-content %}
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Title -->
+    <title>SDMCET - Bit Wise Marks</title>
+
+    <!-- Bootstrap CSS -->
+    <!--<link href="vendor/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet"-->
+    <link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}" />
+</head>
+
+<body class="bg-light">
+    <h2 align="center">Bit Wise Marks Entry</h2>
+    <!-- Main Content -->
+
+    <section>
+        <div class="container shadow rounded-3 p-4 bg-white">
+            
+            {% if course_name is not None %}
+            
+            <div class="row">
+              <div class="col col-4 mb-2 text-center">
+                <label for="academic_year" class="form-label ">
+                  <h3>Academic Year : </h3>
+                </label>
+                <label for="academic_year" class="form-label">
+                  <h4>{{ academic_year }}</h4>
+                </label>
+              </div>
+              <div class="col col-4 mb-2 text-center">
+                <label for="course_name" class="form-label">
+                  <h3>Course : </h3>
+                </label>
+                <label for="course_name" class="form-label">
+                  <h4>{{ course_name }}</h4>
+                </label>
+              </div>
+              <div class="col col-4 mb-2 text-center">
+                <label for="course_sem" class="form-label">
+                  <h3>Semester : </h3>
+                </label>
+                <label for="acad_cal_acad_year" class="form-label">
+                  <h4>{{ sem }}</h4>
+                </label>
+              </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <form action="/bitWiseMarks" method="POST" id="">
+    {% csrf_token %}
+    <section class="mt-3 mb-3">
+        <div class="container shadow rounded-3 p-4 bg-white">
+            <div class="row">
+                <div class="mb-3 table-responsive text-center">
+                    <div class="card showTable" id="sTable">
+                        <div class="card-body" id="accordion">
+                            
+
+                                <input type="text" value="{{ course_name }}" name="course"  hidden/>
+                                <input type="text" value="{{ academic_year }}" name="acadYear"  hidden/>
+                                <input type="text" value="{{ sem }}" name="sem"  hidden/>
+                                <input type="text" value="{{ acad_cal_type }}" name="acad_cal_type"  hidden/>
+
+                                <input type="text" name="assessment_id" id="ia_id" hidden>
+                                <input type="text" name="uid" id="uid" hidden>
+                                
+                                
+                                    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog modal-xl modal-dialog-centered">
+                                        <div class="modal-content">
+                                            <div class="modal-header  text-center">
+                                                <input type="number" name="st_total_marks" id="st_total_marks" hidden>
+                                                <h5 class="modal-title w-100" id="exampleModalLabel"></h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body" id="modal-demo">
+                                                <div class="card showTable" id="sTable">
+    
+                                                    <div class="card-body">
+    
+                                                        <table id="StudentSearchData" class="table table-sm table-bordered">
+                                                            <thead class="table-dark">
+                                                                <tr class="header" id="questions">
+                                                                </tr>
+                                                            </thead>
+                                                            <tr id="sub_questions">
+    
+                                                            </tr>
+                                                            <tr id="subq_total_marks">
+    
+                                                            </tr>
+                                                        </table>
+    
+                                                        <button type="submit" class="btn btn-info" name="btn_clicked" value="save">Save</button>
+                                                <button type="button" class="btn btn-primary"
+                                                    data-bs-dismiss="modal">Close</button>
+                                                
+                                                    </div>
+    
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+
+                            
+                            
+                            <table id="StudentSearchData " class="table table-sm table-bordered">
+                                <thead class="table-dark">
+                                    <tr class="header">
+                                        <th>Sl No.</th>
+                                        <th>UID</th>
+                                        <th>Name</th>
+                                        {% for asessment in asessments %}
+                                        <th>{{ asessment.assessment_type }}
+                                            
+                                            <input type="text" id="ia-{{ asessment.declare_assessment_id }}-qns"
+                                                value="{{ asessment.ans_q }}" hidden>
+                                        </th>
+                                        {% endfor %}
+                                        <th>CIE</th>
+                                    </tr>
+                                </thead>
+                                {% for student, iaType in studentMarksList.items %}
+                                <tr>
+                                    <td>{{forloop.counter}}</td>
+                                    <td>{{ student.st_uid }}</td>
+                                    <td>{{ student.st_name }}</td>
+                                    {% for ia,studentMarks in iaType.items %}
+                                        <td class="col-md-1">
+                                            <input class="form-control" style="text-align:center" type="text" id="{{ student.st_id }}_total_marks" 
+                                                onclick="modalPopup('{{ student.st_id }}','{{ student.st_uid }}','{{ ia.declare_assessment_id }}')"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal" value="{{ studentMarks }}" readonly>
+                                        </td>
+                                    {% endfor %}
+
+                                    <td id="{{ student.st_uid }}_CIE"></td>
+                                    <input type="text" id="{{ student.st_uid }}_in_CIE" name="{{ student.st_uid }}_CIE" hidden>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</form>
+
+
+    <!-- Option 1: Bootstrap Bundle with Popper -->
+    <script src="vendor/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Option 2: jQuery -->
+    <script src="plugins/jquery/jquery-3.6.0.min.js"></script>
+
+
+    <script src="{% static 'plugins/daterangepicker/moment.min.js' %}"></script>
+    <script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+    <script type="text/javascript">
+        /* $('#sandbox-container input').datepicker({
+      });*/
+        $('input').focus(function () {
+            var ele = $(this);
+            $('html, body').animate({
+                scrollTop: ele.offset().top - 450
+            }, 800);
+        });
+        /*$(document).on('keyup', ".price", function () {
+            var total = 0;
+            $('.price').each(function () {
+                total += parseInt(this.value);
+            });
+
+        }) */
+
+        window.onload = (event) => {
+            {% for student, iaType in studentMarksList.items %}
+               var marksList = []
+               var i=0,total_marks=0;
+               {% for ia,studentMarks in iaType.items %}
+                   if("{{ ia.assessment_type }}"=="CTA"){
+                       total_marks += parseInt("{{ studentMarks }}");
+                   }
+                   else{
+                        marksList[i] = parseInt("{{ studentMarks }}");
+                        i++;
+                   }
+               {% endfor %}
+               marksList.sort(function(a,b){return b-a});
+               //marksList.reverse();
+               total_marks += marksList[0] + marksList[1];
+               console.log(marksList)
+               document.getElementById("{{ student.st_uid }}_CIE").innerHTML = total_marks;
+               document.getElementById("{{ student.st_uid }}_in_CIE").value = total_marks;
+
+            {% endfor %}
+       };
+
+        var total;
+        var count;
+        /*
+        st : {
+            ia : {
+                qno : marks
+            }
+        }*/
+
+
+        const modalPopup = (studentId, studentUid, iaId) => {
+            document.getElementById("exampleModalLabel").innerHTML = studentUid;
+            document.getElementById("ia_id").value = iaId;
+            document.getElementById("uid").value = studentUid;
+            //document.getElementById("modal-demo").innerHTML = "";
+
+            let no_questions;
+            var queList = new Map();
+            var data = 0;
+            let total_qns_marks = new Map();
+            let total_cmp_marks = new Map();
+            /*
+            Q1 : {
+                que.is_compulsory
+                no_of_sub_questions
+                max_marks
+                sub : {
+                    a : {
+                    maxmarks : "10",
+                    marks : "20"
+                },
+                b : {
+                    maxmarks : "10",
+                    marks : "20"
+                }
+                }
+            } 
+            qnum.set(1,{})
+            */
+            {% for student, iaType in studentList.items %}
+
+
+            if (studentUid === "{{ student.st_uid }}") {
+                
+                {% for ia,studentMarks in iaType.items %}
+                if (iaId === "{{ ia.declare_assessment_id }}") {
+                    {% for que, subques in studentMarks.items %}
+                    var subqList = new Map()
+
+                    {% for subque in subques %}
+
+
+                    {% if subque.max_marks is None %}
+                        {% for sub in  subque.assessment_pattern_id.subquestion.all%}
+                            {% if sub.subqnum == subque.subqnum %}
+                                subqList.set("{{subque.subqnum}}",{"max_marks": "{{ sub.max_marks }}","obtained_marks": "{{ subque.obtained_marks }}"});
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                         subqList.set("{{ subque.subqnum }}",{"max_marks": "{{ subque.max_marks }}"});
+                    {% endif %}
+
+
+                    {% endfor %}
+                    queList.set("{{ que.qnum }}",{"max_marks": "{{ que.max_marks }}","is_compulsory":"{{ que.is_compulsory }}","no_sub_que":"{{ subques|length }}","subques":subqList});
+                    {% endfor %}
+                }
+                {% endfor %}
+            }
+            {% endfor %}
+
+
+            var queRow = document.getElementById("questions");
+            queRow.innerHTML = "";
+            for(const [qnum, qnumInfo] of queList){
+
+                var cell = document.createElement("td");
+                cell.append(`Q${qnum}`)
+                queRow.appendChild(cell);
+
+            }
+            var cell = document.createElement("td");
+            cell.setAttribute('class',"col-sm-1");
+            cell.append("Total");
+            queRow.appendChild(cell);
+
+
+            var subqRow = document.getElementById("sub_questions");
+            subqRow.innerHTML = "";
+            var subqTotal = document.getElementById("subq_total_marks");
+            subqTotal.innerHTML = "";
+            for(const [qnum, qnumInfo] of queList){
+
+                var cell = document.createElement("td");
+                
+                subqRow.appendChild(cell);
+
+
+                var container = document.createElement("div");
+                container.setAttribute("class","table-responsive");
+                container.setAttribute("id",`Q${qnum}`);
+                
+
+                var tbl = document.createElement("table");
+                tbl.setAttribute("class","table table-sm table-bordered");
+                var tblHead = document.createElement("thead");
+                tblHead.setAttribute("class","table-dark");
+
+                var tblBody = document.createElement("tbody");
+
+                var row1 = document.createElement("tr");
+                
+                var row2 = document.createElement("tr");
+
+                let total_marks=0;
+                for(const [sub, subqInfo] of qnumInfo["subques"]){
+
+                    var cell1 = document.createElement("td");
+                    var subqlbl = document.createElement("div");
+                    subqlbl.innerHTML = `Q${qnum}${sub}`;
+                    cell1.append(subqlbl)
+                    var subq_maxmarks = document.createElement("div");
+                    subq_maxmarks.innerHTML = `(${subqInfo["max_marks"]})`;
+                    cell1.append(subq_maxmarks)
+                    row1.appendChild(cell1);
+
+                    
+                    var cell2 = document.createElement("td");
+                    cell2.setAttribute("class", "col-md-1");
+
+                    
+                    var x = document.createElement("input");
+                    x.setAttribute("type", "text");
+                    x.setAttribute("class", "form-control sub_question");
+                        // name="{{ que.qnum }}_{{ subque.subqnum }}"
+                        //id="uid-{{ student.st_uid }}-ia-{{ ia.declare_assessment_id }}-q-{{ que.qnum }}-subq-{{ subque.subqnum }}-marks"
+                    x.setAttribute("id", `q-${qnum}-subq-${sub}-marks`);
+                    x.setAttribute("name", `${qnum}_${sub}`);
+                    x.setAttribute("required", "");
+                    x.setAttribute("style", "text-align:center");
+
+                    var count = Object.keys(subqInfo).length;
+                    if(count > 1){
+                        x.setAttribute("value",subqInfo["obtained_marks"]);
+                        data = 1;
+
+                        total_marks += parseInt(subqInfo["obtained_marks"]);
+                        if(qnumInfo["is_compulsory"] == "0"){
+                            total_qns_marks.set(qnum,total_marks);
+                        }
+                        else{
+                            total_cmp_marks.set(qnum,total_marks);
+                        }
+                        
+                    }
+
+                    cell2.append(x)
+                    var errorMsg = document.createElement("span");
+                    errorMsg.setAttribute("id", `q-${qnum}-subq-${sub}-error`);
+                    //errorMsg.innerHTML =" hek";
+                    errorMsg.setAttribute("class","text-danger");
+                    cell2.append(errorMsg);
+                    row2.appendChild(cell2); 
+                }
+
+                tblHead.appendChild(row1)
+                tbl.appendChild(tblHead);
+                tblBody.appendChild(row2);
+                tbl.appendChild(tblBody);
+
+                container.append(tbl);
+                cell.append(container);
+
+                var cell = document.createElement("td");
+               
+                
+                var lbl = document.createElement("label");
+                //uid-{{ student.st_uid }}-ia-{{ ia.declare_assessment_id }}-q-{{ que.qnum }}-total-marks
+                lbl.setAttribute('id', `q-${qnum}-total-marks`);
+                if(data){
+                    lbl.innerHTML =  total_marks;
+                }
+                cell.append(lbl);
+                subqTotal.appendChild(cell);
+            }
+
+            var total = document.createElement("td");
+            total.setAttribute('class',"col-sm-1");
+            total.setAttribute('id',"total-marks");
+            total.setAttribute("style", "background: #7dff00");
+            total.setAttribute('rowspan',"2");
+            subqRow.appendChild(total);
+            
+            
+            
+            
+            if(data){
+                computeTotal()
+            }
+            
+                       
+
+            
+            document.querySelectorAll('.sub_question').forEach(item => {
+                item.addEventListener('input', e => {
+
+                    let qno = e.target.id.split("-"); //ex: q-1-subq-a-marks   
+                    
+                       // qno[1] -- question number
+                       // qno[3] -- sub question
+    
+                    
+                    let no_of_sub_questions; // uid-19BE033-ia-14-q-1-subq-count
+                    for(const [qnum, qnumInfo] of queList){
+                        if(qnum === qno[1]){
+                            no_of_sub_questions = parseInt(qnumInfo['no_sub_que'])
+                        }
+                    }
+    
+                    //console.log(`Number of sub question : ${no_of_sub_questions}`)
+    
+                    let entered_marks = e.target.value;
+                    // ex: uid-19BE033-ia-14-q-1-subq-a-max-marks
+    
+                    
+                    let max_marks; // uid-19BE033-ia-14-q-1-subq-count
+                    for(const [qnum, qnumInfo] of queList){
+                        if(qnum === qno[1]){
+                            
+                            for(const [sub, subqInfo] of qnumInfo["subques"]){
+                                if(sub === qno[3]){
+                                    
+                                    max_marks = parseInt(subqInfo['max_marks']);
+                                }
+                                
+                            }
+                        }
+                    }
+    
+                    //console.log(`Number of max marks : ${max_marks}`)
+    
+                    if (entered_marks > max_marks) {
+                        
+                        document.getElementById(`q-${qno[1]}-subq-${qno[3]}-error`)
+                            .innerHTML = "Invalid Marks";
+                        e.target.value = "";
+                    }
+                    else{
+                        document.getElementById(`q-${qno[1]}-subq-${qno[3]}-error`)
+                            .innerHTML = "";
+                    }
+    
+                    let total_marks = 0;
+    
+                    //to calculate all subQuestion Marks of a particular Question 
+                    for (let i = 1; i <= no_of_sub_questions; i++) {
+                        //console.log(`uid-${qno[1]}-ia-${qno[3]}-q-${qno[5]}-subq-${intToChar(i-1)}-marks`);
+                        let marks = parseInt(document.getElementById(
+                                `q-${qno[1]}-subq-${intToChar(i-1)}-marks`)
+                            .value);
+    
+                        
+                        if (!isNaN(marks)) {
+                            total_marks += marks;
+                        }
+    
+                    }
+    
+                    //ex: uid-19BE033-ia-14-q-1-subq-a-total-marks
+                    document.getElementById(`q-${qno[1]}-total-marks`)
+                        .innerHTML = total_marks;
+
+                    let count=0;
+
+                    for(const [qnum, qnumInfo] of queList){
+                        if(qnum == qno[1]){
+                            
+                             if(qnumInfo["is_compulsory"] == "0"){
+                                total_qns_marks.set(qno[1],total_marks);
+                             }
+                             else{
+                                 total_cmp_marks.set(qno[1],total_marks);
+                                 count += 1;
+                             }
+                        }
+                        
+                    }
+
+                    computeTotal();
+                    
+
+                });
+            });
+
+
+            function computeTotal(){
+                let no_que_to_be_ans  = document.getElementById(`ia-${iaId}-qns`).value;
+                
+                let newarr1 = [...total_qns_marks]
+                    .map((e) => {
+                        return e[1];
+                    })
+                    .slice()
+                    .sort(function (a, b) {
+                        return b - a; 
+                    });
+                    
+                    let qns_total=0;
+                    for(let i=0;i<(no_que_to_be_ans-total_cmp_marks.size);i++){
+                        if (!isNaN(newarr1[i])) {
+                            qns_total += newarr1[i];
+                        }
+                        
+                    }
+    
+    
+                    for(const [qnum, marks] of total_cmp_marks){
+                        if (!isNaN(marks)) {
+                            qns_total += marks;
+                        }
+                        
+                    }
+    
+                    document.getElementById("total-marks").innerHTML = qns_total;
+                    document.getElementById("st_total_marks").value = qns_total;
+
+                    //document.getElementById(`${studentUid}_total_marks`).value = qns_total;
+
+                       
+    
+            }
+
+        }
+
+
+        
+        function intToChar(int) {
+            const code = 'a'.charCodeAt(0);
+            return String.fromCharCode(code + int);
+        }
+        
+        /*$(document).ready(function () {
+            window.history.replaceState('', '', window.location.href)
+        }); */
+    </script>
+</body>
+
+</html>
+
+{% endblock %}

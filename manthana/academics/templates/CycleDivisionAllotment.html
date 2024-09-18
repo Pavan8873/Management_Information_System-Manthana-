@@ -1,0 +1,77 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>DepartmentDivisionAllotment</title>{% endblock %}
+
+{% block page-content %}
+
+
+<h2 align="center">Department Division Allottment</h2>
+    <!-- Main Content -->
+    <section class="mt-5 mb-5">
+      <div class="container shadow rounded-3 p-4 bg-white">
+        <form action="/allotCycle" method="POST" id="">
+          {% csrf_token %}
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label for="acad_year" class="form-label">Academic Year: </label>
+              <select name="acad_year" id="acad_year" class="form-select" required>
+                <option value="" disabled selected>Choose Academic Year</option>
+                {% for aca_yr in academic_year %}
+                <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+                <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-6 mb-3">
+              <label name="sem" for="sem" class="form-label"> Semester : </label>
+              <select name="sem" id="sem" class="form-select" required>
+                <option value="" disabled selected>Choose Semester</option>
+                <option value="1">1st Semester</option>
+                <option value="2">2nd Semester</option>
+              </select>
+            </div>
+            <div class="col-4 mb-3">
+              <label for="acad_cal_type" class="form-label"> Academic Type </label>
+              <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+              
+                <option disabled selected>Choose Academic_type</option>
+                <option value="1">Regular Semester</option>
+                <option value="2">STC Semester</option>
+              
+                
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label  name="div" for="div" class="form-label"> Division : </label>
+              <select name="div" id="div" class="form-select" required>
+                <option value="" disabled selected>Choose Division</option>
+                {% for div in div_tbl %}
+                <option value="{{div.id}}">{{div.division}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          <div class="col-6 mb-3">
+            <label name="cycle" for="cycle" class="form-label"> Department : </label>
+            <select name="cycle" id="cycle" class="form-select" required>
+              <option value="" disabled selected>Choose Department</option>
+              {% for div in cd %}
+              <option value="{{div.dept_id}}">{{div.dept_name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+          <div class="row">
+            <div class="d-grid gap-4 col-1 mx-auto">
+              <input type="text" name="btn_clicked" value="register" hidden>
+              <button type="submit" name="btn_clicked" id="btn_clicked" value="register" class="btn btn-primary">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+  </body>
+</html>
+{% endblock %}

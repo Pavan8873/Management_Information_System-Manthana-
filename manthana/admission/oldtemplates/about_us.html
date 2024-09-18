@@ -1,0 +1,282 @@
+{% load static %}
+<!-- 
+<!DOCTYPE html>
+<html>
+  <head>
+      <title>User Login</title>
+  </head>
+
+  <body>
+      <form action="/doLogin" method="POST">
+        {% csrf_token %}
+      <table>
+          <tr><td>User Name:</td><td><input type="text" name=txtusrname></td></tr>
+          <tr><td>Password:</td><td><input type="password" name=txtpasswd></td></tr>
+         <tr><td colspan="2"><div class="g-recaptcha" data-sitekey="6LfGkzIaAAAAADQEBsr4Bd1iE3xZcT5Pk3fS85U_"></div></td></tr>
+          <tr><td><input type="submit" name="btnsubmit" value="Login"></td></tr>
+      </table>
+    </form>
+    <div>
+      {% for message in messages %}
+      <h3>{{message}}</h3>
+      {% endfor %}
+    </div>
+  </body>
+</html> -->
+
+<!-- anand sir code -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>About Us</title>
+  <script src="{% static 'js/jquery.min.js' %}"></script>
+  <script src="{% static 'js/bootstrap.min.js' %}"></script>
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+  <link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+  <link rel="stylesheet" href="{% static 'css/w3.css' %}">
+  <script src="{% static 'js/script.js' %}"></script>
+  <script src="{% static 'js/validate.js' %}"></script>
+
+  <title>About Us</title>
+
+
+  <!-- Font Awesome 
+  <link rel="stylesheet" href="{% static "plugins/fontawesome-free/css/all.min.css" %}">-->
+  <!-- Ionicons 
+  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">-->
+  <!-- icheck bootstrap 
+  <link rel="stylesheet" href="{% static "plugins/icheck-bootstrap/icheck-bootstrap.min.css" %}">-->
+  <!-- Theme style -->
+
+  <link rel="stylesheet" href="{% static 'css/adminlte.min.css' %}">
+
+  <!-- Google Font: Source Sans Pro 
+  <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">-->
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    /* header settings */
+    .header1 {
+      position: sticky;
+      left: 0;
+      top: 0;
+      width:100%;
+      overflow: hidden;
+      background-color: #f1f1f1;
+      padding: 5px 5px;
+    }
+
+    /*	.header a {
+			float: left;
+			color: black;
+			text-align: center;
+			padding: 5px;
+			text-decoration: none;
+			font-size: 18px; 
+			line-height:5px;
+			border-radius: 4px;
+		}*/
+
+    .header1 a.logo {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .header1 a:hover {
+      background-color: #ddd;
+      color: black;
+    }
+
+    .header1 a.active {
+      background-color: dodgerblue;
+      color: white;
+    }
+
+    .header1-right {
+      float: right;
+      font-size:medium;
+      padding-right: 10px;
+    }
+   
+    .header1-center {
+      font-size: xx-large;
+      float: center;
+      color:#a12b29;
+      text-align: center;
+      font-family: 'Times New Roman';
+      font-weight: bold;
+    }
+
+    .box {
+      width: 60%;
+      margin: 0 auto;
+    }
+
+    .login-box-msg {
+      font-size: 50px;
+      color: rgb(20, 1, 129);
+      text-align: center;
+    }
+
+    .login-logo {
+      font-size: 50px;
+      color: rgb(248, 248, 248);
+      text-align: center;
+    }
+    .active_tab1 {
+      background-color: #fff;
+      color: #333;
+      font-weight: 600;
+    }
+
+    .inactive_tab1 {
+      background-color: #f5f5f5;
+      color: #333;
+      cursor: not-allowed;
+    }
+
+    .has-error {
+      border-color: #cc0000;
+      background-color: #ffff99;
+    }
+
+    .footer {
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: #f1f1f1;
+      color: white;
+      text-align: center;
+      padding: 5px 0;
+      overflow: hidden;
+      color: black;
+      text-align: center;
+      font-size: 18px;
+      line-height: 25px;
+      border-radius: 4px;
+    }
+
+    th,
+    td {
+      padding: 5px;
+    }
+
+    @media screen and (max-width: 500px) {
+      .header a {
+        float: none;
+        display: block;
+        text-align: left;
+      }
+
+      .header-right {
+        float: none;
+      }
+    }
+
+    /* camera styles */
+    /* fallback */
+    @font-face {
+      font-style: normal;
+      font-weight: 15;
+    }
+
+    .material-icons {
+      font-size: 15px;
+      letter-spacing: normal;
+      padding: 30px 0;
+    }
+
+    .card {
+      position: relative;
+      display: -webkit-box;
+      display: -ms-flexbox;
+      display: flex;
+      -webkit-box-orient: vertical;
+      -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+      flex-direction: column;
+      min-width: 0;
+      max-width: 600;
+      word-wrap: break-word;
+      background-color: #fff;
+      background-clip: border-box;
+      border: 1px solid rgba(0, 0, 0, 0.125);
+      border-radius: 0.25rem; }
+
+    body {
+          background-color: black;
+          font-family: cursive;
+        }
+        
+    .glow {
+          font-size: 20px;
+          color: black;
+          text-align: center;
+          -webkit-animation: glow 1s ease-in-out infinite alternate;
+          -moz-animation: glow 1s ease-in-out infinite alternate;
+          animation: glow 1s ease-in-out infinite alternate;
+        }
+        
+    @-webkit-keyframes glow {
+          from {
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #e60073, 0 0 40px #e60073, 0 0 50px #e60073, 0 0 60px #e60073, 0 0 70px #e60073;
+          }
+          
+          to {
+            text-shadow: 0 0 20px #fff, 0 0 30px #ff4da6, 0 0 40px #ff4da6, 0 0 50px #ff4da6, 0 0 60px #ff4da6, 0 0 70px #ff4da6, 0 0 80px #ff4da6;
+          }
+        }
+  </style>
+</head>
+<!--<body class="hold-transition login-page">-->
+
+<body>
+  <div class="header1">
+    <div class="logo" style="padding-left: 10px;"><img align="left" width="60px" height="60px" src="{% static 'images/sdm_logo.jfif' %}"></div>
+    <div class="header1-center">Shri Dharmasthala Manjunatheshwara College of Engineering & Technology</div>
+    <div class="header1-center" style="font-size: medium; color:#a12b29">(An Autonomous College under Visvesvaraya Technological University, Belegavi and Recognised by All India Council for Technical Education, New Delhi) </div>
+  </div>
+
+  <div class="box" align="center" >
+    <div class="login-logo" style="font-size:x-large;"> <b>MANTHANA</b><br><b>(Management Information System)</a>
+    </div>
+    <!-- /.login-logo -->
+    <div class="card">
+      <div class="card-body login-card-body">
+        <p class="login-box-msg">Team Members</p>
+        <h1 class="glow">Dr. Jagadeesh Pujari</h1>
+        <h1 class="glow">Dr. U. P. Kulkarni</h1>
+        <h1 class="glow">Dr. S. B. Kulkarni</h1>
+        <h1 class="glow">Dr. V. S. Bhat</h1 >
+        <h1 class="glow">Prof. Anand S Pashupatimath</h1>
+        <h1 class="glow">Prof. Govind Negalur</h1>
+        <h1 class="glow">Prof. Pratap Kumar M K</h1>
+        <h1 class="glow">Prof. Yashodha Sambrani</h1>
+        <h1 class="glow">Prof. Pratibha Badiger</h1>
+        <h1 class="glow">Prof. Rashmi Athanikar</h1>
+      </div>
+    </div>
+</div>
+
+  <!-- jQuery 
+<script src="{% static "plugins/jquery/jquery.min.js" %}"></script>-->
+  <!-- Bootstrap 4 
+<script src="{% static "plugins/bootstrap/js/bootstrap.bundle.min.js" %}"></script>-->
+  <!-- AdminLTE App -->
+  <script src="{% static 'js/adminlte.min.js' %}"></script>
+  <div class="container">
+    <div class="footer">Copyright &copy; 2020 <a href="http://www.sdmcet.ac.in"> SDMCET</a></div>
+  </div>
+</body>
+
+</html>

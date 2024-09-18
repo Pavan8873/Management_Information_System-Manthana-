@@ -1,0 +1,29 @@
+{% extends 'base_template.html' %}
+{%load static %}
+      {% block title %}<title>Admin Home Page</title>{% endblock %}
+
+{% block page-content %}
+
+{% if roles|length == 0 %}
+<h6 style="color:#a12b29;text-align:center;">You don't have any Rights!! Contact Administrator</h6>
+{% elif userName is None %}
+<h6 style="color:#a12b29;text-align:center;">You are not authorized to view this page!!</h6>
+{% else %}
+<h3 style="text-align:center;">Welcome to MANTHANA <br /> A Student Management Information System</h3>
+{% endif %}
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4 mx-auto text-center">
+      <div class="card">
+        <img class="img-fluid rounded mx-auto d-block" src="{% static 'images/sdmcet.png' %}" alt="">
+      </div>
+      <div>
+        {% for message in messages %}
+        {{message}}
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

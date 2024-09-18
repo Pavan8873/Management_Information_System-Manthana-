@@ -1,0 +1,107 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+{% endblock %} {% block page-content %}
+<!DOCTYPE html>
+<form action="{% url 'reg'%}" method="POST" id="register_form" enctype="multipart/form-data">
+  {% csrf_token %}
+<html>
+<head> 
+    <title>Registration Page</title>
+    <style>
+        body {
+            background-color: #f0f8ff; /* Light Sky Blue */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align:center;">Registration Form</h2>
+        <form>
+            <label>Email Address:</label>
+            <input type="text" name="email" id="email" size="30"  required/><br><br>
+            <label>College Name:</label>
+            <input type="text" name="CName" id="CName" size="30" required/><br><br>
+            <label for="cars">Competition Name:</label>
+            <input type="text" id="searchInput" onkeyup="filterOptions()" placeholder="Search for competition..">
+            <select name="cars" id="cars" required>
+              {% for aca_yr in eve %}
+              <option value="{{aca_yr.id}}">{{aca_yr.name}}</option>
+              {% endfor %}</select><br><br>
+            <label>Number Of Participants:</label>
+            <input type="number" name="nop" id="nop" size="30" required/><br><br>
+            <label>Name Of Participants:</label>
+            <input type="text" name="nameop" id="nameop" size="30" placeholder="Enter all participants names using comma after each name" required/><br><br>
+            <label>Head Participant Name:</label>
+            <input type="text" name="headp" id="headp" size="30" required/><br><br>
+            <label>Head Participant Phone Number:</label>
+            <input type="number" name="phone" id="phone" size="10" required/><br><br>
+            <label>Payment:</label>
+            <input type="radio" name="payment" id="payment_yes" value="1" required> Yes
+            <input type="radio" name="payment" id="payment_no" value="2" required> No<br><br>
+            <label>Payment ID:</label>
+            <input type="text" name="ho" id="ho" size="30" placeholder="Enter only if payment is done"><br><br>
+            <div style="text-align:center;">  
+                <input type="submit"  value="Submit"/>  
+            </div>
+        </form>
+    </div>
+</body>
+</html>
+</form>
+<script>
+    function filterOptions() {
+      // Get input value and convert it to lowercase for case-insensitive comparison
+      var filter = document.getElementById('searchInput').value.toLowerCase();
+      // Get all options in the select element
+      var options = document.getElementById('cars').options;
+      // Iterate over options and hide those that don't match the filter
+      for (var i = 0; i < options.length; i++) {
+        var optionText = options[i].text.toLowerCase();
+        if (optionText.indexOf(filter) > -1) {
+          options[i].style.display = ''; // Show option
+        } else {
+          options[i].style.display = 'none'; // Hide option
+        }
+      }
+    }
+  </script>
+{%endblock%}

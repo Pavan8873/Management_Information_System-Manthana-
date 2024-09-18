@@ -1,0 +1,138 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Student USN Mapping</title>{% endblock %}
+
+{% block page-content %}
+
+<h2 align="center">Student USN Mapping</h2>
+    <!-- Main Content -->
+    <section class="mt-3 mb-3">
+      <div class="container shadow rounded-3 p-4 bg-white">
+        <form action="/allot_usn" method="POST" id="mapUSNForm" data-student-url="{% url 'ajax_load_st_uid' %}" onsubmit='return validateusn();'>
+          {% csrf_token %}
+          <div class="row mt-4">
+            <div class="col-4 mb-3">
+              <label for="acad_cal_acad_year" class="form-label">
+                Academic Year
+              </label>
+              <select name="acad_year" id="acad_year" class="form-select" required>
+                {% if acad_cal_obj is None %}
+                <option value="" disabled selected>-- Choose Academic Year --</option>
+                {% for aca_yr in academic_year_tbl %}
+                <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option>
+                <!-- <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option> -->
+                {% endfor %}
+                {% else %}
+                {% for aca_yr in academic_year_tbl %}
+                {% if aca_yr.acayear == acad_cal_obj.acad_cal_acad_year%}
+                <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option>
+                {% endif %}
+              {% endfor %}
+              {% for aca_yr in academic_year_tbl %}
+                {% if aca_yr.acayear != acad_cal_obj.acad_cal_acad_year%}
+                <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option>
+                {% endif %}
+              {% endfor%}
+              {% endif %}
+              </select>
+            </div>
+
+            <div class="col-4 mb-3">   
+            <label for="st_branch_applied" class="form-label">
+                Current Branch
+            </label> 
+            <select name="st_branch_applied" id="st_branch_applied" class="form-select" required>
+          {% if student is None %}
+          <option value="" disabled selected>-- Select Branch --</option> 
+            {% for dept in department %}
+              <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+            {% endfor %}
+          {% else %}
+              {% for dept in department %}
+                  {% if dept.dept_id == student.st_branch_applied_id %}
+                      <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+                  {% endif %}
+              {% endfor %}
+              {% for dept in department %}
+                {% if dept.dept_id != student.st_branch_applied_id %}
+                  <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+                {% endif %}
+              {% endfor %}
+          {% endif %} 
+        </select>
+        </div>
+        <div class="col-4 mb-3">   
+          <label for="sem" class="form-label">
+              Semester admitted for :
+            </label> 
+          <select name="sem" id="sem" class="form-select" required>
+        {% if student is None %}
+        <option value="" disabled selected>-- Choose Semester --</option> 
+          <option value="1">1</option>
+          <option value="3">3</option>
+          <option value="5">5</option>
+          <option value="7">7</option>
+        {% else %}
+        {% endif %} 
+      </select>
+      </div>
+          <div class="row">
+            <div class="mb-3 table-responsive text-center">
+            <label for="student-list" class="form-label">
+                Student List
+              </label>
+              <div class="card showTable" id="sTable">
+                <div class="card-body">
+                  <table id="StudentData" name="StudentData" class="table table-sm" >
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="d-grid gap-4 col-1 mx-auto">
+              <input type="text" name="btn_clicked" value="register" hidden>
+              <button type="submit" name="map_usn" id="map_usn" value="register" class="btn btn-primary">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+    <script>
+        function validateusn(){
+          if ($.trim($('#mapped_usn').val()).length != 10) {
+            alert('USN must be 10 char long');
+            $('#mapped_usn').val('');
+            //$('#mapped_usn').select();
+            $('#mapped_usn').addClass('has-error');
+            return false;
+          }
+          else
+          {
+            $('#mapped_usn').removeClass('has-error');
+            return true;
+          }
+        }
+        $("#sem").change(function () {
+        var url1 = $("#mapUSNForm").attr("data-student-url");  // get the url of the `load_student` view
+        var acad_year = $('#acad_year').val();  // get the selected programming ID from the HTML input
+        var sem = $(this).val();
+        var branch = $('#st_branch_applied').val();
+        $.ajax({                       // initialize an AJAX request
+          url: url1,                    
+          data: {
+            'acad_year': acad_year,
+            'sem' : sem,
+            'branch': branch,
+          },
+          success: function (data) {   // `data` is the return of the `load_student` view function
+            $("#StudentData").html(data);  // replace the contents of the course input with the data that came from the server
+          },
+          error:function(data){
+            alert(data.responseJSON.error);
+          }
+        });
+      });
+    </script>
+{% endblock %}

@@ -1,0 +1,86 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+{% endblock %} {% block page-content %}
+<!DOCTYPE html>
+<form action="{% url 'win_list'%}" method="POST" id="register_form" enctype="multipart/form-data">
+    {% csrf_token %}
+<html>
+<head>
+    <title>Event Information</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f8ff; /* Light Sky Blue */
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+        }
+        select, input[type="submit"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2 style="text-align:center;">Winners List</h2>
+        <form id="eventForm">
+            <label for="eventName">Department Name:</label>
+            <select id="eventName" name="eventName" required>
+                {% for aca_yr in eve %}
+                <option value="{{aca_yr.dept_id}}">{{aca_yr.dept_name}}</option>
+                
+                {% endfor %}
+                <option value="13">Centralized</option>
+                <option value="14">CULTURAL</option>
+            </select><br><br>
+            <div style="text-align:center;">  
+                <input type="submit" value="Generate PDF"/>  
+            </div>
+        </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        document.getElementById('eventForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent form submission
+
+            // Get form data
+            var eventName = document.getElementById('eventName').value;
+            var eventConductedBy = document.getElementById('eventConductedBy').value;
+
+            // Generate PDF
+            var pdf = new jsPDF();
+            pdf.text(20, 20, 'Event Name: ' + eventName);
+            pdf.text(20, 30, 'Event Conducted By: ' + eventConductedBy);
+            pdf.save('event_information.pdf');
+        });
+    </script>
+</body>
+</html>
+</form>
+{% endblock %} 

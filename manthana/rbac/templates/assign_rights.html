@@ -1,0 +1,51 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+<title>Add Roles</title>{% endblock %} {% block page-content %}
+<link href="{% static 'fonts/SansationLight/font.css' %}" rel="stylesheet">
+{% if userName is None %}
+<h3>You are not authorized to view this page!!</h3>
+{% else %}
+<div class="col-md mx-auto text-center h6" style="font-size: 0.9rem;">
+    <h5 align="center"><strong>Assign Roles To User</strong></h5>
+    <hr>
+    <form role="form" action="/AssignRights" method="POST" id="register_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        {% for field in form %}
+                        <div class="form-group">
+                            <td class="text-end"><label>{{ field.label_tag }}</label></td>
+                            <td class="text-start">{{ field }}
+                                <span class="text-danger">{{ field.errors }}</span>
+                            </td>
+                        </div>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <div class="form-group">
+                            <td colspan="2">
+                                <button type="submit" name="btn_admission_details" id="btn_admit_Search"
+                                    value="admit_Search" class="btn btn-success btn-sm"><b>Assign Roles</b></button>
+                            </td>
+                        </div>
+                    </tr>
+                </table>
+                <div class="form-group">
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                    <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                    <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+{% endblock %}

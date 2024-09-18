@@ -1,0 +1,4 @@
+<option value="">---select Course List--</option>
+{% for course in courselist %}
+<option value="{{ course.course_code }}">{{ course.course_code }}{{"-"}}{{ course.course_title }}</option>
+{% endfor %}

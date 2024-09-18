@@ -1,0 +1,147 @@
+{% extends 'base_template.html' %} 
+{% load static %} 
+{% block title %}
+    <title>Vew/Edit Students</title>
+{% endblock %} 
+
+{% block page-content %}
+<link href="{% static 'fonts/SansationLight/font.css' %}" rel="stylesheet">
+<script src="{% static 'js/validate.js' %}"></script>
+
+{% if userName is None %}
+    <h3>You are not authorized to view this page!!</h3>
+{% else %}
+    <div class="col-md mx-auto text-center h6" style="font-size: 0.9rem;">
+    <h5 align="center"><strong>Enter Student Details to Search</strong></h5>
+    <hr>
+    <form action="/admissionStat" method="POST" id="register_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-body">
+                <table style="margin:auto" class=" table-sm">
+                    <tr>
+                        <div class="form-group">
+                            <td colspan="1" class="text-end"><label>Select Academic Year:</label></td>
+                            <td colspan="3">
+                                <select class="form-select form-select-sm" name="ac_year" id="ac_year" class="form-control">
+                                    {% for aca_yr in academic_year %}
+                                        <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <div class="form-group">
+                            <td colspan="1" class="text-end"><label>Admission Type:</label></td>
+                            <td colspan="3">
+                                <select class="form-select form-select-sm" name="ad_type" id="ad_type" class="form-control">
+                                    <option value="0">--Select Type--</option>
+                                    <option value="1">UG</option>
+                                    <option value="2">Lateral</option>
+                                    <option value="3">PG</option>
+                                </select>
+                            </td>
+                        </div>
+                    </tr>
+
+                    <tr>
+                        <td colspan="4">
+                            <input type="submit" class="btn btn-success btn-sm">
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </form>
+    <div class="card">
+        <div class="card-body">
+            <div class="card-text">
+                {% for message in messages %}
+                <h6>{{message}}</h6>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="card showTable" id="sTable">
+        <div class="card-body">
+        <table id="StudentSearchData" class="table table-sm">
+            {% if ad_type|stringformat:"s" == '1' %}
+            <thead class="table-dark">
+                <tr class="header">
+                    <th>Sl.NO.</th>
+                    <th>Branch</th>
+                    <th>CET</th>
+                    <th>SNQ</th>
+                    <th>COMEDK</th>
+                    <th>MGMT</th>
+                    <th>Total Students</th>
+                </tr>
+            </thead>
+            {% for st in stat %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{st.st_branch_applied_id__dept_name}}</td>
+                <td>{{st.CET}}</td>
+                <td>{{st.SNQ}}</td>
+                <td>{{st.COMEDK}}</td>
+                <td>{{st.MGMT}}</td>
+                <td>{{st.Total_Student}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="7" style="text-align: center;"><a href="{% url 'admissionStatReport' ad_type ac_year %}" target="_blank" class="btn btn-info btn-sm">Print Report</a></td>
+            </tr>
+            {% endif %} 
+            {% if ad_type|stringformat:"s" == '2' %}
+            <thead class="table-dark">
+                <tr class="header">
+                    <th>Sl.NO.</th>
+                    <th>Branch</th>
+                    <th>DCET</th>
+                    <th>MGMT</th>
+                    <th>Total Students</th>
+                </tr>
+            </thead>
+            {% for st in stat %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{st.st_branch_applied_id__dept_name}}</td>
+                <td>{{st.DCET}}</td>
+                <td>{{st.MGMT}}</td>
+                <td>{{st.Total_Student}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5" style="text-align: center;"><a href="{% url 'admissionStatReport' ad_type ac_year %}" target="_blank" class="btn btn-info btn-sm">Print Report</a></td>
+            </tr>
+            {% endif %} 
+            {% if ad_type|stringformat:"s" == '3' %}
+            <thead class="table-dark">
+                <tr class="header">
+                    <th>Sl.NO.</th>
+                    <th>Program</th>
+                    <th>PGCET</th>
+                    <th>MGMT</th>
+                    <th>Total Students</th>
+                </tr>
+            </thead>
+            {% for st in stat %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{st.st_branch_applied_id__dept_name}}</td>
+                <td>{{st.PGCET}}</td>
+                <td>{{st.MGMT}}</td>
+                <td>{{st.Total_Student}}</td>
+            </tr>
+            {% endfor %}
+            <tr>
+                <td colspan="5" style="text-align: center;"><a href="{% url 'admissionStatReport' ad_type ac_year %}" target="_blank" class="btn btn-info btn-sm">Print Report</a></td>
+            </tr>
+            {% endif %}
+        </table>
+        </div>
+    </div>
+{% endif %} 
+{% endblock %}

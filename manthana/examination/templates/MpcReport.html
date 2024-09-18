@@ -1,0 +1,222 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>MPC Report</title>{% endblock %}
+
+{% block page-content %}
+<body class="bg-light">
+<h2 align="center"> MPC Report Entry </h2>
+<section class="mt-5 mb-5">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <form action="/addMpcReport" method="POST" id="indexForm" data-course-url="{% url 'ajax_load_see_subjects' %}">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-6 mb-3">
+            <label for="exam_descr" class="form-label"> Examination:  </label>
+            <select name="exam_descr" id="exam_descr" class="form-select" required>
+            {%if mpc_obj is None %}
+                <option disabled selected>-- Choose Exam --</option>
+                {% for exam in exam_list %}
+                    <option value="{{exam.exam_details_id}}">{{exam.description}}</option>
+                {% endfor %}
+            {%else%}
+                <option value="{{exam_desc.exam_details_id}}">{{exam_desc.description}}</option>
+                    {% for exam in exam_list %}
+                        {%if exam_desc.description != exam.description%}
+                            <option value="{{exam.exam_details_id}}">{{exam.description}}</option>
+                        {%endif%}
+                    {% endfor %}
+            {% endif %}
+            </select>
+        </div>
+        <div class="col-6  mb-3">
+            <label for="offered_by" class="form-label w-60"> Offered By : </label>
+            <select id="offered_by" name="offered_by" value="{{ scheme_details.offered_by }}" required class="form-select">
+            {% if mpc_obj is None %}
+                <option value="" disabled selected>Choose Branch</option>
+                {% for dept in department %}
+                    <option value="{{dept.dept_name}}">{{dept.dept_name}}</option>
+                {% endfor %}
+            {% else %}
+                <option value="{{branch.dept_name}}">{{branch.dept_name}}</option>
+                {% for dept in department %}
+                    {% if dept.dept_name != branch.dept_name%}
+                        <option value="{{dept.dept_name}}">{{dept.dept_name}}</option>
+                    {% endif %}
+                {% endfor %}
+            {% endif %} 
+          </select>
+        </div>
+        <div class="col-4 mb-3">
+            <label for="acad_cal_sem" class="form-label"> Semester Allotted : </label>
+            <select id="acad_cal_sem" name="acad_cal_sem" required class="form-select">
+            {% if mpc_obj is None %}
+                <option disabled selected>Choose Semester</option>
+                <option value="1">Semester 1</option>
+                <option value="2">Semester 2</option>
+                <option value="3">Semester 3</option>
+                <option value="4">Semester 4</option>
+                <option value="5">Semester 5</option>
+                <option value="6">Semester 6</option>
+                <option value="7">Semester 7</option>
+                <option value="8">Semester 8</option>
+            {%else%} 
+                <option value="{{sem}}">Semester {{sem}}</option>
+                {%if sem == 1%}
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                {%elif sem == 2%}
+                    <option value="1">Semester 1</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                {%elif sem == 3%}
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                {%elif sem == 4%}
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                {%elif sem == 5%}
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                {%elif sem == 6%}
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="7">Semester 7</option>
+                    <option value="8">Semester 8</option>
+                {%elif sem == 7%}
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="8">Semester 8</option>
+                {%elif sem == 8%}
+                    <option value="1">Semester 1</option>
+                    <option value="2">Semester 2</option>
+                    <option value="3">Semester 3</option>
+                    <option value="4">Semester 4</option>
+                    <option value="5">Semester 5</option>
+                    <option value="6">Semester 6</option>
+                    <option value="7">Semester 7</option>
+                {%endif%}
+            {%endif%}
+            
+            </select>
+        </div> 
+            <div class="col-4 mb-3"> 
+                <label for="course_code" class="form-label">Subject</label>
+                <select name="course_code" id="course_code" class="form-select">
+                {%if mpc_obj is None%}
+                    <option value="" disabled selected>-- Choose Subject -- </option>
+                {%else%}
+                    <option value="{{coursecode}}">{{coursecode}}</option>
+                    {%for course in course_list%}
+                        {%if course.course_code != coursecode%}
+                            <option value="{{course.course_code}}">{{course.course_code}} {{"-"}} {{" "}} {{course.course_title}}</option>
+                        {%endif%}
+                    {%endfor%}
+                {%endif%}
+                </select>
+            </div>
+            <div class="col-4 mb-3">
+                <label for="st_uid" class="form-label"> Student Uid : </label>
+                <input type="text" id="st_uid" name="st_uid" required class="form-control" placeholder="Eg. 19BE001" value="{{ stuid.st_uid }}" style="text-transform:uppercase"/>
+            </div>
+       </div> 
+       <div class="row">
+        <div class="col-4 mb-3">
+            <label for="designation" class="form-label">
+                Designation
+            </label>
+            <select name="designation" id="designation" class="form-select" required>
+            {% if mpc_obj is None %}
+                <option disabled selected>Choose Designation</option>
+            {%else%}
+                <option value="{{desig}}">{{desig}}</option>
+            {%endif%}
+            <option value="CoE">CoE</option>
+            <option value="DCS">DCS</option>
+            <option value="Squad">Squad</option>
+            <option value="Invigilator">Invigilator</option>
+          </select>
+        </div>
+
+        <div class="col-4 mb-3">
+            <label for="reporter_id" class="form-label"> Reported by : </label>
+            <input type="text" id="reporter_id" name="reporter_id" required class="form-control" placeholder="Enter Employee ID" value="{{repid}}" style="text-transform:uppercase"/>
+          </div>
+        <div class="col-4 mb-3">
+            <label for="desc" class="form-label"> Description : </label>
+            <input type="text" id="desc" name="desc" required class="form-control" placeholder="Enter some description regarding malpractice" value="{{desc}}"/>
+        </div>
+       </div>   
+        <div class="col-md-12 text-center">
+            {% if mpc_obj is None %}
+                <input type="text" name="btn_mpc" value="register" hidden>
+                <button type="submit" name="btn_mpc" id="btn_mpc" value="register" class="btn btn-primary">Submit</button>
+                <button type="reset" name="btn_reset" id="btn_reset" value="reset" class="btn btn-primary" onclick="resetPage()">Reset</button>
+            {% else %}
+                <input type="text" name="mpc_report_id" value="{{mpc_obj.mpc_report_id}}" hidden>
+                <input type="text" name="btn_mpc" value="update" hidden>
+                <button type="submit" name="btn_mpc" id="btn_mpc" value="update" class="btn btn-primary">Update</button>
+            {% endif %}
+            {% comment %} <input type="text" name="btn_clicked" value="register" hidden> {% endcomment %}
+        </div>
+  </form>
+  </div>
+  <script>
+      $(document).ready(function () {
+            $("#acad_cal_sem").change(function () {
+                var offered_by = $('#offered_by').val();
+                var url1 = $("#indexForm").attr("data-course-url");
+                var sem = $(this).val();
+                var exam_descr = $('#exam_descr').val();
+                $.ajax({                       
+                    url: url1,                   
+                    data: {
+                        'offered_by': offered_by,
+                        'sem': sem,
+                        'exam_descr' : exam_descr  
+                    },
+                    success: function (data) {   
+                        $("#course_code").html(data);  
+                    },
+                    error: function(data){
+                        $('#course_code').
+                        alert(data.responseJSON.error);
+                    }
+                });
+            });
+        });
+  </script>
+</body>
+</section>
+{% endblock %}

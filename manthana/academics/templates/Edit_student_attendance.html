@@ -1,0 +1,153 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Student Attendance - Lab</title>{% endblock %}
+
+{% block page-content %}
+
+<body class="bg-light">
+  <h2 align="center">Edit Student Lab Attendance</h2>
+  <!-- Main Content -->
+  <section class="mt-5 mb-5">
+    <div class="container shadow rounded-3 p-4 bg-white">
+      <form action="/Editstudentattendance" method="POST" id="attendanceForm" data-subj-url="{% url 'ajax_load_first_year_subjects' %}">
+        {% csrf_token %}
+        <div class="row">
+          <div class="col-6 mb-3">
+            <label for="acad_year" class="form-label">Academic Year</label>
+            <select name="acad_year" id="acad_year" class="form-select" required>
+              <option value="">Choose Academic Year</option>
+              {% for cal in calender %}
+              <option value="{{cal.id}}">{{cal.acayear}}</option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="col-4 mb-3">
+            <label for="acad_cal_type" class="form-label">Academic Type</label>
+            <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+              <option disabled selected>Choose Academic Type</option>
+              <option value="1">Regular Semester</option>
+              <option value="2">STC Semester</option>
+            </select>
+          </div>
+          <div class="col-6 mb-3">
+            <label for="first_year_cycle" class="form-label">
+                <strong>Department</strong>
+            </label>
+            <select name="dep" id="dep" class="form-select" required>
+                <option value="" disabled selected>Choose Department</option>
+                {% for div in dep %}
+                <option value="{{div.dept_id}}">{{div.dept_name}}</option>
+                {% endfor %}
+            </select>
+            <input type="text" name="dep" id="dep" hidden>
+        </div>
+
+          <div class="col-4 mb-3">
+            <label for="semester" class="form-label">Semester</label>
+            <select name="semester" id="semester" class="form-select" required>
+              <option value="" disabled selected>Choose Semester</option>
+              <option value="1">Semester 1</option>
+              <option value="2">Semester 2</option>
+              <option value="3">Semester 3</option>
+              <option value="4">Semester 4</option>
+              <option value="5">Semester 5</option>
+              <option value="6">Semester 6</option>
+              <option value="7">Semester 7</option>
+              <option value="8">Semester 8</option>
+            </select>
+          </div>
+
+          <div class="col-6 mb-3">
+            <label for="subject" class="form-label">Subject</label>
+            <select name="subject" id="subject" class="form-select" required>
+              <option value="">Choose Subject</option>
+              <!-- Subjects will be populated via AJAX -->
+            </select>
+          </div>
+
+        <div class="row">
+          <div class="col-6 mb-3">
+            <label for="attend_date" class="form-label">Attendance Date</label>
+            <input type="date" id="attend_date" name="attend_date" min="1980-01-01" class="form-control" required>
+          </div>
+
+          <div class="col-6 mb-3">
+            <label for="div" class="form-label">Division</label>
+            <select name="div" id="div" class="form-select" required>
+              <option value="" disabled selected>Choose Division</option>
+              {% for div in div_tbl %}
+              <option value="{{div.id}}">{{div.division}}</option>
+              {% endfor %}
+              <option value="0">None</option>
+            </select>
+          </div>
+
+          <div class="col-6 mb-3">
+            <label for="batch" class="form-label">Lab Batch</label>
+            <select name="batch" id="batch" class="form-select" required>
+              <!-- No disabled or selected here -->
+              <option value="B0">Select Lab Batch</option>
+              <option value="B0">Theory</option>
+              <option value="B1">Batch 1</option>
+              <option value="B2">Batch 2</option>
+              <option value="B3">Batch 3</option>
+              <option value="B4">Batch 4</option>
+            </select>
+          </div>
+          
+        </div>
+
+        <div class="row">
+          <div class="d-grid gap-4 col-1 mx-auto">
+            <input type="text" name="btn_clicked" value="register" hidden>
+            <button type="submit" name="btn_div_allot" id="btn_div_allot" value="register" class="btn btn-primary">Submit</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <!-- Option 1: Bootstrap Bundle with Popper -->
+  <script src="vendor/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Option 2: jQuery -->
+  <script src="plugins/jquery/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('#semester').change(function () {
+        let academicYear = $('#acad_year').val();
+        let acadCalType = $('#acad_cal_type').val();
+        let semester = $('#semester').val();
+        let dep = $('#dep').val();
+        
+        console.log('Academic Year:', academicYear);
+        console.log('Academic Type:', acadCalType);
+        console.log('Semester:', semester);
+        if (academicYear && acadCalType && semester && dep) {
+          let url = $('#attendanceForm').attr('data-subj-url');
+          
+          $.ajax({
+            url: url,
+            data: {
+              'acad_year': academicYear,
+              'acad_cal_type': acadCalType,
+              'first_year_sem': semester,
+              'first_year_cycle':dep
+            },
+            success: function (data) {
+              $('#subject').html(data);
+            },
+            error: function (error) {
+              alert("Error loading subjects.");
+            }
+          });
+        }
+      });
+    });
+  </script>
+
+</body>
+
+{% endblock %}

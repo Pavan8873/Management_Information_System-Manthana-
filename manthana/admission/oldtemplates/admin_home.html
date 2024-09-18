@@ -1,0 +1,59 @@
+{% extends 'base_template.html' %}
+{%load static %}
+      {% block title %}<title>Admin Home Page</title>{% endblock %}
+
+
+<style>
+  .box {
+    align-items: center;
+    width: 600px;
+    height: 400px;
+    margin: 0 auto;
+  }
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .card {
+    position: relative;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    min-width: 0;
+    max-width: 500;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.25rem; }
+</style>
+
+{% block page-content %}
+
+    {% if userName is None %}
+      <h3>You are not authorized to view this page!!</h3>
+    {% else %}
+      <h3 style="text-align:center;">Welcome to MANTHANA <br/> A Student Management Information System</h3>
+      {% endif %}
+
+      <div class="box" align="center">
+        <!-- <div class="login-logo" style="color:#a12b29; font-family: 'Times New Roman';
+        font-weight: bold;"> <b> MANTHANA </b><br><b style="font-size:20px;">(Management Information System)</a>
+        </div> -->
+        <!-- /.login-logo --> 
+        <div class="card">
+          <div class="card-body login-card-body">
+          <img align="center" width="600px" height="400px" src="{% static 'images/sdmcet.png' %}">
+          </div>
+        </div>
+      </div>
+      <div>
+        {% for message in messages %}
+        <h3>{{message}}</h3>
+        {% endfor %}
+      </div>
+      {% endblock %}

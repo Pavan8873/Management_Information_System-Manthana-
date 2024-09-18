@@ -1,0 +1,281 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}
+<title>Student IA Marks Report</title>
+{% endblock %}
+
+{% block page-content %}
+<!-- Date Range Picker CSS -->
+<link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}" />
+<script src="{% static 'plugins/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+
+<style>
+    .container {
+        padding: 20px;
+    }
+
+    .head_font {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    /* Styling for table */
+    table {
+        width: 100%;
+        border: 1px solid #ddd;
+        /* Border for the whole table */
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th,
+    td {
+        border: 1px solid #ddd;
+        /* Border for table cells */
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+        /* Header background color */
+    }
+</style>
+
+<h3 class="head_font mb-2">Student IA Marks Report</h3>
+
+<form action="/Report_ia_Marks" method="POST" id="reportForm" data-subj-url="{% url 'ajax_load_courses' %}">
+    {% csrf_token %}
+
+    <section class="mt-5 mb-5">
+        <div class="container shadow rounded-3 p-4 bg-white">
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label for="acad_cal_acad_year" class="form-label">Academic Year</label>
+                    <select name="acad_cal_acad_year" id="acad_cal_acad_year" class="form-select" required>
+
+                        <option value="" disabled selected>-- Choose Academic Year --</option>
+
+                        {% for aca_yr in academic_year_tbl %}
+                        <option value="{{ aca_yr.id }}">{{ aca_yr.acayear }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-4 mb-3">
+                    <label for="acad_cal_type" class="form-label"> Academic Type </label>
+                    <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+
+                        <option disabled selected>Choose Academic_type</option>
+                        <option value="1">Regular Semester</option>
+                        <option value="2">STC Semester</option>
+
+
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="department" class="form-label">Department</label>
+                    <select name="department" id="department" class="form-select" required>
+                        <option value="" disabled selected>Choose Department</option>
+                        {% for dept in departments %}
+                        <option value="{{ dept.dept_id }}">{{ dept.dept_name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="acad_cal_sem" class="form-label">Semester</label>
+                    <select name="acad_cal_sem" id="acad_cal_sem" class="form-select" required>
+                        <option disabled selected>Choose Semester</option>
+                        <option value="1">1st Semester</option>
+                        <option value="2">2nd Semester</option>
+                        <option value="3">3rd Semester</option>
+                        <option value="4">4th Semester</option>
+                        <option value="5">5th Semester</option>
+                        <option value="6">6th Semester</option>
+                        <option value="7">7th Semester</option>
+                        <option value="8">8th Semester</option>
+                    </select>
+                </div>
+                <div class="col-6 mb-3">
+                    <label for="courselist" class="form-label"> Course List </label>
+                    <select id="courselist" name="courselist" class="form-select">
+                    </select>
+                  </div>
+
+                <div class="col-md-6 mb-3">
+                    <label for="div" class="form-label">Division</label>
+                    <select name="div" id="div" class="form-select" required>
+                        <option value="" disabled selected>Choose Division</option>
+                        {% for division in div_tbl %}
+                        <option value="{{ division.id }}">{{ division.division }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="attendance_slab" class="form-label">Attendance Slab</label>
+                    <select name="attendance_slab" id="attendance_slab" class="form-select" required>
+                        <option value="" disabled selected>Choose Attendance Slab</option>
+                        <option value="0-60%">0-60%</option>
+                        <option value="60-75%">60-75%</option>
+                        <option value="75-100%">75-100%</option>
+                    </select>
+                </div>
+
+                <div class="col-12 mb-3 mt-3 text-center">
+                    <button type="submit" name="btn_clicked" value="report" class="btn btn-success btn-sm">
+                        <b>Submit</b>
+                    </button>
+                    <button type="submit" name="btn_clicked" value="Mark" class="btn btn-success btn-sm">
+                        <b>Detained List (Mark-wise)</b>
+                    </button>
+                    <button type="submit" name="btn_clicked" value="Attendance" class="btn btn-success btn-sm">
+                        <b>Detained List (Attendance-wise)</b>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+{% if matching_rows %}
+<section class="mt-5">
+    <div class="container shadow rounded-3 p-4 bg-white">
+        <h3 class="head_font mb-2">Student IA Marks Report</h3>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>IA1 Marks</th>
+                    <th>IA2 Marks</th>
+                    <th>IA3 Marks</th>
+                    <th>CTA Marks</th>
+                    <th>CIE Marks</th>
+                    <th>CIE Grade</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in matching_rows %}
+                <tr>
+                    <td>{{ row.academics_master_details_id }}</td>
+                    <td>{{ row.stname }}</td>
+                    <td>{{ row.st_branch_applied.dept_name }}</td>
+                    <td>{{ row.ia1_marks }}</td>
+                    <td>{{ row.ia2_marks }}</td>
+                    <td>{{ row.ia3_marks }}</td>
+                    <td>{{ row.cta_marks }}</td>
+                    <td>{{ row.cie_marks }}</td>
+                    <td>{{ row.cie_grade }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
+
+{% if cie_less_than_20 %}
+<section class="mt-5">
+    <div class="container shadow rounded-3 p-4 bg-white">
+        <h3 class="head_font mb-2">Detained Students List (CIE Marks &lt; 20)</h3>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>CIE Marks</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in cie_less_than_20 %}
+                <tr>
+                    <td>{{ student.academics_master_details_id }}</td>
+                    <td>{{ student.stname }}</td>
+                    <td>{{ student.st_branch_applied.dept_name }}</td>
+                    <td>{{ student.cie_marks }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
+
+{% if low_attendance_students %}
+<section class="mt-5">
+    <div class="container shadow rounded-3 p-4 bg-white">
+        <h3 class="head_font mb-2">Detained Students List (Attendance &lt; {{attendance_slab}})</h3>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student Name</th>
+                    <th>Department</th>
+                    <th>Percentage of Attendance</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for student in low_attendance_students %}
+                <tr>
+                    <td>{{ student.student_attd_id }}</td>
+                    <td>{{ student.stname }}</td>
+                    <td>{{ student.st_branch_applied.dept_name }}</td>
+                    <td>{{ student.Percentage_of_attendance }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
+
+{% if error_message %}
+<div class="container mt-5">
+    <div class="alert alert-danger" role="alert">
+        {{ error_message }}
+    </div>
+</div>
+{% endif %}
+<script>
+    $(document).ready(function () {
+
+        $("#acad_cal_sem").change(function () {
+            if ($('#acad_cal_acad_year').val() != null) {
+
+                var url1 = $("#reportForm").attr("data-subj-url");  // get the url of the `load_first_year_subjects` view
+                // get the selected programming ID from the HTML input
+                var acadYrID = $('#acad_cal_acad_year').val();
+                var acad_cal_sem = $('#acad_cal_sem').val();
+                var acad_cal_type = $('#acad_cal_type').val();
+                var department = $('#department').val();
+
+                $.ajax({                       // initialize an AJAX request
+                    url: url1,                    // set the url of the request (= localhost:8000/load_first_year_subjects)
+                    data: {
+                        'acad_year': acadYrID,       // add the programming id to the GET parameters
+                        'sem': acad_cal_sem,
+                        'offered_by': department,
+                        'acad_cal_type': acad_cal_type
+                    },
+                    success: function (data) {  
+                        console.log("kkkkkkkkkkkkkkkk",data) // `data` is the return of the `load_first_year_subjects` view function
+                        $("#courselist").html(data.html);  // replace the contents of the course input with the data that came from the server
+                    },
+                    error: function (error) {
+                        alert("Error : Scheme NOT allotted to the selected AY and Sem");
+                    }
+                });
+            }
+        });
+    });
+</script>
+
+{% endblock %}

@@ -1,0 +1,627 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Academic Calendar</title>{% endblock %}
+
+
+{% block page-content %}
+<!-- Date Range Picker CSS -->
+<link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}" />
+<script src="{% static 'plugins/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+
+<h2 align="center">Academic Calender for UG Students</h2>
+<section class="mt-5 mb-5">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <form action="/addcalender" method="POST" id="">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-4 mb-3">
+          <label for="acad_cal_acad_year" class="form-label">
+            Academic Year
+          </label>
+          <select name="acad_cal_acad_year" id="acad_cal_acad_year" class="form-select" required>
+            {% if acad_cal_obj is None %}
+            <option disabled selected>--Choose Academic Year-</option>
+            {% for aca_yr in acad_year_tbl %}
+              <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+              <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+            {% endfor %}
+            {% else %}
+            {% for aca_yr in acad_year_tbl %}
+            <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+            {% endfor %}
+              
+            {% endif %}  
+          </select>
+        </div>
+        <div class="col-4 mb-3">
+          <label for="acad_cal_type" class="form-label"> Academic Type </label>
+          <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+            {% if acad_cal_obj is None %}
+            <option disabled selected>Choose Academic_type</option>
+            <option value="1">Regular Semester</option>
+            <option value="2">STC Semester</option>
+          
+            {% elif acad_cal_obj.acad_cal_type == 1 %}
+            <option value="1">Regular Semester</option>
+            <option value="2">STC Semester</option>
+        
+            {% elif acad_cal_obj.acad_cal_type == 2 %}
+            <option value="2">STC Semester</option>
+            <option value="1">Regular Semester</option>
+            {% endif%}
+          </select>
+        </div>
+        <div class="col-4 mb-3">
+          <label for="acad_cal_sem" class="form-label"> Semester </label>
+          <select name="acad_cal_sem" id="acad_cal_sem" class="form-select" required>
+            {% if acad_cal_obj is None %}
+            <option disabled selected>Choose Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% else %}
+            {% if acad_cal_obj.acad_cal_sem == 1%}
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 2 %}
+            <option value="2">2nd Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 3 %}
+            <option value="3">3rd Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 4 %}
+            <option value="4">4th Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 5 %}
+            <option value="5">5th Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 6 %}
+            <option value="6">6th Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 7 %}
+            <option value="7">7th Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 8 %}
+            <option value="8">8th Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            {% endif %}
+            {% endif %}
+          </select>
+        </div>
+      </div>
+      <div class="row mt-3">
+        <div class="col-4 mb-3">
+          <label for="acad_cal_induction_program_from" class="form-label"> Induction Program From </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_induction_program_from" name="acad_cal_induction_program_from"
+            class="form-control" date-picker="date" placeholder="Select From Date" required>
+          {% else %}
+          <input type="date" date-picker="date" id="acad_cal_induction_program_from" name="acad_cal_induction_program_from"
+            value="{{ acad_cal_obj.acad_cal_induction_program_from | date:'Y-m-d'}}" class="form-control">
+          {% endif %}
+        </div>
+        <div class="col-4 mb-3">
+          <label for="acad_cal_induction_program_to" class="form-label"> Induction Program To </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_induction_program_to" name="acad_cal_induction_program_to"
+            class="form-control" date-picker="date" placeholder="Select To Date" required>
+          {% else %}
+          <input type="date" date-picker="date" id="acad_cal_induction_program_to" name="acad_cal_induction_program_to"
+            value="{{ acad_cal_obj.acad_cal_induction_program_to | date:'Y-m-d'}}" class="form-control">
+          {% endif %}
+        </div>
+        <div class="col-4 mb-3">
+          <label for="acad_cal_teaching_commences" class="form-label"> Teaching Commencement </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_teaching_commences" name="acad_cal_teaching_commences" class="form-control"
+            date-picker="date" placeholder="Select Teaching Commencement Date" required />
+          {% else %}
+          <input type="date" id="acad_cal_teaching_commences" name="acad_cal_teaching_commences"
+            value="{{ acad_cal_obj.acad_cal_teaching_commences | date:'Y-m-d' }}" class="form-control"
+            date-picker="date" />
+          {% endif %}
+        </div>
+      </div>
+      <div class="card mt-2">
+        <h5 class="card-header">Academic Registration</h5>
+        <div class="card-body">
+          <div class="row mt-3">
+            <div class="col-4 mb-3">
+              <label for="acad_cal_reg_date_from" class="form-label"> Academic Registration From </label>
+              {% if acad_cal_obj is None %}
+              <input type="date" id="acad_cal_reg_date_from" name="acad_cal_reg_date_from" class="form-control"
+                date-picker="date" placeholder="Select from date" required />
+              {% else %}
+              <input type="" id="acad_cal_reg_date_from" name="acad_cal_reg_date_from"
+                value="{{ acad_cal_obj.acad_cal_reg_date_from | date:'Y-m-d'}}" class="form-control"
+                date-picker="date" />
+              {% endif %}
+            </div>
+            <div class="col-4 mb-3">
+              <label for="acad_cal_reg_date_to" class="form-label"> Academic Registration To </label>
+              {% if acad_cal_obj is None %}
+              <input type="date" id="acad_cal_reg_date_to" name="acad_cal_reg_date_to" class="form-control"
+                date-picker="date" placeholder="Select to date" required />
+              {% else %}
+              <input type="" id="acad_cal_reg_date_to" name="acad_cal_reg_date_to"
+                value="{{ acad_cal_obj.acad_cal_reg_date_to | date:'Y-m-d'}}" class="form-control" date-picker="date"
+                placeholder="Select to date" />
+              {% endif %}
+            </div>
+            <div class="col-4 mb-3">
+              <label for="acad_cal_reg_last_date_fee" class="form-label"> Last Date of registration with late Fee
+              </label>
+              {% if acad_cal_obj is None %}
+              <input type="date" id="acad_cal_reg_last_date_fee" name="acad_cal_reg_last_date_fee" class="form-control"
+                date-picker="date" placeholder="Select Last Date of registration with late Fee" required />
+              {% else %}
+              <input type="" id="acad_cal_reg_last_date_fee" name="acad_cal_reg_last_date_fee"
+                value="{{ acad_cal_obj.acad_cal_reg_last_date_fee | date:'Y-m-d'}}" class="form-control"
+                date-picker="date" />
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-4">
+        <h5 class="card-header"> IA - Internal Assessments </h5>
+        <div class="card-body">
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="pills-ia1-tab" data-bs-toggle="pill" data-bs-target="#pills-ia1"
+                type="button" role="tab" aria-controls="pills-ia1" aria-selected="true">
+                IA - 1
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-ia2-tab" data-bs-toggle="pill" data-bs-target="#pills-ia2"
+                type="button" role="tab" aria-controls="pills-ia2" aria-selected="false">
+                IA - 2
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-ia3-tab" data-bs-toggle="pill" data-bs-target="#pills-ia3"
+                type="button" role="tab" aria-controls="pills-ia3" aria-selected="false">
+                IA - 3
+              </button>
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-ia1" role="tabpanel" aria-labelledby="pills-ia1-tab">
+              <div class="row mt-4">
+                <div class="col-3 mb-3">
+                  <label for="acad_cal_att_display_ia_1" class="form-label"> Attendance Display </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_att_display_ia_1" name="acad_cal_att_display_ia_1"
+                    class="form-control" date-picker="date" placeholder="Select Attendance Display Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_att_display_ia_1" name="acad_cal_att_display_ia_1"
+                    value="{{ acad_cal_obj.acad_cal_att_display_ia_1 | date:'Y-m-d'}}" class="form-control"
+                    date-picker="date" />
+                  {% endif %}
+                </div>
+                <div class="col-3 mb-3">
+                  <label for="acad_cal_ia_1_from" class="form-label"> IA - 1 From Date </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_ia_1_from" name="acad_cal_ia_1_from" class="form-control"
+                    date-picker="date" placeholder="Select IA-1 from Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_ia_1_from" name="acad_cal_ia_1_from"
+                    value="{{ acad_cal_obj.acad_cal_ia_1_from | date:'Y-m-d' }}" class="form-control"
+                    date-picker="date" />
+                  {% endif %}
+                </div>
+                <div class="col-3 mb-3">
+                  <label for="acad_cal_ia_1_to" class="form-label"> IA - 1 To Date </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_ia_1_to" name="acad_cal_ia_1_to" class="form-control"
+                    date-picker="date" placeholder="Select IA-1 to Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_ia_1_to" name="acad_cal_ia_1_to"
+                    value="{{ acad_cal_obj.acad_cal_ia_1_to | date:'Y-m-d'}}" class="form-control" date-picker="date" />
+                  {% endif %}
+                </div>
+                <div class="col-3 mb-3">
+                  <label for="acad_cal_commn_to_parent_ia_1" class="form-label"> Performance to Parents </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_commn_to_parent_ia_1" name="acad_cal_commn_to_parent_ia_1"
+                    class="form-control" date-picker="date" placeholder="Select Performance to Parents Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_commn_to_parent_ia_1" name="acad_cal_commn_to_parent_ia_1"
+                    value="{{ acad_cal_obj.acad_cal_commn_to_parent_ia_1 | date:'Y-m-d'}}" class="form-control"
+                    date-picker="date" />
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="pills-ia2" role="tabpanel" aria-labelledby="pills-ia2-tab">
+              <div class="row">
+                <div class="col-3 mb-3">
+                  <label for="acad_cal_att_display_ia_2" class="form-label"> Attendance Display </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_att_display_ia_2" name="acad_cal_att_display_ia_2"
+                    class="form-control" date-picker="date" placeholder="Select Attendance Display Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_att_display_ia_2" name="acad_cal_att_display_ia_2"
+                    value="{{ acad_cal_obj.acad_cal_att_display_ia_2 | date:'Y-m-d'}}" class="form-control"
+                    date-picker="date" />
+                  {% endif %}
+                </div>
+                <div class="col-3 mb-3">
+                  <label for="acad_cal_ia_2_from" class="form-label"> IA - 2 From Date </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_ia_2_from" name="acad_cal_ia_2_from" class="form-control"
+                    date-picker="date" placeholder="Select IA-2 from Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_ia_2_from" name="acad_cal_ia_2_from"
+                    value="{{ acad_cal_obj.acad_cal_ia_2_from | date:'Y-m-d'}}" class="form-control"
+                    date-picker="date" />
+                  {% endif %}
+                </div>
+                <div class="col-3 mb-3">
+                  <label for="acad_cal_ia_2_to" class="form-label"> IA - 2 to Date </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_ia_2_to" name="acad_cal_ia_2_to" class="form-control"
+                    date-picker="date" placeholder="Select IA-2 to Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_ia_2_to" name="acad_cal_ia_2_to"
+                    value="{{ acad_cal_obj.acad_cal_ia_2_to | date:'Y-m-d'}}" class="form-control" date-picker="date" />
+                  {% endif %}
+                </div>
+                <div class="col-3 mb-3">
+                  <label for="acad_cal_commn_to_parent_ia_2" class="form-label"> Performance to Parents </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_commn_to_parent_ia_2" name="acad_cal_commn_to_parent_ia_2"
+                    class="form-control" date-picker="date" placeholder="Select Performance to Parents Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_commn_to_parent_ia_2" name="acad_cal_commn_to_parent_ia_2"
+                    value="{{ acad_cal_obj.acad_cal_commn_to_parent_ia_2 | date:'Y-m-d'}}" class="form-control"
+                    date-picker="date" />
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="pills-ia3" role="tabpanel" aria-labelledby="pills-ia3-tab">
+              <div class="row">
+                <div class="col-6 mb-3">
+                  <label for="acad_cal_ia_3_from" class="form-label"> IA - 3 From Date </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_ia_3_from" name="acad_cal_ia_3_from" class="form-control"
+                    date-picker="date" placeholder="Select IA-3 from Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_ia_3_from" name="acad_cal_ia_3_from"
+                    value="{{ acad_cal_obj.acad_cal_ia_3_from | date:'Y-m-d'}}" class="form-control"
+                    date-picker="date" />
+                  {% endif %}
+                </div>
+                <div class="col-6 mb-3">
+                  <label for="acad_cal_ia_3_to" class="form-label"> IA - 3 To Date </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_ia_3_to" name="acad_cal_ia_3_to" class="form-control"
+                    date-picker="date" placeholder="Select IA-3 to Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_ia_3_to" name="acad_cal_ia_3_to"
+                    value="{{ acad_cal_obj.acad_cal_ia_3_to | date:'Y-m-d'}}" class="form-control" date-picker="date" />
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row mt-4">
+        <div class="col-3 mb-3">
+          <label for="acad_cal_drop_course" class="form-label"> Course Drop </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_drop_course" name="acad_cal_drop_course" class="form-control"
+            date-picker="date" placeholder="Select Course Drop Date" required />
+          {% else %}
+          <input type="" id="acad_cal_drop_course" name="acad_cal_drop_course"
+            value="{{ acad_cal_obj.acad_cal_drop_course | date:'Y-m-d'}}" class="form-control" date-picker="date" />
+          {% endif %}
+        </div>
+        <div class="col-3 mb-3">
+          <label for="acad_cal_withdraw_course" class="form-label"> Course Withdrawal </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_withdraw_course" name="acad_cal_withdraw_course" class="form-control"
+            date-picker="date" placeholder="Select Course Withdrawal Date" required />
+          {% else %}
+          <input type="" id="acad_cal_withdraw_course" name="acad_cal_withdraw_course"
+            value="{{ acad_cal_obj.acad_cal_withdraw_course | date:'Y-m-d'}}" class="form-control" date-picker="date" />
+          {% endif %}
+        </div>
+        <div class="col-3 mb-3">
+          <label for="acad_cal_parents_meet" class="form-label"> Parents Meet </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_parents_meet" name="acad_cal_parents_meet" class="form-control"
+            date-picker="date" placeholder="Select Parents Meet Date" required />
+          {% else %}
+          <input type="" id="acad_cal_parents_meet" name="acad_cal_parents_meet"
+            value="{{ acad_cal_obj.acad_cal_parents_meet | date:'Y-m-d'}}" class="form-control" date-picker="date" />
+          {% endif %}
+        </div>
+        <div class="col-3 mb-3">
+          <label for="acad_cal_last_day_teaching" class="form-label"> Last Teaching Day </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_last_day_teaching" name="acad_cal_last_day_teaching" class="form-control"
+            date-picker="date" placeholder="Select Last Teaching Date" required />
+          {% else %}
+          <input type="" id="acad_cal_last_day_teaching" name="acad_cal_last_day_teaching"
+            value="{{ acad_cal_obj.acad_cal_last_day_teaching | date:'Y-m-d'}}" class="form-control"
+            date-picker="date" />
+          {% endif %}
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-6 mb-3">
+          <label for="acad_cal_st_feedback_from" class="form-label"> Student Feedback From Dates </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_st_feedback_from" name="acad_cal_st_feedback_from" class="form-control"
+            date-picker="date" placeholder="Select From Date" required />
+          {% else %}
+          <input type="" id="acad_cal_st_feedback_from" name="acad_cal_st_feedback_from"
+            value="{{ acad_cal_obj.acad_cal_st_feedback_from | date:'Y-m-d'}}" class="form-control"
+            date-picker="date" />
+          {% endif %}
+        </div>
+        <div class="col-6 mb-3">
+          <label for="acad_cal_st_feedback_to" class="form-label"> Student Feedback To Dates </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_st_feedback_to" name="acad_cal_st_feedback_to" class="form-control"
+            date-picker="date" placeholder="Select To Date" required />
+          {% else %}
+          <input type="" id="acad_cal_st_feedback_to" name="acad_cal_st_feedback_to"
+            value="{{ acad_cal_obj.acad_cal_st_feedback_to | date:'Y-m-d'}}" class="form-control" date-picker="date" />
+          {% endif %}
+        </div>
+      </div>
+      <div class="card mt-2">
+        <h5 class="card-header">CIE - Continuous Internal Evaluation</h5>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-4 mb-3">
+              <label for="acad_cal_cie_marks_display" class="form-label"> CIE Marks Display </label>
+              {% if acad_cal_obj is None %}
+              <input type="date" id="acad_cal_cie_marks_display" name="acad_cal_cie_marks_display" class="form-control"
+                date-picker="date" placeholder="Select CIE Marks Display Date" required />
+              {% else %}
+              <input type="" id="acad_cal_cie_marks_display" name="acad_cal_cie_marks_display"
+                value="{{ acad_cal_obj.acad_cal_cie_marks_display | date:'Y-m-d'}}" class="form-control"
+                date-picker="date" />
+              {% endif %}
+            </div>
+            <div class="col-4 mb-3">
+              <label for="acad_cal_attendance_display" class="form-label"> Attendance Display </label>
+              {% if acad_cal_obj is None %}
+              <input type="date" id="acad_cal_attendance_display" name="acad_cal_attendance_display"
+                class="form-control" date-picker="date" placeholder="Select Attendance Display Date" required />
+              {% else %}
+              <input type="" id="acad_cal_attendance_display" name="acad_cal_attendance_display"
+                value="{{ acad_cal_obj.acad_cal_attendance_display | date:'Y-m-d'}}" class="form-control"
+                date-picker="date" />
+              {% endif %}
+            </div>
+            <div class="col-4 mb-3">
+              <label for="acad_cal_commn_to_parent_cie" class="form-label"> CIE to Parents </label>
+              {% if acad_cal_obj is None %}
+              <input type="date" id="acad_cal_commn_to_parent_cie" name="acad_cal_commn_to_parent_cie"
+                class="form-control" date-picker="date" placeholder="Select CIE to Parents Date" required />
+              {% else %}
+              <input type="" id="acad_cal_commn_to_parent_cie" name="acad_cal_commn_to_parent_cie"
+                value="{{ acad_cal_obj.acad_cal_commn_to_parent_cie | date:'Y-m-d'}}" class="form-control"
+                date-picker="date" />
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card mt-4">
+        <h5 class="card-header">SEE - Semester End Examination</h5>
+        <div class="card-body">
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button class="nav-link active" id="pills-lab-tab" data-bs-toggle="pill" data-bs-target="#pills-lab"
+                type="button" role="tab" aria-controls="pills-lab" aria-selected="true">
+                Lab
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button class="nav-link" id="pills-theory-tab" data-bs-toggle="pill" data-bs-target="#pills-theory"
+                type="button" role="tab" aria-controls="pills-theory" aria-selected="false">
+                Theory
+              </button>
+            </li>
+          </ul>
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-lab" role="tabpanel" aria-labelledby="pills-lab-tab">
+              <div class="row mt-2">
+                <div class="col-6 mb-3">
+                  <label for="acad_cal_see_lab_from" class="form-label"> SEE Lab From Date </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_see_lab_from" name="acad_cal_see_lab_from" class="form-control"
+                    date-picker="date" placeholder="Select From Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_see_lab_from" name="acad_cal_see_lab_from"
+                    value="{{ acad_cal_obj.acad_cal_see_lab_from | date:'Y-m-d'}}" class="form-control"
+                    date-picker="date" />
+                  {% endif %}
+                </div>
+                <div class="col-6 mb-3">
+                  <label for="acad_cal_see_lab_to" class="form-label"> SEE Lab To Date </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_see_lab_to" name="acad_cal_see_lab_to" class="form-control"
+                    date-picker="date" placeholder="Select To Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_see_lab_to" name="acad_cal_see_lab_to"
+                    value="{{ acad_cal_obj.acad_cal_see_lab_to | date:'Y-m-d'}}" class="form-control"
+                    date-picker="date" />
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="pills-theory" role="tabpanel" aria-labelledby="pills-theory-tab">
+              <div class="row mt-2">
+                <div class="col-6 mb-3">
+                  <label for="acad_cal_see_theory_from" class="form-label"> SEE Theory From Date </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_see_theory_from" name="acad_cal_see_theory_from" class="form-control"
+                    date-picker="date" placeholder="Select From Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_see_theory_from" name="acad_cal_see_theory_from"
+                    value="{{ acad_cal_obj.acad_cal_see_theory_from | date:'Y-m-d'}}" class="form-control"
+                    date-picker="date" />
+                  {% endif %}
+                </div>
+                <div class="col-6 mb-3">
+                  <label for="acad_cal_see_theory_to" class="form-label"> SEE Theory To Date </label>
+                  {% if acad_cal_obj is None %}
+                  <input type="date" id="acad_cal_see_theory_to" name="acad_cal_see_theory_to" class="form-control"
+                    date-picker="date" placeholder="Select To Date" required />
+                  {% else %}
+                  <input type="" id="acad_cal_see_theory_to" name="acad_cal_see_theory_to"
+                    value="{{ acad_cal_obj.acad_cal_see_theory_to | date:'Y-m-d'}}" class="form-control"
+                    date-picker="date" />
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-4 mb-3">
+          <label for="acad_cal_makeup_from" class="form-label"> Makeup Examination From </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_makeup_from" name="acad_cal_makeup_from" class="form-control"
+            date-picker="date" placeholder="Select From Date" required />
+          {% else %}
+          <input type="" id="acad_cal_makeup_from" name="acad_cal_makeup_from"
+            value="{{ acad_cal_obj.acad_cal_makeup_from | date:'Y-m-d'}}" class="form-control" date-picker="date" />
+          {% endif %}
+        </div>
+        <div class="col-4 mb-3">
+          <label for="acad_cal_makeup_to" class="form-label"> Makeup Examination To </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_makeup_to" name="acad_cal_makeup_to" class="form-control" date-picker="date"
+            placeholder="Select To Dates" />
+          {% else %}
+          <input type="" id="acad_cal_makeup_to" name="acad_cal_makeup_to"
+            value="{{ acad_cal_obj.acad_cal_makeup_to | date:'Y-m-d'}}" class="form-control" date-picker="date" />
+          {% endif %}
+        </div>
+        <div class="col-4 mb-3">
+          <label for="acad_cal_results_declaration" class="form-label"> Results Declaration </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_results_declaration" name="acad_cal_results_declaration" class="form-control"
+            date-picker="date" placeholder="Select Results Declaration Date" required />
+          {% else %}
+          <input type="" id="acad_cal_results_declaration" name="acad_cal_results_declaration"
+            value="{{ acad_cal_obj.acad_cal_results_declaration | date:'Y-m-d'}}" class="form-control"
+            date-picker="date" />
+          {% endif %}
+        </div>
+      </div>
+      <div class="row mt-2">
+        <div class="col-6 mb-3">
+          <label for="acad_cal_intersem_recess_from" class="form-label"> Inter Semester Vacation </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_intersem_recess_from" name="acad_cal_intersem_recess_from"
+            class="form-control" date-picker="date" placeholder="Select From Date" required />
+          {% else %}
+          <input type="" id="acad_cal_intersem_recess_from" name="acad_cal_intersem_recess_from"
+            value="{{ acad_cal_obj.acad_cal_intersem_recess_from| date:'Y-m-d'}}" class="form-control"
+            date-picker="date" />
+          {% endif %}
+        </div>
+        <div class="col-6 mb-3">
+          <label for="acad_cal_intersem_recess_to" class="form-label"> Inter Semester Vacation </label>
+          {% if acad_cal_obj is None %}
+          <input type="date" id="acad_cal_intersem_recess_to" name="acad_cal_intersem_recess_to" class="form-control"
+            date-picker="date" placeholder="Select To Date" required />
+          {% else %}
+          <input type="" id="acad_cal_intersem_recess_to" name="acad_cal_intersem_recess_to"
+            value="{{ acad_cal_obj.acad_cal_intersem_recess_to | date:'Y-m-d'}}" class="form-control"
+            date-picker="date" />
+          {% endif %}
+        </div>
+      </div>
+
+
+      <div class="row">
+        <div class="d-grid gap-2 col-1 mx-auto">
+          {% if acad_cal_obj is None %}
+          <input type="date" name="btn_clicked" value="register" hidden>
+          <button type="submit" name="btn_acad_cal" id="btn_acad_cal" value="register"
+            class="btn btn-primary">Submit</button>
+          {% else %}
+          <input type="text" name="acad_cal_id" value="{{ acad_cal_obj.acad_cal_id }}" hidden >
+          <input type="date" name="btn_clicked" value="update" hidden>
+          <button type="submit" name="btn_acad_cal" value="update" id="btn_acad_cal"
+            class="btn btn-success btn-lg">Update</button>
+          {% endif %}
+        </div>
+      </div>
+    </form>
+  </div>
+</section>
+<div>
+  {% for message in messages %}
+  <h5>{{message}}</h5>
+  {% endfor %}
+</div>
+{% endblock %}

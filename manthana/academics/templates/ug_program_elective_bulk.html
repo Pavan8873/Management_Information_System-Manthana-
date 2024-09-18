@@ -1,0 +1,247 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>UG Program/Open Elective Registration</title>{% endblock %}
+
+{% block page-content %}
+
+<h2 align="center">UG Program/Open Elective Bulk</h2>
+<!-- Main Content -->
+<section class="mt-3 mb-3">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <form action="/bulkRegisterElectives" method="POST" id="bulkRegElectives"
+      data-student-ele-url="{% url 'ajax_ugload_student_elective_reg' %}"
+      data-program-ele-url="{% url 'ajax_ugload_program_elective' %}">
+      {% csrf_token %}
+      <div class="row mt-4">
+        <div class="col-3 mb-3">
+          <label for="academic_year" class="form-label">
+            Academic Year
+          </label>
+          <select name="academic_year" id="academic_year" required class="form-select">
+            <option value="" disabled selected>Choose Academic Year</option>
+            {% for aca_yr in acad_year_tbl %}
+            <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <input type="text" name="hidden_academic_year" id="hidden_academic_year" hidden>
+        <div class="col-3 mb-3">
+          <label for="offered_by" class="form-label"> Department: </label>
+          <select id="offered_by" name="offered_by" value="{{ scheme_details.offered_by_id }}" class="form-select"
+            required>
+            <option disabled selected>Choose Branch</option>
+            {% for i in dept %}
+            <option value="{{i.dept_id}}">{{i.dept_name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-4 mb-3">
+          <label for="acad_cal_type" class="form-label">Academic Type</label>
+          <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+            <option value="" disabled selected>Choose Academic Type</option>
+            <option value="1">Regular Semester</option>
+            <option value="2">STC Semester</option>
+          </select>
+        </div>
+        <input type="text" name="hidden_offered_by" id="hidden_offered_by" hidden>
+        <div class="col-3 mb-3">
+          <label for="course_sem" class="form-label"> Semester </label>
+          <select name="course_sem" id="course_sem" required class="form-select">
+            <option value="" disabled selected>Choose Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+          </select>
+        </div>
+        <input type="text" name="hidden_course_sem" id="hidden_course_sem" hidden>
+        <div class="col-3 mb-3">
+          <label name="div" for="div" class="form-label"> Division </label>
+          <select name="div" id="div" required class="form-select">
+            <option value="" disabled selected>Division</option>
+            {% for div in div_tbl %}
+            <option value="{{div.id}}">{{div.division}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-3 mb-3">
+          <label for="offered_by1" class="form-label"> Other Branch Elective: </label>
+          <select id="offered_by1" name="offered_by1" value="{{ scheme_details.offered_by_id }}" class="form-select"
+            required>
+            <option disabled selected>Choose Branch</option>
+            {% for i in dept %}
+            <option value="{{i.dept_id}}">{{i.dept_name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-6 mb-3">
+            <label for="course_type" class="form-label"> Course Type: </label>
+            <select id="course_type" name="course_type" required class="form-select">
+              <option disabled selected>Choose Course Type</option>
+              <option value="5">Program Elective</option>
+              <option value="6">Open Elective</option>
+            </select>
+          </div>
+
+          <div class="col-6 mb-3">
+            <label for="courselist" class="form-label">Elective to be registered for </label>
+            <select name="courselist" id="courselist" class="form-select">
+            </select>
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="mb-3 table-responsive text-center">
+            <div class="card showTable" id="sTable">
+              <div class="card-body">
+                <table id="StudentData" name="StudentData" class="table table-sm">
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="d-grid gap-4 col-1 mx-auto">
+            <input type="text" name="btn_clicked" value="register" hidden>
+            <button type="submit" name="ug_btn_div_allot" id="ug_btn_div_allot" value="register"
+              class="btn btn-primary">Submit</button>
+          </div>
+          <div class="d-grid gap-4 col-1 mx-auto">
+            <button type="reset" name="ug_btn_reset" id="ug_btn_reset" value="reset" class="btn btn-primary"
+              onclick="resetPage()">Reset</button>
+          </div>
+        </div>
+    </form>
+  </div>
+</section>
+
+<script>
+  function resetPage() {
+    $('#academic_year').prop('disabled', false);
+    $('#offered_by').prop('disabled', true);
+    $('#course_sem').prop('disabled', true);
+    $('#div').prop('disabled', true);
+    $('#course_type').prop('disabled', true);
+    $('#courselist').prop('disabled', true);
+  }
+
+  $(document).ready(function () {
+
+    $('#offered_by').prop('disabled', true);
+    $('#course_sem').prop('disabled', true);
+    $('#div').prop('disabled', true);
+    $('#course_type').prop('disabled', true);
+    $('#courselist').prop('disabled', true);
+
+    // Enable offered_by dropdown after academic_year is selected
+    $('#academic_year').change(function () {
+      $('#offered_by').prop('disabled', false);
+    });
+
+    // Enable course_sem dropdown after offered_by is selected
+    $('#offered_by').change(function () {
+      $('#course_sem').prop('disabled', false);
+    });
+
+    // Enable div dropdown after course_sem is selected
+    $('#course_sem').change(function () {
+      $('#div').prop('disabled', false);
+    });
+
+    // Store selected values and enable course_type after div is selected
+    $('#div').change(function () {
+      $('#hidden_academic_year').val($('#academic_year').val());
+      $('#hidden_offered_by').val($('#offered_by').val());
+      $('#hidden_course_sem').val($('#course_sem').val());
+      $('#academic_year').prop('disabled', true);
+      $('#offered_by').prop('disabled', true);
+      $('#course_sem').prop('disabled', true);
+      $('#course_type').prop('disabled', false);
+    });
+
+    // Load electives based on selected course_type and other inputs
+    $('#course_type').change(function () {
+      $('#courselist').prop('disabled', false);
+      var url2 = $("#bulkRegElectives").attr("data-program-ele-url");
+      var academic_year = $('#hidden_academic_year').val();
+      var course_sem = $('#hidden_course_sem').val();
+      var offered_by = $('#hidden_offered_by').val();
+      var elective_type = $('#course_type').val();
+      var acad_cal_type = $('#acad_cal_type').val();
+      $.ajax({
+        url: url2,
+        data: {
+          'academic_year': academic_year,
+          'course_sem': course_sem,
+          'offered_by': offered_by,
+          'elective_type': elective_type,
+          'acad_cal_type': acad_cal_type
+        },
+        success: function (data) {
+          $("#courselist").html(data);
+        }
+      });
+    });
+
+    // Additional AJAX call for "Other Branch Elective"
+    $('#offered_by1').change(function () {
+      $('#course_type').prop('disabled', false);
+      var url2 = $("#bulkRegElectives").attr("data-program-ele-url");
+      var academic_year = $('#hidden_academic_year').val();
+      var course_sem = $('#hidden_course_sem').val();
+      var offered_by1 = $('#offered_by1').val();
+      var elective_type = $('#course_type').val();
+      var acad_cal_type = $('#acad_cal_type').val();
+
+      $.ajax({
+        url: url2,
+        data: {
+          'academic_year': academic_year,
+          'course_sem': course_sem,
+          'offered_by': offered_by1, // Using offered_by1 for other branch elective
+          'elective_type': elective_type,
+          'acad_cal_type': acad_cal_type
+        },
+        success: function (data) {
+          $("#courselist").html(data);
+        }
+      });
+    });
+    $('#courselist').change(function () {
+      $('#div').prop('disabled', true);
+      var url1 = $("#bulkRegElectives").attr("data-student-ele-url");
+      var academic_year = $('#hidden_academic_year').val();
+      var course_sem = $('#hidden_course_sem').val();
+      var offered_by = $('#hidden_offered_by').val();
+      var div = $('#div').val();
+      var elective_course_code = $('#courselist').val();
+
+      var acad_cal_type = $('#acad_cal_type').val();
+      //ajax request to load students
+      $.ajax({                       // initialize an AJAX request
+        url: url1,                    // set the url of the request (= localhost:8000/load_student/)
+        data: {
+          'academic_year': academic_year,       // add the programming id to the GET parameters
+          'course_sem': course_sem,
+          'offered_by': offered_by,
+          'div': div,
+          'elective_course_code': elective_course_code,
+          'acad_cal_type': acad_cal_type
+        },
+        success: function (data) {   // data is the return of the load_student view function
+          $("#StudentData").html(data);  // replace the contents of the course input with the data that came from the server
+        }
+      });
+
+    });
+
+
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,156 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Register First Year Student</title>{% endblock %}
+
+{% block page-content %}
+
+<h2 align="center">First Year Student Division Allottment</h2>
+    <!-- Main Content -->
+    <section class="mt-3 mb-3">
+      <div class="container shadow rounded-3 p-4 bg-white">
+        <form action="/allotDivision" method="POST" id="divAllotForm" data-student-url="{% url 'ajax_load_student' %}">
+          {% csrf_token %}
+          <div class="row mt-3">
+            <div class="col-4 mb-3">
+              <label for="academic_year" class="form-label">
+                Academic Year
+              </label>
+              <select name="academic_year" id="academic_year" required class="form-select">
+                <option value="" disabled selected>Choose Academic Year</option>
+                {% for aca_yr in academic_year %}
+                <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+                <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-4 mb-3">
+              <label for="acad_cal_type" class="form-label"> Academic Type </label>
+              <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+              
+                <option disabled selected>Choose Academic_type</option>
+                <option value="1">Regular Semester</option>
+                <option value="2">STC Semester</option>
+              
+                
+              </select>
+            </div>
+            <div class="col-4 mb-3">
+              <label for="course_sem" class="form-label"> Semester </label>
+              <select name="course_sem" id="course_sem" required class="form-select">
+                <option value="" disabled selected>Choose Semester</option>
+                <option value="1">1st Semester</option>
+                <option value="2">2nd Semester</option>
+              </select>
+            </div>
+            <div class="col-4 mb-3">
+              <label name="dep" for="dep" class="form-label"> Department </label>
+              <select name="dep" id="dep" required class="form-select">
+                <option value="" disabled selected>Department</option>
+                {% for div in dep %}
+                <option value="{{div.dept_id}}">{{div.dept_name}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-4 mb-3">
+              <label name="div" for="div" class="form-label"> Division </label>
+              <select name="div" id="div" required class="form-select">
+                <option value="" disabled selected>Division</option>
+                {% for div in div_tbl %}
+                <option value="{{div.id}}">{{div.division}}</option>
+                {% endfor %}
+              </select>
+            </div>
+          
+          </div>
+          <div class="row">
+            <div class="mb-3 table-responsive text-center">
+            <label for="student-list" class="form-label">
+                Student List
+              </label>
+              <div class="card showTable" id="sTable">
+                <div class="card-body">
+                  <table id="StudentData" name="StudentData" class="table table-sm" >                  
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+         
+            <div class="d-grid gap-4 col-1 mx-auto">
+              <input type="text" name="btn_clicked" value="register" hidden>
+              <button type="submit" name="btn_div_allot" id="btn_div_allot" value="register" class="btn btn-primary">Submit</button>
+              
+            </div>
+            
+            
+          
+          <!-- <div class="row">
+            <div class="mb-3 table-responsive text-center">
+              <label for="student-list" class="form-label">Student List</label>
+              <div class="card showTable" id="sTable">
+                <div class="card-body">
+                  {% if student_list %}
+                    <table id="StudentData" name="StudentData" class="table table-sm">
+                      <thead>
+                        <tr>
+                          <th>Student ID</th>
+                          <th>Student Name</th>
+                          <th>Sem</th>
+                          <th>Division</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for student in student_list %}
+                        <tr>
+                          <td>{{ student.st_uid }}</td>
+                          <td>{{ student.st_name }}</td>
+                          <td>{{ student.sem}}</td>
+                          <td>{{ student.division }}</td>
+                          
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  {% else %}
+                    <p>No students found for the selected criteria.</p>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+          </div> -->
+          
+        </form>
+      </div>
+    </section>
+    <script>
+      //changes to be made
+        $("#dep").change(function () {
+        var url1 = $("#divAllotForm").attr("data-student-url"); 
+        console.log("jjji")
+        console.log(url1) // get the url of the `load_student` view
+        var academic_year = $('#academic_year').val();  // get the selected programming ID from the HTML input
+        var programmingId = $('#course_sem').val();
+        var dep = $('#dep').val();
+        
+        var acad_cal_type = $('#acad_cal_type').val();
+        console.log(dep,programmingId,academic_year)
+        $.ajax({                       // initialize an AJAX request
+          url: url1,                    // set the url of the request (= localhost:8000/load_student/)
+          data: {
+            'academic_year': academic_year,       // add the programming id to the GET parameters
+            'course_sem' : programmingId,
+            'dep':dep,
+            'acad_cal_type':acad_cal_type
+          },
+          success: function (data) {   // `data` is the return of the `load_student` view function
+            console.log("jjj")
+            console.log(data)
+            $("#StudentData").html(data);  // replace the contents of the course input with the data that came from the server
+          }
+        });
+      });
+    </script>
+
+{% endblock %}

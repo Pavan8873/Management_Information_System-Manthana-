@@ -1,0 +1,2096 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+<title>Add Transfer of College</title>{% endblock %} {% block page-content %}
+<link href="{% static 'fonts/SansationLight/font.css' %}" rel="stylesheet">
+<script src="{% static 'js/validate_clgtr.js' %}"></script>
+
+{% if userName is None %}
+<h3>You are not authorized to view this page!!</h3>
+{% else %}
+<div class="col-md mx-auto text-center h6" style="font-size: 0.9rem;">
+    <h4 align="center"><strong> Application For Admission Transfer of College </h4>
+    <h6>Tranfer (Change of College)</strong> </h6>
+    <form action="{% url 'admitCollegetransferstud'%}" method="POST" id="clgtr_register_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <ul class="nav nav-tabs justify-content-center">
+            <li class="nav-item">
+                <a class="nav-link active_tab1" style="border:1px solid #ccc" id="list_photo_details">Student
+                    photograph</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link inactive_tab1" style="border:1px solid #ccc" id="list_login_details">Student
+                    Information</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link inactive_tab1" id="list_personal_details" style="border:1px solid #ccc">Personal
+                    Information</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link inactive_tab1" id="list_academic_details" style="border:1px solid #ccc">Academic
+                    Information</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link inactive_tab1" id="list_admission_details" style="border:1px solid #ccc">Admission
+                    Information</a>
+            </li>
+        </ul>
+
+        <div class="tab-content">
+            <div class="tab-pane active" id="photo_details">
+                <div class="card">
+                    <div class="card-body">
+                        {% if student %}
+                        <table class="table table-borderless">
+                            <tr>
+                                <td class="text-end">Student Photo: </td>
+                                <td class="text-start"><img src="/media/{{ student.st_profile_pic }}" alt="" width="104"
+                                        height="129" id="st_photo"></td>
+                            </tr>
+                        </table>
+                        {% endif %}
+                        <table class="table table-borderless">
+                            <tr class="card-body">
+                                <td class="text-end"><label>Select Photo Capture Method:</label></td>
+                                <td class="text-start"><input type="radio" id="live_capture" name="photo_capture"
+                                        onchange="show1(this.value)">
+                                    <label>Live Capture</label>
+                                    <input type="radio" id="photo_upload" name="photo_capture"
+                                        onchange="show2(this.value)">
+                                    <label>Photo Upload</label>
+                                </td>
+                                <td></td>
+                            </tr>
+                        </table>
+                        <table class="table table-borderless">
+                            <tr class="card-title" id="div_capture" style="display: none;">
+                                <td class="text-end"><label>Student Photo</label></td>
+                                <td class="text-center">
+                                    <a href="#" id="start-camera" class="visible"></a>
+                                    <video id="camera-stream" width="100" height="250"></video>
+                                    <input type="hidden" id="snap" name="snap" hidden>
+                                    <p id="error-message"></p>
+                                    <div class="controls">
+                                        <a href="#" id="take-photo" title="Take Photo"
+                                            class="material-icons">Capture</a>
+                                        <a href="#" id="delete-photo" title="Delete Photo"
+                                            class="material-icons">Retake</a>
+                                    </div>
+                                    <!-- Hidden canvas element. Used for taking snapshot of video. -->
+                                    <div>
+                                        <canvas id="profile_pic"></canvas>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="card-title" id="div_upload1" style="display: none;">
+                                <td class="text-end"><label>Upload Student Image:</label></td>
+                                <td class="text-start">
+                                    <input type="file" id="stImage" name="st_img" accept="image/*"
+                                        onchange="changeEvent(this.value)">
+                                </td>
+                            </tr>
+                            <tr class="card-title" id="div_upload2" style="display: none;">
+                                <td class="text-center"><progress value="0" max="100" id="progress-bar"></progress></td>
+                                <td class="text-center" id="status"></td>
+                            </tr>
+                            <tr class="card-title text-center" id="div_uploaded_img" style="display: none;">
+                                <td class="text-end"><label>Preview Upload Image:</label> </td>
+                                <td class="text-start">
+                                    <input type="hidden" id="up_snap" name="up_snap" hidden>
+                                    <p id="error-message"></p>
+                                    <!-- Hidden canvas element. Used for taking snapshot of video. -->
+                                    <img id="up_profile_pic" width="140" height="180" />
+                                </td>
+                            </tr>
+                        </table>
+
+                        <div align="center">
+                            <button type="button" style="font-size: 18px;" name="btn_photo_details" id="btn_photo_details"
+                                class="btn btn-info btn-sm">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="login_details">
+                <div class="card align-items-center">
+                    <div class="card-body">
+                        <table class="table table-borderless table-hover table-sm">
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end"><label>Year of Admission: <span style="color:red">*</span></label>
+                                    </td>
+                                    <td class="text-start">
+                                        <select class="form-select form-select-sm" name="st_year_of_adm" id="st_year_of_adm" class="form-control" required>
+                                            {% if prv_clgtrns_details is None %}
+                                                <option value="">--Select Year--</option>
+                                                <option value="3">II-Year</option>
+                                                <option value="5">III-Year</option>
+                                                <option value="7">IV-Year</option>
+                                            {% else %}
+                                                {% if prv_clgtrns_details.ug_ptcd_admitted_sem == "3" %} 
+                                                    <option value="3" selected>II-Year</option>
+                                                    <option value="5">III-Year</option>
+                                                    <option value="7">IV-Year</option>
+                                                {% elif prv_clgtrns_details.ug_ptcd_admitted_sem == "5" %}
+                                                    <option value="5" selected>III-Year</option>
+                                                    <option value="3">II-Year</option>
+                                                    <option value="7">IV-Year</option>
+                                                {% elif prv_clgtrns_details.ug_ptcd_admitted_sem == "7" %}
+                                                    <option value="7" selected>IV-Year</option>
+                                                    <option value="3">II-Year</option>
+                                                    <option value="5">III-Year</option>
+                                                {% endif %}
+                                            {% endif %}
+                                            <span id="error_st_year_of_adm" class="text-danger"></span></td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end"><label>Academic Year <span style="color:red">*</span></label>
+                                    </td>
+                                    <td class="text-start"><select class="form-select form-select-sm" name="st_acad_year" id="st_acad_year" class="form-control" required>
+                                            {% if student.st_acad_year_id is None %}
+                                                <option value="">--Select Year--</option>
+                                                {% for aca_yr in academic_year %}
+                                                    <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+                                                {% endfor %}
+                                            {% else %}
+                                                {% for aca_yr in academic_year %}
+                                                    {% if aca_yr.id == student.st_acad_year_id %}
+                                                        <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                            <span id="error_st_acad_year" class="text-danger"></span></td>
+                                </div>
+                            </tr>
+
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end"><label>Date of Admission <span style="color:red">*</span><br>
+                                        </label></td>
+                                    <td class="text-start">
+                                        {% if student is None %}
+                                            <input type="date" id="adm_date" name="adm_date" min="2021-01-01"class="form-control" required>
+                                        {% else %}
+                                            <input type="date" id="adm_date" name="adm_date" min="2021-01-01" value="{{ student.adm_date|date:'Y-m-d'}}" class="form-control">
+                                        {% endif %}
+                                    </td>
+                                    <span id="error_adm_date" class="text-danger"></span>
+                                </div>
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end"><label>Name of the Applicant <span style="color:red">*</span></br> (as per 10th Marks Card)</label></td>
+                                    <td class="text-start"><input type="text" maxlength="50" name="st_name" id="st_name"
+                                            value="{{ student.st_name }}" class="form-control" required />
+                                        <span id="error_st_name" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <input type="hidden" id="st_course" name="st_course" value="TR">
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end"><label>Branch Applied for <span style="color:red">*</span></label></td>
+
+                                    <td class="text-start"><select name="st_branch_applied" id="st_branch_applied"
+                                            class="form-control" required>
+                                            {% if student is None %}
+                                                    <option value="select">--Select Branch--</option>
+                                                    {% for dept in department %}
+                                                          <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+                                                    {% endfor %}
+                                                    {% else %}
+                                                        {% for dept in department %}
+                                                            {% if dept.dept_id == student.st_branch_applied_id %}
+                                                                    <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+                                                            {% endif %}
+                                                        {% endfor %}
+                                                    {% for dept in department %}
+                                                        {% if dept.dept_id != student.st_branch_applied_id %}
+                                                            <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                        <span id="error_st_branch_applied" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label for="st_adm_quota">Admission Quota <span style="color:red">*</span></label></td>
+                                <td class="text-start">
+                                    {% if student is None %}
+                                            {% for qt in quota_tbl%}
+                                                <input type="radio" id="{{qt.name}}" name="st_adm_quota" value="{{qt.id}}">
+                                                <label for="{{qt.name}}">{{qt.name}}</label>
+                                            {% endfor %}
+                                            {% else %}
+                                                    {% for q in quota_tbl%}
+                                                    {% if student.st_adm_quota_id == q.id %}
+                                                        <input type="radio" id="{{q.name}}" name="st_adm_quota" value="{{q.id}}" checked>
+                                                        <label for="{{q.name}}">{{q.name}}</label>
+                                                    {% else %}
+                                                            <input type="radio" id="{{q.name}}" name="st_adm_quota" value="{{q.id}}">
+                                                            <label for="{{q.name}}">{{q.name}}</label>
+                                                    {% endif %}
+                                            {% endfor %}
+                                    {% endif %}
+                                    <span id="error_st_admission_quota" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Date of Birth <span style="color:red">*</span><br> (as appeared in 10th Marks Card ONLY)</label></td>
+                                <td class="text-start">
+                                    {% if student is None %}
+                                    <input type="date" id="st_dob" name="st_dob" min="2000-01-01" class="form-control"
+                                        required> {% else %}
+                                    <input type="date" id="st_dob" name="st_dob" min="2000-01-01"
+                                        value="{{ student.st_dob|date:'Y-m-d'}}" class="form-control"> {% endif %}
+                                    <span id="error_st_dob" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label for="st_gender">Gender <span style="color:red">*</span></label></td>
+                                <td class="text-start">
+                                    {% if student is None %}
+                                    <input type="radio" id="male" name="st_gender" value="1">
+                                    <label for="male">Male</label>
+                                    <input type="radio" id="female" name="st_gender" value="2">
+                                    <label for="female">Female</label>
+                                    <input type="radio" id="others" name="st_gender" value="3">
+                                    <label for="others">Others</label> {% else %} {% if student.st_gender == 1 %}
+                                    <input type="radio" id="male" name="st_gender" value="1" checked>
+                                    <label for="male">Male</label>
+                                    <input type="radio" id="female" name="st_gender" value="2">
+                                    <label for="female">Female</label>
+                                    <input type="radio" id="others" name="st_gender" value="3">
+                                    <label for="others">Others</label> {% elif student.st_gender == 2 %}
+                                    <input type="radio" id="male" name="st_gender" value="1">
+                                    <label for="male">Male</label>
+                                    <input type="radio" id="female" name="st_gender" value="2" checked>
+                                    <label for="female">Female</label>
+                                    <input type="radio" id="others" name="st_gender" value="3">
+                                    <label for="others">Others</label> {% elif student.st_gender == 3 %}
+                                    <input type="radio" id="male" name="st_gender" value="1">
+                                    <label for="male">Male</label>
+                                    <input type="radio" id="female" name="st_gender" value="2">
+                                    <label for="female">Female</label>
+                                    <input type="radio" id="others" name="st_gender" value="3" checked>
+                                    <label for="others">Others</label> {% endif %} {% endif %}
+                                    <span id="error_st_gender" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label for="st_locality">Urban/Rural <span
+                                            style="color:red">*</span></label></td>
+                                <td class="text-start">
+                                    {% if student is None %}
+                                    <input type="radio" id="urban" name="st_locality" value="1">
+                                    <label for="urban">Urban</label>
+                                    <input type="radio" id="rural" name="st_locality" value="2">
+                                    <label for="rural">Rural</label> {% else %} {% if student.st_locality == 1 %}
+                                    <input type="radio" id="urban" name="st_locality" value="1" checked>
+                                    <label for="urban">Urban</label>
+                                    <input type="radio" id="rural" name="st_locality" value="2">
+                                    <label for="rural">Rural</label> {% elif student.st_locality == 2 %}
+                                    <input type="radio" id="urban" name="st_locality" value="1">
+                                    <label for="urban">Urban</label>
+                                    <input type="radio" id="rural" name="st_locality" value="2" checked>
+                                    <label for="rural">Rural</label> {% endif %} {% endif %}
+                                    <span id="error_st_locality" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Blood Group</label><span style="color:red">*</span></td>
+                                <td class="text-text"><select class="form-select form-select-sm" name="st_bld_group"
+                                        id="st_bld_group" class="form-control">
+                                        {% if student is None %}
+                                            <option value="">--Select Blood Group--</option>
+                                        {% for bldGrp in bld_grp_tbl %}
+                                            <option value="{{bldGrp.id}}">{{bldGrp.name}}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                            {% for bldGrp in bld_grp_tbl %}
+                                                {% if bldGrp.id == student.st_bld_group_id %}
+                                                    <option value="{{bldGrp.id}}">{{bldGrp.name}}</option>
+                                                {% endif %}
+                                            {% endfor %}
+                                            {% for bldGrp in bld_grp_tbl %}
+                                                {% if bldGrp.id != student.st_bld_group_id %}
+                                                    <option value="{{bldGrp.id}}">{{bldGrp.name}}</option>
+                                                {% endif %}
+                                            {% endfor%}
+                                        {% endif %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Place of Birth</label></td>
+                                <td class="text-start"><input type="text" maxlength="15" name="st_pob" id="st_pob"
+                                        value="{{ student.st_pob }}" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Mothertongue</label></td>
+                                <td class="text-start"><input type="text" maxlength="15" name="st_mother_tongue"
+                                        value="{{ student.st_mother_tongue }}" id="st_mother_tongue"
+                                        class="form-control">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Nationality <span style="color:red">*</span></label></td>
+                                <td class="text-start">
+                                    {% if student is None %}
+                                        <input type="radio" id="indian" name="st_nationality" value="1">
+                                        <label for="indian">Indian</label>
+                                        <input type="radio" id="other" name="st_nationality" value="2">
+                                        <label for="other">Other</label> 
+                                    {% else %}
+                                            {% if student.st_nationality == 1 %}
+                                                <input type="radio" id="indian" name="st_nationality" value="1" checked>
+                                                <label for="indian">Indian</label>
+                                                <input type="radio" id="other" name="st_nationality" value="2">
+                                                <label for="other">Other</label> 
+                                                {% elif student.st_nationality == 2 %}
+                                                <input type="radio" id="indian" name="st_nationality" value="1">
+                                                <label for="indian">Indian</label>
+                                                <input type="radio" id="other" name="st_nationality" value="2" checked>
+                                                <label for="other">Other</label> 
+                                            {% endif %}
+                                    {% endif %}
+                                    <span id="error_st_national" class="text-danger"></span>
+                                    </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Religion <span style="color:red">*</span></label></td>
+                                <td class="text-start"><select class="form-select form-select-sm" name="st_religion"
+                                        id="st_religion" class="form-control">
+                                        {% if student is None %}
+                                                <option value="" disabled selected>--Select Religion--</option>
+                                                {% for rel in rel_tbl %}
+                                                    <option value="{{rel.id}}">{{rel.name}}</option>
+                                                {% endfor %}
+                                                {% else %}
+                                                    {% for rel in rel_tbl %}
+                                                        {% if rel.id == student.st_religion_id %}
+                                                            <option value="{{rel.id}}">{{rel.name}}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                                    {% for rel in rel_tbl %}
+                                                        {% if rel.id != student.st_religion_id %}
+                                                            <option value="{{rel.id}}">{{rel.name}}</option>
+                                                        {% endif %}
+                                                    {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Caste <span style="color:red">*</span></label></td>
+                                <td class="text-start"><input type="text" maxlength="15" name="st_caste" id="st_caste"
+                                        value="{{ student.st_caste }}" class="form-control" required>
+                                    <span id="error_st_caste" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Sub-Caste</label></td>
+                                <td class="text-start"><input type="text" maxlength="15" name="st_subcaste"
+                                        id="st_subcaste" value="{{ student.st_subcaste }}" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label for="st_category">Actual Category <span
+                                            style="color:red">*</span></label></td>
+                                <td class="text-start">
+                                    {% if student is None %}
+                                            {% for ct in category_tbl%}
+                                                <input type="radio" id="{{ct.name}}" name="st_category" value="{{ct.id}}">
+                                                <label for="{{ct.name}}">{{ct.name}}</label>
+                                            {% endfor %}
+                                    {% else %}
+                                        {% for c in category_tbl%}
+                                            {% if student.st_category_id == c.id %}
+                                                <input type="radio" id="{{c.name}}" name="st_category" value="{{c.id}}" checked>
+                                                <label for="{{c.name}}">{{c.name}}</label>
+                                            {% else %}
+                                                <input type="radio" id="{{c.name}}" name="st_category" value="{{c.id}}">
+                                                <label for="{{c.name}}">{{c.name}}</label>
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <span id="error_st_category" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">
+                                    <label for="st_mobile_no">Mobile Phone Number of the Student <span style="color:red">*</span></label></td>
+                                <td class="text-start">
+                                    <input type="tel" maxlength=10 name="st_mobile_no" id="st_mobile_no" class="form-control" value="{{ student.st_mobile_no }}"
+                                        onkeypress="return onlyNumberKey(event)" required>
+                                    <span id="error_st_mobile_no" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>E-mail ID of the Student</label></td>
+                                {% if student.st_email_id is None %}
+                                <td class="text-start"><input type="email" maxlength=30 name="st_email_id"
+                                        id="st_email_id" value="" class="form-control"></td>
+                                {% else %}
+                                <td class="text-start"><input type="email" maxlength=30 name="st_email_id"
+                                    id="st_email_id" value="{{ student.st_email_id }}" class="form-control"></td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>AADHAR Number</label></td>
+                                {% if student.st_aadhar_no is None  %}
+                                <td class="text-start"><input type="text" name="st_aadhar_no" id="st_aadhar_no" class="form-control" value=""
+                                        onkeypress="return onlyNumberKey(event)" maxlength="12"></td>
+                                {% else %}
+                                <td class="text-start"><input type="text" name="st_aadhar_no" id="st_aadhar_no" class="form-control" value="{{ student.st_aadhar_no }}"
+                                    onkeypress="return onlyNumberKey(event)" maxlength="12"></td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Extra-Curricular Activities</label></td>
+                                {% if student.st_extracurr_activity is None %}
+                                <td class="text-start"><textarea name="st_extracurr_activity" id="st_extracurr_activity"
+                                    cols="25" class="form-control"></textarea>
+                                </td>
+                                {% else %}
+                                <td class="text-start"><textarea name="st_extracurr_activity" id="st_extracurr_activity"
+                                        cols="25" class="form-control">{{ student.st_extracurr_activity }} </textarea>
+                                </td>
+                                {% endif %}
+                            </tr>
+                        </table>
+                        <div align="center">
+                            <button type="button" style="font-size: 18px;" name="previous_btn_login_details" id="previous_btn_login_details"
+                                class="btn btn-secondary btn-sm">Previous</button>
+                            <button type="button" style="font-size: 18px;" name="btn_login_details" id="btn_login_details"
+                                class="btn btn-info btn-sm">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="personal_details">
+                <div class="card align-items-center">
+                    <div class="card-body">
+                        <table class="table table-borderless table-hover table-sm">
+                            <tr>
+                                <td class="text-end"><label>Father's Name <br> (As per 10th Marks Card)<span style="color:red">*</span></label></td>
+                                <td class="text-start"><input type="text" maxlength=15 name="st_father_name" id="st_father_name" value="{{ student.st_father_name }}" class="form-control" required>
+                                    <span id="error_st_father_name" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Mother's Name <br> (As per 10th Marks Card)<span style="color:red">*</span></label></td>
+                                <td class="text-start"><input type="text" maxlength=15 name="st_mother_name" id="st_mother_name" value="{{ student.st_mother_name }}" class="form-control"
+                                        required>
+                                    <span id="error_st_mother_name" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Father's Occupation</label></td>
+                                <td class="text-start"><input type="text" maxlength=25 name="st_father_occupation" id="st_father_occupation" value="{{ student.st_father_occupation }}" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Mother's Occupation</label></td>
+                                <td class="text-start"><input type="text" maxlength=25 name="st_mother_occupation" id="st_mother_occupation" value="{{ student.st_mother_occupation }}" class="form-control"></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Father's Annual Income <span  style="color:red">*</span></label></td>
+                                <td class="text-start"><input type="text" maxlength="9" name="st_father_income" id="st_father_income" value="{{ student.st_father_income }}" class="form-control" onkeypress="return onlyNumberKey(event)" required>
+                                    <span id="error_st_father_income" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Mother's Annual Income</label></td>
+                                <td class="text-start">
+                                {% if student.st_mother_income == None %}
+                                <input type="text" maxlength="9" name="st_mother_income" id="st_mother_income" value="" class="form-control" onkeypress="return onlyNumberKey(event)"></td>
+                                {% else %}
+                                <input type="text" maxlength="9" name="st_mother_income" id="st_mother_income" value="{{ student.st_mother_income }}" class="form-control" onkeypress="return onlyNumberKey(event)"></td>
+                                {% endif %}
+
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label for="st_father_mobile_no">Father's Mobile Phone Number <span style="color:red">*</span></label></td>
+                                <td class="text-start"><input type="tel" maxlength=10 name="st_father_mobile_no" id="st_father_mobile_no" value="{{ student.st_father_mobile_no }}"
+                                        class="form-control" onkeypress="return onlyNumberKey(event)" required>
+                                    <span id="error_st_father_mobile_no" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label for="st_mother_mobile_no">Mother's Mobile Phone Number</label></td>
+                                {% if student.st_mother_mobile_no  is None %}
+                                    <td class="text-start"><input type="tel" maxlength=10 name="st_mother_mobile_no" id="st_mother_mobile_no" value="" class="form-control" onkeypress="return onlyNumberKey(event)"></td>                                    
+                                {% else %}    
+                                    <td class="text-start"><input type="tel" maxlength=10 name="st_mother_mobile_no" id="st_mother_mobile_no" value="{{ student.st_mother_mobile_no }}" class="form-control" onkeypress="return onlyNumberKey(event)"></td>
+                                {% endif%}
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Father's PAN</label></td>
+                                    {% if student.st_father_pan is None %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="st_father_pan" id="st_father_pan" value="" class="form-control">
+                                    {% else %}    
+                                        <td class="text-start"><input type="text" maxlength=10 name="st_father_pan" id="st_father_pan" value="{{ student.st_father_pan }}" class="form-control">
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Mother's PAN</label></td>
+                                {% if student.st_mother_pan is None %}
+                                    <td class="text-start"><input type="text" maxlength=10 name="st_mother_pan" id="st_mother_pan" value="" class="form-control">   
+                                {% else %}    
+                                    <td class="text-start"><input type="text" maxlength=10 name="st_mother_pan" id="st_mother_pan" value="{{ student.st_mother_pan }}" class="form-control">
+                                {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Father's E-mail ID</label></td>
+                                {% if student.st_father_email_id is None %}
+                                    <td class="text-start"><input type="email" maxlength=30 name="st_father_email_id" id="st_father_email_id" value="" class="form-control"></td>
+                                {% else %}
+                                    <td class="text-start"><input type="email" maxlength=30 name="st_father_email_id" id="st_father_email_id" value="{{ student.st_father_email_id }}" class="form-control"></td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Mother's E-mail ID</label></td>
+                                {% if student.st_mother_email_id is None %}    
+                                    <td class="text-start"><input type="email" maxlength=30 name="st_mother_email_id"  id="st_mother_email_id" value="" class="form-control"></td>
+                                {% else %}
+                                    <td class="text-start"><input type="email" maxlength=30 name="st_mother_email_id"  id="st_mother_email_id" value="{{ student.st_mother_email_id }}" class="form-control"></td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Permanent Address of the Father/Guardian <span style="color:red">*</span></label></td>
+                                
+                                <td class="text-start"><textarea name="st_parent_address" id="st_parent_address" rows="5" cols="25" class="form-control" required>{{ student.st_parent_address }}</textarea>
+                                    <span id="error_st_parent_address" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>City <span style="color:red">*</span></label></td>
+                                <td class="text-start"><input type="text" maxlength=30 name="st_parent_address_city" id="st_parent_address_city" value="{{ student.st_parent_address_city }}"
+                                        class="form-control" required>
+                                    <span id="error_st_parent_address_city" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>District <span style="color:red">*</span></label></td>
+                                <td class="text-start"><input type="text" maxlength=30 name="st_parent_address_district" id="st_parent_address_district" value="{{ student.st_parent_address_district }}"
+                                        class="form-control" required>
+                                    <span id="error_st_parent_address_district" class="text-danger"></span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end"><label>State <span style="color:red">*</span></label></td>
+                                    <td class="text-start"><select class="form-select form-select-sm" name="st_parent_address_state" id="st_parent_address_state"
+                                            value="{{ student.st_parent_address_state }}" class="form-control" required>
+                                            {% if student is None %}
+                                                <option value="select">--Select State--</option>
+                                                {% for st in state_tbl %}
+                                                    <option value="{{st.id}}">{{st.name}}</option>
+                                                {% endfor %}
+                                            {% else %}
+                                                {% for st in state_tbl %}
+                                                    {% if st.id == student.st_parent_address_state %}
+                                                        <option value="{{st.id}}">{{st.name}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                                {% for st in state_tbl %}
+                                                    {% if st.id != student.st_parent_address_state %}
+                                                        <option value="{{st.id}}">{{st.name}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                        <span id="error_st_parent_address_state" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>PIN <span style="color:red">*</span></label></td>
+                                <td class="text-start"><input type="text" maxlength=6 name="st_parent_address_pincode" id="st_parent_address_pincode" value="{{ student.st_parent_address_pincode }}"
+                                        class="form-control" onkeypress="return onlyNumberKey(event)" required>
+                                    <span id="error_st_parent_address_pincode" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="color:blue"><input type="checkbox" id="st_postal_same_address" name="st_postal_same_address" onclick="FillPostalAddress(this.form)">&nbsp;Postal Address is same as Permanent
+                                    Address
+                                </td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Postal Address of the Father/Guardian <span style="color:red">*</span></label></td>
+                                <td class="text-start"><textarea name="st_postal_address" id="st_postal_address" rows="5" cols="25" class="form-control" required>{{ student.st_postal_address }}</textarea>
+                                    <span id="error_st_postal_address" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>City <span style="color:red">*</span></label></td>
+                                <td class="text-start"><input type="text" maxlength=30 name="st_postal_address_city" id="st_postal_address_city" value="{{ student.st_postal_address_city }}" class="form-control" required>
+                                    <span id="error_st_postal_address_city" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>District <span style="color:red">*</span></label></td>
+                                <td class="text-start"><input type="text" maxlength=30 name="st_postal_address_district" id="st_postal_address_district" value="{{ student.st_postal_address_district }}" class="form-control" required>
+                                    <span id="error_st_postal_address_district" class="text-danger"></span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end"><label>State <span style="color:red">*</span></label></td>
+                                    <td class="text-start"><select class="form-select form-select-sm" name="st_postal_address_state" id="st_postal_address_state"
+                                            value="{{ student.st_postal_address_state }}" required>
+                                            {% if student is None %}
+                                                <option value="">--Select State--</option>
+                                                {% for postate in state_tbl %}
+                                                    <option value="{{postate.id}}">{{postate.name}}</option>
+                                                {% endfor %}
+                                            {% else %}
+                                                <option value="{{ student.st_postal_address_state_id }}">{{ student.st_postal_address_state }}</option>
+                                                {% for postate in state_tbl %}
+                                                    {% if postate.id != student.st_postal_address_state_id %}
+                                                        <option value="{{postate.id}}">{{postate.name}}</option>
+                                                    {% endif %}
+                                                {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                        <span id="error_st_postal_address_state" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>PIN <span style="color:red">*</span></label></td>
+                                <td class="text-start"><input type="text" maxlength=6 name="st_postal_address_pincode" id="st_postal_address_pincode" value="{{ student.st_postal_address_pincode }}"
+                                        class="form-control" onkeypress="return onlyNumberKey(event)" required>
+                                    <span id="error_st_postal_address_pincode" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Local Guardian Address</label></td>
+                                {% if student.st_local_guardian_addr is None %}
+                                    <td class="text-start">
+                                        <textarea name="st_local_guardian_addr" id="st_local_guardian_addr" class="form-control" rows="05" cols="25"></textarea>
+                                    </td>    
+                                {% else %}
+                                    <td class="text-start"><textarea name="st_local_guardian_addr" id="st_local_guardian_addr" class="form-control" rows="05" cols="25">{{ student.st_local_guardian_addr }}</textarea></td>
+                                {% endif %}    
+                            </tr>
+                            <tr>
+                                <td class="text-end">
+                                    <label for="st_guardian_mobile_no">Phone Number of the Local Guardian</td>
+                                {% if student.st_guardian_mobile_no is None %}
+                                    <td class="text-start"><input type="tel" maxlength="10" name="st_guardian_mobile_no" id="st_guardian_mobile_no" value=""
+                                        onkeypress="return onlyNumberKey(event)" class="form-control"></td>        
+                                 {% else %}       
+                                    <td class="text-start"><input type="tel" maxlength="10" name="st_guardian_mobile_no" id="st_guardian_mobile_no" value="{{ student.st_guardian_mobile_no }}"
+                                        onkeypress="return onlyNumberKey(event)" class="form-control"></td>
+                                {% endif %}        
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Local Guardian's E-mail ID</label></td>
+                                {% if student.st_guardian_email is None %}
+                                    <td class="text-start"><input type="email" maxlength=30 name="st_guardian_email" id="st_guardian_email" value=""
+                                        class="form-control"></td>                                    
+                                {% else %}
+                                <td class="text-start"><input type="email" maxlength=30 name="st_guardian_email" id="st_guardian_email" value="{{ student.st_guardian_email }}"
+                                        class="form-control"></td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label>Health issues (if any) </label></td>
+                                {% if student.st_health_issues is None %}
+                                    <td class="text-start"><input type="text" maxlength=50 name="st_health_issues" id="st_health_issues" value="" class="form-control"></td>
+                                {% else %}
+                                    <td class="text-start"><input type="text" maxlength=50 name="st_health_issues" id="st_health_issues" value="{{ student.st_health_issues }}" class="form-control"></td>
+                                {% endif %}    
+                            </tr>
+                        </table>
+                        <div align="center">
+                            <button type="button" style="font-size: 18px;" name="previous_btn_personal_details"
+                                id="previous_btn_personal_details" class="btn btn-secondary btn-sm">Previous</button>
+                            <button type="button" style="font-size: 18px;" name="btn_personal_details" id="btn_personal_details"
+                                class="btn btn-info btn-sm">Next</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade" id="academic_details">
+                <div class="card align-items-center">
+                    <div class="card-body">
+                        <table class="table table-borderless table-hover table-sm">
+                            <tr>
+                                <td colspan="2" style="background-color: rgb(180, 174, 174);"><strong>Details of Previous Examinations Passed</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="background-color: rgb(236, 181, 181);" ><strong>Class X / SSLC</strong></td>
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end">Name of the board <span style="color:red">*</span></td>
+                                        {% if pacad_10th.ug_pacad_10th_board is None %}
+                                        <td class="text-start"><input type="text" maxlength=20 name="ug_pacad_10th_board"
+                                            id="ug_pacad_10th_board" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="text" maxlength=20 name="ug_pacad_10th_board" id="ug_pacad_10th_board" value="{{ pacad_10th.ug_pacad_10th_board }}" class="form-control"></td>
+                                        {% endif %}
+                                        <span id="error_ug_pacad_10th_board" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end">Name of the Institution <span style="color:red">*</span></td>
+                                    {% if pacad_10th.ug_pacad_10th_schoolname is None %}
+                                        <td class="text-start"><input type="text" maxlength=60 name="ug_pacad_10th_schoolname" id="ug_pacad_10th_schoolname"
+                                            value="" class="form-control"></td>
+                                    {% else %}
+                                        <td class="text-start"><input type="text" maxlength=60 name="ug_pacad_10th_schoolname" id="ug_pacad_10th_schoolname"
+                                            value="{{ pacad_10th.ug_pacad_10th_schoolname }}" class="form-control"></td>
+                                    {% endif %}
+                                        <span id="error_ug_pacad_10th_schoolname" class="text-danger"></span>
+                                </div>
+                                </td>
+                            </tr>
+                            <tr>
+                            <tr>
+                                <td class="text-end">Month of Passing <span style="color:red">*</span></td>
+                                <td class="text-start"><select class="form-select form-select-sm" name="ug_pacad_10th_pass_month" id="ug_pacad_10th_pass_month"
+                                        value="{{ pacad_10th.ug_pacad_10th_pass_month_id }}" required>
+                                        {% if pacad_10th is None %}
+                                        <option value="select">--Select Month--</option>
+                                        {% for pastate in months_tbl %}
+                                        <option value="{{pastate.id}}">{{pastate.name}}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                        {% for pastate in months_tbl %}
+                                        {% if pastate.id == pacad_10th.ug_pacad_10th_pass_month_id %}
+                                         <option value="{{pastate.id}}">{{pastate.name}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% for postate in months_tbl %}
+                                        {% if postate.id != pacad_10th.ug_pacad_10th_pass_month_id %}
+                                        <option value="{{postate.id}}">{{postate.name}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% endif %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Year of Passing <span style="color:red">*</span></td>
+                                 {% if pacad_10th.ug_pacad_10th_pass_year is None %}   
+                                    <td class="text-start"><input type="number" maxlength=4 name="ug_pacad_10th_pass_year"
+                                        id="ug_pacad_10th_pass_year" value="" class="form-control">
+                                {% else %}
+                                    <td class="text-start"><input type="number" maxlength=4 name="ug_pacad_10th_pass_year"
+                                        id="ug_pacad_10th_pass_year" value="{{ pacad_10th.ug_pacad_10th_pass_year }}" class="form-control">
+                                {% endif %}   
+                                    <span id="error_ug_pacad_10th_pass_year" class="text-danger"></span>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end"><label>State <span style="color:red">*</span></label></td>
+                                    <td class="text-start"><select class="form-select form-select-sm"
+                                            name="ug_pacad_10th_pass_state" id="ug_pacad_10th_pass_state"
+                                            value="{{ pacad_10th.ug_pacad_10th_pass_state_id }}" required>
+                                            {% if pacad_10th is None %}
+                                            <option value="select">--Select State--</option>
+                                            {% for pastate in state_tbl %}
+                                            <option value="{{pastate.id}}">{{pastate.name}}</option>
+                                            {% endfor %}
+                                            {% else %}
+                                            {% for pastate in state_tbl %}
+                                            {% if pastate.id == pacad_10th.ug_pacad_10th_pass_state_id %}
+                                            <option value="{{pastate.id}}">{{pastate.name}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                            {% for postate in state_tbl %}
+                                            {% if postate.id != pacad_10th.ug_pacad_10th_pass_state_id %}
+                                            <option value="{{postate.id}}">{{postate.name}}</option>
+                                            {% endif %}
+                                            {% endfor %}
+                                            {% endif %}
+                                        </select>
+                                        <span id="error_ug_pacad_10th_pass_state" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end">Medium of Instruction <span style="color:red">*</span></td>
+                                    {% if pacad_10th.ug_pacad_10th_medium is None %} 
+                                    <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_10th_medium"
+                                        id="ug_pacad_10th_medium" value="" class="form-control" required>
+                                        <span id="error_ug_pacad_10th_medium" class="text-danger"></span>
+                                    </td>
+                                    {% else %}
+                                    <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_10th_medium"
+                                        id="ug_pacad_10th_medium" value="{{ pacad_10th.ug_pacad_10th_medium }}" class="form-control" required>
+                                        <span id="error_ug_pacad_10th_medium" class="text-danger"></span>
+                                    </td>
+                                    {% endif %}
+                                </div>
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end">Registration Number <span style="color:red">*</span></td>
+                                    {% if pacad_10th.ug_pacad_10th_reg_no is None%}
+                                    <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_10th_reg_no"
+                                        id="ug_pacad_10th_reg_no" value="" class="form-control" required>
+                                    <span id="error_ug_pacad_10th_reg_no" class="text-danger"></span>
+                                    </td>
+                                    {% else %}
+                                    <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_10th_reg_no"
+                                        id="ug_pacad_10th_reg_no" value="{{ pacad_10th.ug_pacad_10th_reg_no }}" class="form-control" required>
+                                    <span id="error_ug_pacad_10th_reg_no" class="text-danger"></span>
+                                </td>
+                                    {% endif%}    
+                            </div>
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end">Total Marks / CGPA Obtained <span style="color:red">*</span> </td>
+                                    <td class="text-start"><input type="number" maxlength=5 name="ug_pacad_10th_total_marks_cgpa" id="ug_pacad_10th_total_marks_cgpa" class="form-control" value="{{pacad_10th.ug_pacad_10th_total_marks_cgpa}}" >
+                                        <span id="error_ug_pacad_10th_total_marks_cgpa" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end">Percentage of Marks / CGPA obtained <span style="color:red">*</span></td>
+                                    <td class="text-start"><input type="number" maxlength=5  name="ug_pacad_10th_percentage_cgpa" id="ug_pacad_10th_percentage_cgpa"
+                                            min="40" max="100" value="{{ pacad_10th.ug_pacad_10th_percentage_cgpa }}"
+                                            class="form-control" required>
+                                        <span id="error_ug_pacad_10th_percentage_cgpa" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="background-color: rgb(236, 181, 181);"><strong>Class XII / PUC</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Name of the Board </td>
+                                {% if pacad_12th.ug_pacad_12th_board is None %}
+                                    <td class="text-start"><input type="text" maxlength=20 name="ug_pacad_12th_board"
+                                            id="ug_pacad_12th_board" value="" class="form-control">
+                                    </td>
+                                {% else %}
+                                    <td class="text-start"><input type="text" maxlength=20 name="ug_pacad_12th_board"
+                                        id="ug_pacad_12th_board" value="{{ pacad_12th.ug_pacad_12th_board }}" class="form-control">
+                                    </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Name of the Institution</td>
+                                {% if pacad_12th.ug_pacad_12th_schoolname is None %}
+                                    <td class="text-start"><input type="text" maxlength=60 name="ug_pacad_12th_schoolname"
+                                            id="ug_pacad_12th_schoolname" value="" class="form-control">
+                                    </td>
+                                {% else %}
+                                    <td class="text-start"><input type="text" maxlength=60 name="ug_pacad_12th_schoolname"
+                                        id="ug_pacad_12th_schoolname" value="{{ pacad_12th.ug_pacad_12th_schoolname }}" class="form-control">
+                                    </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Month of Passing </td>
+                                <td class="text-start"><select name="ug_pacad_12th_pass_month" id="ug_pacad_12th_pass_month" class="form-control">
+                                    {% if pacad_12th.ug_pacad_12th_pass_month_id is None %}
+                                    <option value="">--Select State--</option>
+                                    {% for pastate in months_tbl %}
+                                    <option value="{{pastate.id}}">{{pastate.name}}</option>
+                                    {% endfor %}
+                                    {% else %}
+                                    {% for pastate in months_tbl %}
+                                    {% if pastate.id == pacad_12th.ug_pacad_12th_pass_month_id %}
+                                    <option value="{{pastate.id}}">{{pastate.name}}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% for postate in months_tbl %}
+                                    {% if postate.id != pacad_12th.ug_pacad_12th_pass_month_id %}
+                                    <option value="{{postate.id}}">{{postate.name}}</option>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% endif %}
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Year of Passing </td>
+                                {% if pacad_12th.ug_pacad_12th_pass_year is None %}
+                                <td class="text-start"><input type="number" maxlength=4 name="ug_pacad_12th_pass_year"
+                                        id="ug_pacad_12th_pass_year" value="" class="form-control" required>
+                                    <span id="error_ug_pacad_12th_pass_year" class="text-danger"></span>
+                                </td>
+                                {% else %}
+                                <td class="text-start"><input type="number" maxlength=4 name="ug_pacad_12th_pass_year"
+                                    id="ug_pacad_12th_pass_year" value="{{ pacad_12th.ug_pacad_12th_pass_year }}" class="form-control" required>
+                                <span id="error_ug_pacad_12th_pass_year" class="text-danger"></span>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end">State from which passed </td>
+                                    <td class="text-start"><select name="ug_pacad_12th_pass_state" id="ug_pacad_12th_pass_state" class="form-control">
+                                        {% if pacad_12th is None %}
+                                        <option value="">--Select State--</option>
+                                        {% for pastate in state_tbl %}
+                                        <option value="{{pastate.id}}">{{pastate.name}}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                        {% for pastate in state_tbl %}
+                                        {% if pastate.id == pacad_12th.ug_pacad_12th_pass_state_id %}
+                                        <option value="{{pastate.id}}">{{pastate.name}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% for postate in state_tbl %}
+                                        {% if postate.id != pacad_12th.ug_pacad_12th_pass_state_id %}
+                                        <option value="{{postate.id}}">{{postate.name}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% endif %}
+                                        </select>
+                                        <span id="error_ug_pacad_12th_pass_state" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Medium of Instruction</td>
+                                {% if pacad_12th.ug_pacad_12th_medium is None%}
+                                    <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_12th_medium" id="ug_pacad_12th_medium" value="" class="form-control">
+                                        <span id="error_ug_pacad_12th_medium" class="text-danger"></span>
+                                    </td>
+                                {% else %}
+                                    <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_12th_medium" id="ug_pacad_12th_medium" value="{{ pacad_12th.ug_pacad_12th_medium }}"
+                                        class="form-control">
+                                    <span id="error_ug_pacad_12th_medium" class="text-danger"></span>
+                                    </td>
+                                {% endif%}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Registration Number</td>
+                                {% if pacad_12th.ug_pacad_12th_reg_no is None%}
+                                    <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_12th_reg_no"
+                                        id="ug_pacad_12th_reg_no" value="" class="form-control">
+                                  {% else %}
+                                  <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_12th_reg_no"
+                                    id="ug_pacad_12th_reg_no" value="{{ pacad_12th.ug_pacad_12th_reg_no }}" class="form-control">
+                                {% endif %}            
+                                <span id="error_ug_pacad_12th_reg_no" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Overall Marks Obtained </td>
+                                {% if pacad_12th.ug_pacad_12th_total_marks is None%}
+                                    <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_total_marks" id="ug_pacad_12th_total_marks" value="{{ pacad_12th.ug_pacad_12th_total_marks }}"
+                                        onkeypress="return onlyNumberKey(event)" class="form-control">
+                                {% else %}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_total_marks" id="ug_pacad_12th_total_marks" value="{{ pacad_12th.ug_pacad_12th_total_marks }}"
+                                    onkeypress="return onlyNumberKey(event)" class="form-control">
+                                {% endif %}
+                                    <span id="error_ug_pacad_12th_total_marks" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Overall Percentage </td>
+                                {% if pacad_12th.ug_pacad_12th_percentage is None %}
+                                <td class="pacad_ug.ug_pacad_12th_percentagetext-start"><input type="number" maxlength=5 name="ug_pacad_12th_percentage" id="ug_pacad_12th_percentage" min="40" max="100"
+                                        value="" class="form-control">
+                                {% else %}
+                                <td class="pacad_ug.ug_pacad_12th_percentagetext-start"><input type="number" maxlength=5 name="ug_pacad_12th_percentage" id="ug_pacad_12th_percentage" min="40" max="100"
+                                    value="{{ pacad_12th.ug_pacad_12th_percentage }}" class="form-control">
+                                {% endif %}
+                                    <span id="error_ug_pacad_12th_percentage" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="background-color: rgb(236, 181, 181);"><strong>Marks obtained in PCM</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Physics </td>
+                                {% if pacad_12th.ug_pacad_12th_physics_marks is None %}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_physics_marks"
+                                        id="ug_pacad_12th_physics_marks" value="" onkeypress="return onlyNumberKey(event)" class="form-control">
+                                 {% else %}
+                                 <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_physics_marks"
+                                    id="ug_pacad_12th_physics_marks" value="{{ pacad_12th.ug_pacad_12th_physics_marks }}" onkeypress="return onlyNumberKey(event)" class="form-control">        
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Chemistry</td>
+                                {% if pacad_12th.ug_pacad_12th_chemistry_marks is None %}
+                                    <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_chemistry_marks" id="ug_pacad_12th_chemistry_marks"
+                                        value="" onkeypress="return onlyNumberKey(event)" class="form-control">
+                                {% else %}
+                                    <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_chemistry_marks" id="ug_pacad_12th_chemistry_marks"
+                                        value="{{ pacad_12th.ug_pacad_12th_chemistry_marks }}" onkeypress="return onlyNumberKey(event)" class="form-control">    
+                                    </td>
+                                {% endif %}    
+                            </tr>
+                            <tr>
+                                <td class="text-end">Mathematics </td>
+                                {% if pacad_12th.ug_pacad_12th_maths_marks is None%}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_maths_marks"
+                                        id="ug_pacad_12th_maths_marks" value="" onkeypress="return onlyNumberKey(event)" class="form-control">
+                                {% else %}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_maths_marks"
+                                    id="ug_pacad_12th_maths_marks" value="{{ pacad_12th.ug_pacad_12th_maths_marks }}"
+                                    onkeypress="return onlyNumberKey(event)" class="form-control">
+                                {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Biology / Computer Science</td>
+                                {% if pacad_12th.ug_pacad_12th_bio_cs_marks is None %}
+                                    <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_bio_cs_marks"
+                                        id="ug_pacad_12th_bio_cs_marks" value="" onkeypress="return onlyNumberKey(event)" class="form-control"></td>
+                                {% else %}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_bio_cs_marks"
+                                    id="ug_pacad_12th_bio_cs_marks" value="{{ pacad_12th.ug_pacad_12th_bio_cs_marks }}" onkeypress="return onlyNumberKey(event)" class="form-control"></td>        
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Total Marks in PCM </td>
+                                {% if pacad_12th.ug_pacad_12th_pcm_total_marks is None %}
+                                    <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_pcm_total_marks" id="ug_pacad_12th_pcm_total_marks"
+                                            value="" onkeypress="return onlyNumberKey(event)" class="form-control">
+                                    </td>
+                                {% else %}
+                                    <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_pcm_total_marks" id="ug_pacad_12th_pcm_total_marks"
+                                        value="{{ pacad_12th.ug_pacad_12th_pcm_total_marks }}" onkeypress="return onlyNumberKey(event)" class="form-control">
+                                    </td>
+                                 {% endif %}   
+                            </tr>
+                            <tr>
+                                <td class="text-end">PCM % </td>
+                                {% if pacad_12th.ug_pacad_12th_pcm_percentage  is None %}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_pcm_percentage" id="ug_pacad_12th_pcm_percentage"
+                                        value="" class="form-control">
+                                </td>
+                                 {% else %}   
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_12th_pcm_percentage" id="ug_pacad_12th_pcm_percentage"
+                                    value="{{ pacad_12th.ug_pacad_12th_pcm_percentage }}" class="form-control">
+                                </td>
+                                {% endif %}
+                            </tr>
+
+                            <tr>
+                                <td colspan="2" style="background-color: rgb(236, 181, 181);"><strong>Diploma (To be Entered Only for Diploma Candidate)</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Name of the board</td>
+                                {% if dip_ug.ug_pacad_dip_board is None %}
+                                <td class="text-start"><input type="text" maxlength=20 name="ug_pacad_dip_board"
+                                        id="ug_pacad_dip_board" value="" class="form-control" required>
+                                    <span id="error_ug_pacad_dip_board" class="text-danger"></span>
+                                </td>
+                                {% else %}
+                                <td class="text-start"><input type="text" maxlength=20 name="ug_pacad_dip_board"
+                                    id="ug_pacad_dip_board" value="{{ dip_ug.ug_pacad_dip_board }}"
+                                    class="form-control" required>
+                                <span id="error_ug_pacad_dip_board" class="text-danger"></span>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Name of the Institution</td>
+                                {% if  dip_ug.ug_pacad_dip_schoolname is None %}
+                                <td class="text-start"><input type="text" maxlength=60 name="ug_pacad_dip_schoolname"
+                                        id="ug_pacad_dip_schoolname" value="" class="form-control" required>
+                                    <span id="error_ug_pacad_dip_schoolname" class="text-danger"></span>
+                                </td>
+                                {% else %}
+                                <td class="text-start"><input type="text" maxlength=60 name="ug_pacad_dip_schoolname"
+                                    id="ug_pacad_dip_schoolname" value="{{ dip_ug.ug_pacad_dip_schoolname }}"
+                                    class="form-control" required>
+                                <span id="error_ug_pacad_dip_schoolname" class="text-danger"></span>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                            <tr>
+                                <td class="text-end">Month of Passing</td>
+                                <td class="text-start"><select name="ug_pacad_dip_pass_month" id="ug_pacad_dip_pass_month" class="form-control" required>
+                                    {% if dip_ug.ug_pacad_dip_pass_month is None %}
+                                        <option value="select">--Select Month--</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% else %}
+                                        {% if dip_ug.ug_pacad_dip_pass_month == "Jan" %}
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% elif dip_ug.ug_pacad_dip_pass_month == "Feb" %}
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% elif dip_ug.ug_pacad_dip_pass_month == "Mar" %}
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% elif dip_ug.ug_pacad_dip_pass_month == "Apr" %}
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% elif dip_ug.ug_pacad_dip_pass_month == "May" %}
+                                        <option name="May" value="May">May</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% elif dip_ug.ug_pacad_dip_pass_month == "Jun" %}
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% elif dip_ug.ug_pacad_dip_pass_month == "Jul" %}
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% elif dip_ug.ug_pacad_dip_pass_month == "Aug" %}
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% elif dip_ug.ug_pacad_dip_pass_month == "Sep" %}
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% elif dip_ug.ug_pacad_dip_pass_month == "Oct" %}
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% elif dip_ug.ug_pacad_dip_pass_month == "Nov" %}
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% elif dip_ug.ug_pacad_dip_pass_month == "Dec" %}
+                                        <option name="December" value="Dec">December</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        {% else %}
+                                        <option value="select">--Select Month--</option>
+                                        <option name="January" value="Jan">January</option>
+                                        <option name="February" value="Feb">February</option>
+                                        <option name="March" value="Mar">March</option>
+                                        <option name="April" value="Apr">April</option>
+                                        <option name="May" value="May">May</option>
+                                        <option name="June" value="Jun">June</option>
+                                        <option name="July" value="Jul">July</option>
+                                        <option name="August" value="Aug">August</option>
+                                        <option name="September" value="Sep">September</option>
+                                        <option name="October" value="Oct">October</option>
+                                        <option name="November" value="Nov">November</option>
+                                        <option name="December" value="Dec">December</option>
+                                        {% endif %}
+                                        {% endif %}
+                                    </select>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td class="text-end">Year of Passing</td>
+                                {% if dip_ug.ug_pacad_dip_pass_year is None %}
+                                <td class="text-start"><input type="number" maxlength=4 name="ug_pacad_dip_pass_year"
+                                        id="ug_pacad_dip_pass_year" value="" class="form-control" required>
+                                    <span id="error_ug_pacad_dip_pass_year" class="text-danger"></span>
+                                </td>
+                                {% else %}
+                                    <td class="text-start"><input type="number" maxlength=4 name="ug_pacad_dip_pass_year"
+                                        id="ug_pacad_dip_pass_year" value="{{ dip_ug.ug_pacad_dip_pass_year }}" class="form-control" required>
+                                    <span id="error_ug_pacad_dip_pass_year" class="text-danger"></span>
+                                    </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end">State from which passed</td>
+                                    <td class="text-start"><select name="ug_pacad_dip_pass_state" id="ug_pacad_dip_pass_state" class="form-control" required>
+                                        {% if dip_ug is None %}
+                                        <option value="select">--Select State--</option>
+                                        {% for pastate in state_tbl %}
+                                        <option value="{{pastate.id}}">{{pastate.name}}</option>
+                                        {% endfor %}
+                                        {% else %}
+                                        {% for pastate in state_tbl %}
+                                        {% if pastate.id == dip_ug.ug_pacad_dip_pass_state_id %}
+                                        <option value="{{pastate.id}}">{{pastate.name}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% for postate in state_tbl %}
+                                        {% if postate.id != dip_ug.ug_pacad_dip_pass_state_id %}
+                                        <option value="{{postate.id}}">{{postate.name}}</option>
+                                        {% endif %}
+                                        {% endfor %}
+                                        {% endif %}
+                                        </select>
+                                        <span id="error_ug_pacad_dip_pass_state" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Medium of instruction</td>
+                                {% if dip_ug.ug_pacad_dip_medium is None %}
+                                <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_dip_medium"
+                                        id="ug_pacad_dip_medium" value="" class="form-control" required>
+                                    <span id="error_ug_pacad_dip_medium" class="text-danger"></span>
+                                </td>
+                                {% else %}
+                                <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_dip_medium"
+                                    id="ug_pacad_dip_medium" value="{{ dip_ug.ug_pacad_dip_medium }}" class="form-control" required>
+                                <span id="error_ug_pacad_dip_medium" class="text-danger"></span>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Registration Number</td>
+                                {% if  dip_ug.ug_pacad_dip_reg_no is None %}
+                                <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_dip_reg_no"
+                                        id="ug_pacad_dip_reg_no" value="" class="form-control" required>
+                                    <span id="error_ug_pacad_dip_reg_no" class="text-danger"></span>
+                                </td>
+                                {% else %}
+                                <td class="text-start"><input type="text" maxlength=15 name="ug_pacad_dip_reg_no"
+                                    id="ug_pacad_dip_reg_no" value="{{ dip_ug.ug_pacad_dip_reg_no }}" class="form-control" required>
+                                <span id="error_ug_pacad_dip_reg_no" class="text-danger"></span>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="background-color: rgb(236, 181, 181);"><strong>Marks obtained in 5th & 6th Sem</strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">5th Sem Marks</td>
+                                {% if  dip_ug.ug_pacad_dip_5th_marks is None %}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_dip_5th_marks" id="ug_pacad_dip_5th_marks" value=""
+                                        onkeypress="return onlyNumberKey(event)" class="form-control" required>
+                                    <span id="ug_pacad_dip_5th_marks" class="text-danger"></span>
+                                </td>
+                                {% else %}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_dip_5th_marks" id="ug_pacad_dip_5th_marks" value="{{ dip_ug.ug_pacad_dip_5th_marks }}"
+                                    onkeypress="return onlyNumberKey(event)" class="form-control" required>
+                                    <span id="ug_pacad_dip_5th_marks" class="text-danger"></span>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">6th Sem Marks</td>
+                                {% if dip_ug.ug_pacad_dip_6th_marks is None %}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_dip_6th_marks"
+                                        id="ug_pacad_dip_6th_marks" value="" onkeypress="return onlyNumberKey(event)" class="form-control" required>
+                                    <span id="ug_pacad_dip_6th_marks" class="text-danger"></span>
+                                </td>
+                                {% else %}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_dip_6th_marks"
+                                    id="ug_pacad_dip_6th_marks" value="{{ dip_ug.ug_pacad_dip_6th_marks }}"
+                                    onkeypress="return onlyNumberKey(event)" class="form-control" required>
+                                <span id="ug_pacad_dip_6th_marks" class="text-danger"></span>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">5th & 6th Total Marks Obtained</td>
+                                {% if dip_ug.ug_pacad_dip_total_marks is None %}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_dip_total_marks" id="ug_pacad_dip_total_marks" value=""
+                                        onkeypress="return onlyNumberKey(event)" class="form-control" required>
+                                    <span id="error_ug_pacad_dip_total_marks" class="text-danger"></span>
+                                </td>
+                                {% else %}
+                                <td class="text-start"><input type="number" maxlength=3 name="ug_pacad_dip_total_marks" id="ug_pacad_dip_total_marks" value="{{ dip_ug.ug_pacad_dip_total_marks }}"
+                                    onkeypress="return onlyNumberKey(event)" class="form-control" required>
+                                <span id="error_ug_pacad_dip_total_marks" class="text-danger"></span>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">5th & 6th Overall Percentage</td>
+                                {% if dip_ug.ug_pacad_total_percentage is None %}
+                                <td class="text-start"><input type="number" maxlength=5 name="ug_pacad_total_percentage" id="ug_pacad_total_percentage" value=""
+                                    min="40" max="100" class="form-control" required>
+                                <span id="error_ug_pacad_total_percentage" class="text-danger"></span>
+                                </td>
+                                {% else %}
+                                <td class="text-start"><input type="number" maxlength=5 name="ug_pacad_total_percentage" id="ug_pacad_total_percentage" value="{{ dip_ug.ug_pacad_total_percentage }}"
+                                        min="40" max="100" class="form-control" required>
+                                    <span id="error_ug_pacad_total_percentage" class="text-danger"></span>
+                                </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="background-color: rgb(236, 181, 181);"><strong>Previous College Academic Details</strong></td>
+                            </tr>
+                            <tr>
+                                <div class="form-class">
+                                    <td class="text-end">College Name:<span style="color:red">*</span> </td>
+                                    <td class="text-start"><input type="text" maxlength=80 name="ug_prv_clgtr_name" id="ug_prv_clgtr_name" value="{{ prv_clgtrns_details.ug_ptcd_college_name }}" class="form-control">
+                                        <span id="error_ug_prv_clgtr_name" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end">Total Credits Earned<span style="color:red">*</span></td>
+                                    <td class="text-start"><input type="number" maxlength=5 name="ug_prv_clgtr_crd"
+                                            id="ug_prv_clgtr_crd" min="40" max="100" value="{{ prv_clgtrns_details.ug_ptcd_credits_earned }}" class="form-control" required>
+                                        <span id="error_ug_prv_clgtr_crd" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end">Credits Remaining<span style="color:red">*</span></td>
+                                    <td class="text-start"><input type="number" maxlength=5
+                                            name="ug_prv_clgtr_crd_balance" id="ug_prv_clgtr_crd_balance" min="40"
+                                            max="100" value="{{ prv_clgtrns_details.ug_ptcd_credits_remaining }}"
+                                            class="form-control" required>
+                                        <span id="error_ug_prv_clgtr_crd_balance" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                            <tr>
+                                <div class="form-group">
+                                    <td class="text-end">Current CGPA<span style="color:red">*</span></td>
+                                    <td class="text-start"><input type="number" maxlength=5 name="ug_prv_clgtr_cur_cgpa"
+                                            id="ug_prv_clgtr_cur_cgpa" min="40" max="100" value="{{ prv_clgtrns_details.ug_ptcd_admitted_cgpa }}" class="form-control" required>
+                                        <span id="error_ug_prv_clgtr_cur_cgpa" class="text-danger"></span>
+                                    </td>
+                                </div>
+                            </tr>
+                        </table>
+                        <div align="center">
+                            <button type="button" name="previous_btn_academic_details" style="font-size: 18px;" id="previous_btn_academic_details" class="btn btn-secondary btn-sm">Previous</button>
+                            <button type="button" name="btn_academic_details" style="font-size: 18px;" id="btn_academic_details" class="btn btn-info btn-sm">Next</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="tab-pane fade" id="admission_details">
+                <div class="card align-items-center">
+                    <div class="card-body">
+                        <table class="table table-borderless table-hover table-sm">
+                            <tr>
+                                <td colspan="2" style="background-color: rgb(180, 174, 174);"><strong>Details for students selected under CET/COMEDK/DCET/MGMT Examination </strong></td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label for="clg_trns_exam_type">Exam Type: <span style="color:red">*</span></label></td>
+                                    <td class="text-start">
+                                        {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                            <input type="radio" name="clg_trns_exam_type" id="order_copy_cet" value="1">
+                                            <label for="clg_trns_exam_type">CET</label>
+                                            <input type="radio" name="clg_trns_exam_type" id="order_copy_comedk" value="2">
+                                            <label for="clg_trns_exam_type">COMEDK</label>
+                                            <input type="radio" name="clg_trns_exam_type" id="order_copy_dcet" value="3">
+                                            <label for="clg_trns_exam_type">DCET</label>
+                                            <input type="radio" name="clg_trns_exam_type" id="order_copy_mgmt" value="4">
+                                            <label for="clg_trns_exam_type">MGMT</label> 
+                                            {% elif prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_cet" value="1" checked>
+                                                <label for="clg_trns_exam_type">CET</label>
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_comedk" value="2" disabled>
+                                                <label for="clg_trns_exam_type">COMEDK</label>
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_dcet" value="3" disabled>
+                                                <label for="clg_trns_exam_type">DCET</label>
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_mgmt" value="4" disabled>
+                                                <label for="order_copy_mgmt">MGMT</label> 
+                                            {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_comedk" value="2" checked>
+                                                <label for="order_copy_dcet">COMEDK</label>
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_dcet" value="3" disabled>
+                                                <label for="order_copy_dcet">DCET</label>
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_cet" value="1" disabled>
+                                                <label for="order_copy_dcet">CET</label>
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_mgmt" value="4" disabled>
+                                                <label for="order_copy_mgmt">MGMT</label>
+                                            {% elif prv_clgtrns_details.clg_trns_exam_type == 3%}
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_dcet" value="3" checked>
+                                                <label for="order_copy_dcet">DCET</label>
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_cet" value="1" disabled>
+                                                <label for="order_copy_dcet">CET</label>
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_comedk" value="2" disabled>
+                                                <label for="order_copy_dcet">COMEDK</label>
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_mgmt" value="4" disabled>
+                                                <label for="order_copy_mgmt">MGMT</label> 
+                                            {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_mgmt" value="4" checked>
+                                                <label for="clg_trns_exam_type">MGMT</label> 
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_cet" value="1" disabled>
+                                                <label for="clg_trns_exam_type">CET</label>
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_comedk" value="2" disabled>
+                                                <label for="clg_trns_exam_type">COMEDK</label>
+                                                <input type="radio" name="clg_trns_exam_type" id="order_copy_dcet" value="3" disabled>
+                                                <label for="clg_trns_exam_type">DCET</label>
+                                        {% endif %}
+                                    </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Exam admission Order Number</td>
+                                <td class="text-start">
+                                {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                    <input type="text" maxlength=20 name="exam_adm_ord_no" id="exam_adm_ord_no" class="form-control"></td>
+                                {% else %}    
+                                    {% if prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                        <input type="text" maxlength=20 name="exam_adm_ord_no" id="exam_adm_ord_no" value="{{clg_trns_under_cet.cet_order_no}}" class="form-control"></td>
+                                        {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                            <input type="text" maxlength=20 name="exam_adm_ord_no" id="exam_adm_ord_no" value="{{comedk_clgtrns.comedk_sl_no}}" class="form-control"></td>
+                                        {% elif prv_clgtrns_details.clg_trns_exam_type == 3 %}
+                                            <input type="text" maxlength=20 name="exam_adm_ord_no" id="exam_adm_ord_no" value="{{dip_admission_ug.dip_adm_order_no}}" class="form-control"></td>
+                                        {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                            <input type="text" maxlength=20 name="exam_adm_ord_no" id="exam_adm_ord_no" value="{{clg_trns_under_cet.cet_order_no}}" class="form-control"></td>
+                                    {% endif %}
+                                {% endif %} 
+                            </tr>
+                            <tr>
+                                <td class="text-end">Exam Registration Number</td>
+                                {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                    <td class="text-start"><input type="number" maxlength=20 name="exam_rgd_no" id="exam_rgd_no"  class="form-control"></td>
+                                {% else %}    
+                                    {% if prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                        <td class="text-start"><input type="number" maxlength=20 name="exam_rgd_no" id="exam_rgd_no" value="{{ clg_trns_under_cet.cet_order_no }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                        <td class="text-start"><input type="number" maxlength=20 name="exam_rgd_no" id="exam_rgd_no" value="{{ comedk_clgtrns.comedk_sl_no }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 3 %}
+                                        <td class="text-start"><input type="number" maxlength=20 name="exam_rgd_no" id="exam_rgd_no" value="{{ dip_admission_ug.dip_adm_order_no }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                        <td class="text-start"><input type="number" maxlength=20 name="exam_rgd_no" id="exam_rgd_no" value="{{ clg_trns_under_cet.cet_order_no }}" class="form-control"></td>
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Exam Rank</td>
+                                {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                    <td class="text-start"><input type="number" maxlength=10 name="exam_rank" id="exam_rank"  class="form-control"></td>
+                                {% else %}
+                                    {% if prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                        {% if clg_trns_under_cet.cet_rank is none %}
+                                            <td class="text-start"><input type="number" maxlength=10 name="exam_rank" id="exam_rank" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" maxlength=10 name="exam_rank" id="exam_rank" value="{{ clg_trns_under_cet.cet_rank }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                        {% if comedk_clgtrns.comedk_rank is None %}
+                                            <td class="text-start"><input type="number" maxlength=10 name="exam_rank" id="exam_rank" value="" class="form-control"></td> 
+                                        {% else %}
+                                            <td class="text-start"><input type="number" maxlength=10 name="exam_rank" id="exam_rank" value="{{ comedk_clgtrns.comedk_rank }}" class="form-control"></td> 
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 3 %}
+                                        {% if dip_admission_ug.dip_rank is None %}
+                                            <td class="text-start"><input type="number" maxlength=10 name="exam_rank" id="exam_rank" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" maxlength=10 name="exam_rank" id="exam_rank" value="{{ dip_admission_ug.dip_rank }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                        {% if mgmt_admission_ug.mgmt_rank is None %}
+                                            <td class="text-start"><input type="number" maxlength=10 name="exam_rank" id="exam_rank" value="" class="form-control"></td>
+                                        {% else %}              
+                                            <td class="text-start"><input type="number" maxlength=10 name="exam_rank" id="exam_rank" value="{{ mgmt_admission_ug.mgmt_rank }}" class="form-control"></td>              
+                                        {% endif %}
+                                {% endif %}
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Exam Category Claimed</td>
+                                {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                    <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="" class="form-control"></td>
+                                {% else %}    
+                                    {% if prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="{{ clg_trns_under_cet.cet_cat_claimed }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.cet_cat_claimed == None %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="" class="form-control"></td>   
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="{{ comedk_clgtrns.comedk_cat_allotted }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.comedk_cat_allotted == None %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="" class="form-control"></td> 
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 3 %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="{{ dip_admission_ug.dip_cat_claimed }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.dip_cat_claimed == None %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="" class="form-control"></td> 
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="{{ mgmt_admission_ug.mgmt_exam }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.mgmt_exam == None %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="" class="form-control"></td> 
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Exam Category Allotted</td>
+                                {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                    <td class="text-start"><input type="text" maxlength=10 name="exam_cat_allot" id="exam_cat_allot" value="" class="form-control"></td>    
+                                {% else %}
+                                    {% if prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_allot" id="exam_cat_allot" value="{{ clg_trns_under_cet.cet_cat_allotted }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.cet_cat_allotted == None %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="" class="form-control"></td> 
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_allot" id="exam_cat_allot" value="{{ comedk_clgtrns.comedk_cat_allotted }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.comedk_cat_allotted == None %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="" class="form-control"></td> 
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 3 %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_allot" id="exam_cat_allot" value="{{ dip_admission_ug.dip_cat_allotted }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.dip_cat_allotted == None %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="" class="form-control"></td> 
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_allot" id="exam_cat_allot" value="{{ mgmt_admission_ug.mgmt_exam }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.mgmt_exam == None %}
+                                        <td class="text-start"><input type="text" maxlength=10 name="exam_cat_claimed" id="exam_cat_claimed" value="" class="form-control"></td> 
+                                    {% endif %} 
+                                {% endif %}   
+                            </tr>
+                            <tr>
+                                <td class="text-end">Allottment Date</td>
+                                <td class="text-start">
+                                    {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                        <input type="date" name="exam_allot_date" id="exam_allot_date" class="form-control"> 
+                                    {% else %}
+                                        {% if prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                            {% if clg_trns_under_cet.cet_challan_date is None%}
+                                                <input type="date" name="exam_allot_date" id="exam_allot_date" value="" class="form-control"> 
+                                            {% else %}
+                                                <input type="date" name="exam_allot_date" id="exam_allot_date" value="{{ clg_trns_under_cet.cet_allot_date|date:'Y-m-d' }}" class="form-control"> 
+                                            {% endif %}
+                                        {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                            {% if comedk_clgtrns.comedk_allot_date is None %}
+                                                <input type="date" name="exam_allot_date" id="exam_allot_date" value="" class="form-control"> 
+                                            {% else %}
+                                                <input type="date" name="exam_allot_date" id="exam_allot_date" value="{{ comedk_clgtrns.comedk_allot_date|date:'Y-m-d' }}" class="form-control"> 
+                                            {% endif %}
+                                        {% elif prv_clgtrns_details.clg_trns_exam_type == 3 %}
+                                            {% if dip_admission_ug.dip_challan_date is None %}
+                                                <input type="date" name="exam_allot_date" id="exam_allot_date" value="" class="form-control"> 
+                                            {% else %}
+                                                <input type="date" name="exam_allot_date" id="exam_allot_date" value="{{ dip_admission_ug.dip_allot_date|date:'Y-m-d' }}" class="form-control"> 
+                                            {% endif %}
+                                        {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                            {% if mgmt_college_fees_paid.mgmt_challan_date is None %}
+                                                <input type="date" name="exam_allot_date" id="exam_allot_date" value="" class="form-control">                                             
+                                            {% else %}
+                                                <input type="date" name="exam_allot_date" id="exam_allot_date" value="{{ mgmt_college_fees_paid.mgmt_allot_date|date:'Y-m-d' }}" class="form-control"> 
+                                            {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Fees Paid to Examination authority</td>
+                                {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                    <td class="text-start"><input type="number" maxlength=15 name="exam_fee_paid" id="exam_fee_paid"  class="form-control"></td>
+                                {% else %}
+                                    {% if prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                        {% if clg_trns_under_cet.cet_kea_fees_paid is None %}
+                                            <td class="text-start"><input type="number" maxlength=15 name="exam_fee_paid" id="exam_fee_paid" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" maxlength=15 name="exam_fee_paid" id="exam_fee_paid" value="{{ clg_trns_under_cet.cet_kea_fees_paid  }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                        {% if comedk_clgtrns.comedk_fees_paid is None %}
+                                            <td class="text-start"><input type="number" maxlength=15 name="exam_fee_paid" id="exam_fee_paid" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" maxlength=15 name="exam_fee_paid" id="exam_fee_paid" value="{{ comedk_clgtrns.comedk_fees_paid  }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 3 %}
+                                        {% if dip_admission_ug.dip_fees_paid is None %}
+                                        <td class="text-start"><input type="number" maxlength=15 name="exam_fee_paid" id="exam_fee_paid" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" maxlength=15 name="exam_fee_paid" id="exam_fee_paid" value="{{ dip_admission_ug.dip_fees_paid  }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                        {% if mgmt_admission_ug.dip_fees_paid is None %}
+                                            <td class="text-start"><input type="number" maxlength=15 name="exam_fee_paid" id="exam_fee_paid" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" maxlength=15 name="exam_fee_paid" id="exam_fee_paid" value="{{ mgmt_admission_ug.dip_fees_paid  }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Fees Paid to College</td>
+                                {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                    <td class="text-start"><input type="number" maxlength=15 name="fee_paid_to_college" id="fee_paid_to_college"   class="form-control"></td>
+                                {% else %}
+                                    {% if prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                        <td class="text-start"><input type="number" maxlength=15 name="fee_paid_to_college" id="fee_paid_to_college"  value="{{ clg_trns_under_cet.cet_college_fees_paid }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                        <td class="text-start"><input type="number" maxlength=15 name="fee_paid_to_college" id="fee_paid_to_college"  value="{{ comedk_clgtrns.comedk_college_fees_paid }}" class="form-control"></td>                                    
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 3 %}
+                                        <td class="text-start"><input type="number" maxlength=15 name="fee_paid_to_college" id="fee_paid_to_college"  value="{{ dip_admission_ug.dip_college_fees_paid }}" class="form-control"></td>
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                        <td class="text-start"><input type="number" maxlength=15 name="fee_paid_to_college" id="fee_paid_to_college"  value="{{ mgmt_college_fees_paid.mgmt_college_fees_paid }}" class="form-control"></td>
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Total Fees Paid</td>
+                                {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                    <td class="text-start"><input type="number" name="total_fee_paid" id="total_fee_paid" class="form-control"></td>                                    
+                                {% else %}
+                                    {% if prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                        {% if clg_trns_under_cet.cet_total_fees_paid is None %}    
+                                            <td class="text-start"><input type="number" name="total_fee_paid" id="total_fee_paid" value="" class="form-control"></td>
+                                        {% else %}    
+                                            <td class="text-start"><input type="number" name="total_fee_paid" id="total_fee_paid" value="{{ clg_trns_under_cet.cet_total_fees_paid }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                        {% if comedk_clgtrns.comedk_fees_paid.comedk_college_fees_paid is None %}
+                                            <td class="text-start"><input type="number" name="total_fee_paid" id="total_fee_paid" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" name="total_fee_paid" id="total_fee_paid" value="{{ comedk_clgtrns.comedk_college_fees_paid }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 3 %}
+                                        {% if dip_admission_ug.dip_total_fees_paid is None %}
+                                            <td class="text-start"><input type="number" name="total_fee_paid" id="total_fee_paid" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" name="total_fee_paid" id="total_fee_paid" value="{{ dip_admission_ug.dip_total_fees_paid }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                        {% if mgmt_college_fees_paid.mgmt_college_fees_paid is None %}
+                                            <td class="text-start"><input type="number" name="total_fee_paid" id="total_fee_paid" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" name="total_fee_paid" id="total_fee_paid" value="{{ mgmt_college_fees_paid.mgmt_college_fees_paid }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Exam Fee Challan Date</td>
+                                <td class="text-start">
+                                    {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                        <input type="date" name="exam_challan_date" id="exam_challan_date" class="form-control"> 
+                                    {% else %}
+                                        {% if prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                            {% if clg_trns_under_cet.cet_challan_date is None%}
+                                                <input type="date" name="exam_challan_date" id="exam_challan_date" value="" class="form-control"> 
+                                            {% else %}
+                                                <input type="date" name="exam_challan_date" id="exam_challan_date" value="{{ clg_trns_under_cet.cet_challan_date|date:'Y-m-d' }}" class="form-control"> 
+                                            {% endif %}
+                                        {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                            {% if comedk_clgtrns.comedk_challan_date is None %}
+                                                <input type="date" name="exam_challan_date" id="exam_challan_date" value="" class="form-control"> 
+                                            {% else %}
+                                                <input type="date" name="exam_challan_date" id="exam_challan_date" value="{{ comedk_clgtrns.comedk_challan_date|date:'Y-m-d' }}" class="form-control"> 
+                                            {% endif %}
+                                        {% elif prv_clgtrns_details.clg_trns_exam_type == 3 %}
+                                            {% if dip_admission_ug.dip_challan_date is None %}
+                                                <input type="date" name="exam_challan_date" id="exam_challan_date" value="" class="form-control"> 
+                                            {% else %}
+                                                <input type="date" name="exam_challan_date" id="exam_challan_date" value="{{ dip_admission_ug.dip_challan_date|date:'Y-m-d' }}" class="form-control"> 
+                                            {% endif %}
+                                        {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                            {% if mgmt_college_fees_paid.mgmt_challan_date is None %}
+                                                <input type="date" name="exam_challan_date" id="exam_challan_date" value="" class="form-control">                                             
+                                            {% else %}
+                                                <input type="date" name="exam_challan_date" id="exam_challan_date" value="{{ mgmt_college_fees_paid.mgmt_challan_date|date:'Y-m-d' }}" class="form-control"> 
+                                            {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Exam Challan No.</td>
+                                {% if prv_clgtrns_details.clg_trns_exam_type is None %}
+                                    <td class="text-start"><input type="number" name="exam_challan_no" id="exam_challan_no" class="form-control"></td>
+                                {% else %}    
+                                    {% if prv_clgtrns_details.clg_trns_exam_type == 1 %}
+                                        {% if clg_trns_under_cet.cet_challan_no is None %}
+                                            <td class="text-start"><input type="number" name="exam_challan_no" id="exam_challan_no" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" name="exam_challan_no" id="exam_challan_no" value="{{ clg_trns_under_cet.cet_challan_no }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 2 %}
+                                        {% if comedk_clgtrns.comedk_challan_no is None %}
+                                            <td class="text-start"><input type="number" name="exam_challan_no" id="exam_challan_no" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" name="exam_challan_no" id="exam_challan_no" value="{{ comedk_clgtrns.comedk_challan_no }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 3 %}
+                                        {% if dip_admission_ug.dip_challan_no is None %}                                       
+                                        <td class="text-start"><input type="number" name="exam_challan_no" id="exam_challan_no" value="" class="form-control"></td>
+                                        {% else %}
+                                            <td class="text-start"><input type="number" name="exam_challan_no" id="exam_challan_no" value="{{ dip_admission_ug.dip_challan_no }}" class="form-control"></td> 
+                                        {% endif %}
+                                    {% elif prv_clgtrns_details.clg_trns_exam_type == 4 %}
+                                        {% if mgmt_college_fees_paid.mgmt_challan_no is None %}
+                                            <td class="text-start"><input type="number" name="exam_challan_no" id="exam_challan_no" value="" class="form-control"></td>                                        
+                                        {% else %}
+                                            <td class="text-start"><input type="number" name="exam_challan_no" id="exam_challan_no" value="{{ mgmt_college_fees_paid.mgmt_challan_no }}" class="form-control"></td>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="background-color: rgb(180, 174, 174);"><strong>Documents submitted by the applicant</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end"><label for="exam_order_copy">Allotment order copy <span style="color:red">*</span></label>
+                                </td>
+                                        <td class="text-start">
+                                            {% if doc_details.alt_order_copy is None %}
+                                                <input type="radio" name="exam_order_copy" id="order_copy_cet" value="1">
+                                                <label for="order_copy_dcet">CET</label>
+                                                <input type="radio" name="exam_order_copy" id="order_copy_comedk" value="2">
+                                                <label for="order_copy_dcet">COMEDK</label>
+                                                <input type="radio" name="exam_order_copy" id="order_copy_dcet" value="3">
+                                                <label for="order_copy_dcet">DCET</label>
+                                                <input type="radio" name="exam_order_copy" id="order_copy_mgmt" value="4">
+                                                <label for="order_copy_mgmt">MGMT</label> 
+                                                {% elif doc_details.alt_order_copy == 1 %}
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_cet" value="1" checked>
+                                                    <label for="exam_order_copy">CET</label>
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_comedk" value="2" disabled>
+                                                    <label for="exam_order_copy">COMEDK</label>
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_dcet" value="3" disabled>
+                                                    <label for="exam_order_copy">DCET</label>
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_mgmt" value="4" disabled>
+                                                    <label for="exam_order_copy">MGMT</label> 
+                                                {% elif doc_details.alt_order_copy == 2 %}
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_comedk" value="2" checked>
+                                                    <label for="exam_order_copy">COMEDK</label>
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_dcet" value="3" disabled>
+                                                    <label for="exam_order_copy">DCET</label>
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_cet" value="1" disabled>
+                                                    <label for="exam_order_copy">CET</label>
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_mgmt" value="4" disabled>
+                                                    <label for="exam_order_copy">MGMT</label>
+                                                {% elif doc_details.alt_order_copy == 3%}
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_dcet" value="3" checked>
+                                                    <label for="exam_order_copy">DCET</label>
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_cet" value="1" disabled>
+                                                    <label for="exam_order_copy">CET</label>
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_comedk" value="2" disabled>
+                                                    <label for="exam_order_copy">COMEDK</label>
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_mgmt" value="4" disabled>
+                                                    <label for="exam_order_copy">MGMT</label> 
+                                                {% elif doc_details.alt_order_copy == 4 %}
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_mgmt" value="4" checked>
+                                                    <label for="exam_order_copy">MGMT</label> 
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_cet" value="1" disabled>
+                                                    <label for="exam_order_copy">CET</label>
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_comedk" value="2" disabled>
+                                                    <label for="exam_order_copy">COMEDK</label>
+                                                    <input type="radio" name="exam_order_copy" id="order_copy_dcet" value="3" disabled>
+                                                    <label for="exam_order_copy">DCET</label>
+                                            {% endif %}
+                                        </td>
+                                </tr>
+                            <tr>
+                                <td class="text-end">SSLC / X Marks Card <span style="color:red">*</span></td>
+                                <td class="text-start">
+                                    {% if doc_details.st_10th_marks_card is None %}
+                                        <input type="checkbox" id="st_10th_marks_card" name="st_10th_marks_card" value="True"> 
+                                    {% else %}
+                                     <input type="checkbox" id="st_10th_marks_card" name="st_10th_marks_card" value="True" checked>
+                                 {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">PUC / XII Marks Card </td>
+                                <td class="text-start">
+                                    {% if doc_details.st_12th_marks_card is None %}
+                                        <input type="checkbox" id="st_12th_marks_card" name="st_12th_marks_card"
+                                        value="True"> 
+                                    {% else %}
+                                        <input type="checkbox" id="st_12th_marks_card" name="st_12th_marks_card"
+                                        value="True" checked> 
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Diploma Marks Card / Certificate 
+                                </td>
+                                {% if doc_details.st_dip_marks_card is none %}
+                                <td class="text-start">
+                                        <input type="checkbox" id="st_dip_marks_card" name="st_dip_marks_card" value="True">
+                                </td>
+                                {% else %}
+                                    <td class="text-start">
+                                        <input type="checkbox" id="st_dip_marks_card" name="st_dip_marks_card" value="True" checked> 
+                                    </td>
+                                {% endif %}
+                            </tr>
+                            <tr>
+                                <td class="text-end">Study Certificate <span style="color:red">*</span></td>
+                                <td class="text-start">
+                                    {% if doc_details.st_study_cerfiticate is None %}
+                                        <input type="checkbox" id="st_study_cerfiticate" name="st_study_cerfiticate"
+                                        value="True"> 
+                                    {% else %}
+                                        <input type="checkbox" id="st_study_cerfiticate" name="st_study_cerfiticate"
+                                        value="True" checked>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Caste / Income Certificate (if SC/ST/OBC)</td>
+                                <td class="text-start">
+                                    {% if doc_details.st_income_certificate is None %}
+                                    <input type="checkbox" id="st_income_certificate" name="st_income_certificate"
+                                        value="True"> 
+                                    {% else %}
+                                    <input type="checkbox" id="st_income_certificate" name="st_income_certificate"
+                                        value="True" checked> 
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Tulu Linguistic Certificate (COMEDK Quota)</td>
+                                <td class="text-start">
+                                    {% if doc_details.st_tulu_certificate is None %}
+                                    <input type="checkbox" id="st_tulu_certificate" name="st_tulu_certificate"
+                                        value="True"> 
+                                    {% else %}
+                                    <input type="checkbox" id="st_tulu_certificate" name="st_tulu_certificate"
+                                        value="True" checked> 
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Eligibility Certificate (non-Karnataka only)</td>
+                                <td class="text-start">
+                                    {% if doc_details.st_eligibility_certificate is none %}
+                                        <input type="checkbox" id="st_eligibility_certificate" name="st_eligibility_certificate" value="True"> 
+                                    {% else %}
+                                        <input type="checkbox" id="st_eligibility_certificate" name="st_eligibility_certificate" value="True" checked> 
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Migration Certificate (non-Karnataka only)</td>
+                                <td class="text-start">
+                                    {% if doc_details.st_migration_certificate is none %}
+                                        <input type="checkbox" id="st_migration_certificate" name="st_migration_certificate" value="True"> 
+                                    {% else %}
+                                        <input type="checkbox" id="st_migration_certificate" name="st_migration_certificate" value="True" checked> 
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Transfer Certificate <span style="color:red">*</span></td>
+                                <td class="text-start">
+                                    {% if doc_details.st_transfer_certificate is none %}
+                                        <input type="checkbox" id="st_transfer_certificate" name="st_transfer_certificate" value="True">
+                                    {% else %}
+                                        <input type="checkbox" id="st_transfer_certificate" name="st_transfer_certificate" value="True" checked> 
+                                {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">AADHAR Card</td>
+                                <td class="text-start">
+                                    {% if doc_details.st_aadhar_card is None %}
+                                        <input type="checkbox" id="st_aadhar_card" name="st_aadhar_card" value="True"> 
+                                    {% else %}
+                                        <input type="checkbox" id="st_aadhar_card" name="st_aadhar_card" value="True"
+                                        checked> 
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">PAN Card</td>
+                                <td class="text-start">
+                                    {% if doc_details.st_pan_card is None %}
+                                        <input type="checkbox" id="st_pan_card" name="st_pan_card" value="True">
+                                     {% else %}
+                                        <input type="checkbox" id="st_pan_card" name="st_pan_card" value="True" checked> 
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="background-color: rgb(180, 174, 174);"><strong>FOR OFFICE USE ONLY</strong>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Total Fees <span style="color:red">*</span></td>
+                                <td class="text-start"><input type="number" name="st_total_fees" id="st_total_fees"  value="{{ student.st_total_fees }}" required>
+                                    <span id="error_st_total_fees" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Rt/Challan No. <span style="color:red">*</span></td>
+                                <td class="text-start"><input type="text" id="st_rt_no" value="{{ student.st_rt_no }}" name="st_rt_no">
+                                    <span id="error_st_rt_no" class="text-danger"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="text-end">Date <span style="color:red">*</span></td>
+                                <td class="text-start">
+                                {% if student is None %}
+                                    <input type="Date" id="st_adm_date" name="st_adm_date" class="form-control" required> 
+                                {% else %}
+                                    <input type="Date" id="st_adm_date" name="st_adm_date" value="{{ student.st_adm_date|date:'Y-m-d' }}" class="form-control"> 
+                                {% endif %}
+                                    <span id="st_adm_date" class="text-danger"></span>
+                                </td>
+                            </tr>
+                        </table>
+                        <div align="center">
+                            <button type="button" name="previous_btn_admission_details" id="previous_btn_admission_details" style="font-size: 18px;" class="btn btn-secondary btn-sm">Previous</button>
+                            {% if student is None %}
+                                <input type="text" name="btn_clicked" value="register" hidden>
+                                <button type="submit" name="btn_admission_details" style="font-size: 18px;" id="btn_admission_details" value="register" class="btn btn-success btn-sm">Register</button> 
+                            {% else %}
+                                <input type="text" name="st_id" value="{{ student.st_id }}" hidden>
+                                <input type="text" name="btn_clicked" value="update" hidden>
+                                <button type="submit" name="btn_admission_details" style="font-size: 18px;" value="update" id="btn_admission_details" class="btn btn-success btn-sm">Update</button> 
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<div>
+    {% for msg in messages %}
+    <script src="{% static 'js/sweetalert.min.js' %}"></script>
+    <script>
+        var m = "{{msg}}";
+        var st_id = "{{ st_id }}";
+
+        var st_uid = "{{ st_uid }}";
+
+
+        swal({
+            title: "success",
+            text: m,
+            type: "success"
+        }).then(function () {
+            if (st_uid.includes("BE"))
+                window.open("{% url 'ackPdf_ug' st_id %}");
+            else if (st_uid.includes("DP"))
+                window.open("{% url 'ackPdf_lat' st_id %}");
+            else
+                window.open("{% url 'ackPdf_pg' st_id %}");
+        });
+    </script>
+    {% endfor %}
+</div>
+{% endif %} 
+{% endblock %}

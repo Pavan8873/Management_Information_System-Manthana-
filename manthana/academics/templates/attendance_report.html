@@ -1,0 +1,140 @@
+<!-- attendance_report.html -->
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Attendance Report</title>
+{% endblock %}
+
+{% block page-content %}
+<link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}" />
+<script src="{% static 'plugins/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+
+<style>
+    .sub-que-tbl {
+        padding: 0px;
+    }
+
+    .head_font {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    table {
+        width: 100%;
+        border: 1px solid #ddd;
+        border-collapse: collapse;
+        margin-top: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f2f2f2;
+    }
+
+    .container {
+        padding: 20px;
+    }
+</style>
+
+<h3 class="head_font mb-2">Student Attendance Report</h3>
+
+<form action="/attendance_report" method="POST" id="attendance_form">
+    {% csrf_token %}
+    <section class="mt-5 mb-5">
+        <div class="container shadow rounded-3 p-4 bg-white">
+            <div class="row">
+                <div class="col-6 mb-3">
+                    <label for="acad_cal_acad_year" class="form-label">
+                        Academic Year
+                    </label>
+                    <select name="acad_cal_acad_year" id="acad_cal_acad_year" class="form-select" required>
+                        {% if acad_cal_obj is None %}
+                        <option value="" disabled selected>-- Choose Academic Year --</option>
+                        {% for aca_yr in academic_year_tbl %}
+                        <option value="{{ aca_yr.id }}">{{ aca_yr.acayear }}</option>
+                        {% endfor %}
+                        {% else %}
+                        {% for aca_yr in academic_year_tbl %}
+                        {% if aca_yr.acayear == acad_cal_obj.acad_cal_acad_year %}
+                        <option value="{{ aca_yr.id }}" selected>{{ aca_yr.acayear }}</option>
+                        {% else %}
+                        <option value="{{ aca_yr.id }}">{{ aca_yr.acayear }}</option>
+                        {% endif %}
+                        {% endfor %}
+                        {% for aca_yr in academic_year_tbl %}
+                        {% if aca_yr.acayear != acad_cal_obj.acad_cal_acad_year %}
+                        <option value="{{ aca_yr.id }}">{{ aca_yr.acayear }}</option>
+                        {% endif %}
+                        {% endfor %}
+                        {% endif %}
+                    </select>
+                </div>
+                
+
+                <div class="col-6 mb-3">
+                    <label for="scheme_details_id" class="form-label">Scheme Details</label>
+                    <select name="scheme_details_id" id="scheme_details_id" class="form-select" required>
+                        <option value="" disabled selected>-- Choose Scheme Details --</option>
+                        {% for scheme in scheme_details %}
+                        <option value="{{ scheme.id }}">{{ scheme.course_title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="col-6 mb-3">
+                    <label for="attendance_date" class="form-label">Attendance Date</label>
+                    <input type="date" name="attendance_date" id="attendance_date" class="form-control" required>
+                </div>
+
+                <div class="col-12 mb-3 mt-3 text-center">
+                    <button type="button" id="submit_button" class="btn btn-success btn-sm"><b>Submit</b></button>
+                </div>
+            </div>
+        </div>
+    </section>
+</form>
+
+{% if attendance_data %}
+<section class="mt-5">
+    <div class="container shadow rounded-3 p-4 bg-white">
+        <h3 class="head_font mb-2">Attendance Data</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Student UID</th>
+                    <th>Division</th>
+                    <th>Faculty ID</th>
+                    <th>Status</th>
+                    <th>No. Classes Attended</th>
+                    <th>Attendance Percentage</th>
+                    <th>Batch No</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in attendance_data %}
+                <tr>
+                    <td>{{ data.student_attd_id }}</td>
+                    <td>{{ data.st_uid.st_uid }}</td>
+                    <td>{{ data.division }}</td>
+                    <td>{{ data.faculty_id.employee_emp_id }}</td>
+                    <td>{{ data.status }}</td>
+                    <td>{{ data.No_classes_attended }}</td>
+                    <td>{{ data.Percentage_of_attendance }}</td>
+                    <td>{{ data.batch_no }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
+
+{% endblock %}

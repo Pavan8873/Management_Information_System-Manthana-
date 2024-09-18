@@ -1,0 +1,131 @@
+{% extends 'base_template.html' %}
+
+{% block title %}<title>View & Edit Cycle Division Allotment </title>{% endblock %}
+
+{% block page-content %}
+<style>
+    * {
+        box-sizing: border-box;
+    }
+
+    #myInput {
+        background-image: url('/css/searchicon.png');
+        background-position: 10px 10px;
+        background-repeat: no-repeat;
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 20px 12px 40px;
+        border: 1px solid #ddd;
+        margin-bottom: 12px;
+    }
+
+    #myTable {
+        border-collapse: collapse;
+        width: 100%;
+        border: 1px solid #ddd;
+        font-size: 18px;
+    }
+
+    #myTable th,
+    #myTable td {
+        text-align: left;
+        padding: 12px;
+    }
+
+    #myTable tr {
+        border-bottom: 1px solid #ddd;
+    }
+
+    #myTable tr.header,
+    #myTable tr:hover {
+        background-color: #f1f1f1;
+    }
+</style>
+<script>
+    function myFunction() {
+        var input, filter, table, tr, td, i, txtValue;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("StudentSearchData");
+        tr = table.getElementsByTagName("tr");
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[0];
+            if (td) {
+                txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+</script>
+{% if userName is None %}
+<h3>You are not authorized to view this page!!</h3>
+{% else %}
+
+
+
+<form action="/Searchdiv" method="POST" id="searchdiv_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="card">
+      <div class="card-body">
+        <table class="table table-borderless table-sm">
+          <tr>
+            <div class="form-group">
+              <td class="text-end"><label>Select Branch:</label></td>
+              <td>
+                <center>
+                  <select class="form-select form-select-sm" name="cycle_cal" id="cycle_cal" class="form-control">
+                    <option value="0">--Select Year--</option> 
+                            {% for cal in calender %}
+                            <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option>
+                            <!-- <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option> -->
+                            {% endfor %}
+                  </select>
+                </center>
+                
+              </td>
+                <tr>
+                    <td class="text-end">
+                      <button type="submit" name="btn_admission_details" id="btn_admit_Search" value="cyclediv_Search"
+                        class="btn btn-success btn-sm" onClick='submitDetailsForm()'><b>Search</b></button>
+                    </td>
+                  </tr>
+              
+        </table>
+      </div>
+    </div>
+  </form>
+
+  <div class="card showTable" id="sTable">
+    <div class="card-body">
+      <table id="StudentSearchData" class="table table-sm">
+        <thead class="table-dark">
+          <tr class="header">
+            <th>Year</th>
+            <th>Sem</th>
+            <th>Cycle</th>
+            <th>Division</th>
+            <th>Edit</th>
+          </tr>
+        </thead>
+
+        {% for cyd in cd %}
+        <tr >
+          <!-- <td>{{year.acad_cal_acad_year}}</td> -->
+          <td>{{cyd.acad_cal_id.acad_cal_acad_year}}</td>
+          <td>{{cyd.sem}}</td>
+          <td>{{cyd.cycle}}</td>
+          <td>{{cyd.div}}</td>
+          <td>
+            <a href="/EditCycleDivisionAllotment/{{cyd.cycle_div_allot_id}}/{{cyd.acad_cal_id}}">Edit</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

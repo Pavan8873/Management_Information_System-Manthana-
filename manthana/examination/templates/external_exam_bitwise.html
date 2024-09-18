@@ -1,0 +1,472 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>External BitWise Marks Entry</title>{% endblock %}
+
+
+{% block page-content %}
+<!-- Date Range Picker CSS -->
+<link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}" />
+<script src="{% static 'plugins/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+<style>
+    .sub-que-tbl {
+        padding: 0px;
+    }
+
+    .head_font {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid white;
+        border-collapse: collapse;
+    }
+</style>
+
+<h3 class="head_font mb-2">External BitWise Marks Entry</h3>
+
+<form action="/external_exam_bitwise" method="POST" id="indexForm"  data-course-url="{% url 'ajax_load_courses_for_exam' %}" >
+    {% csrf_token %}
+    {% if exam is None %}
+        <section class="mt-5 mb-5">
+            <div class="container shadow rounded-3 p-4 bg-white">
+                
+                <div class="row">
+                    <div class="row">
+                        <div class="col-6 mb-3"> 
+                            <label for="exam_id" class="form-label"> Exam </label> 
+                            <select name="exam_id" id="exam_id" class="form-select" required> 
+                                <option value="" disabled selected>Choose Exam</option> 
+                                {% for exam in exams %} 
+                                <option value="{{ exam.exam_details_id }}">{{ exam.description }}</option> 
+                                {% endfor %} 
+                            </select> 
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="department" class="form-label"> Department </label>
+                            <select name="department" id="department" class="form-select" required>
+                                <option value="" disabled selected>Choose Department</option>
+                                {% for department in departments %}
+                                <option value="{{ department.dept_id }}">{{ department.dept_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                    </div>
+                    <div class="row">
+                        
+                        <div class="col-6 mb-3">
+                            <label for="course_name" class="form-label"> Course List </label>
+                            <select id="course_name" name="course_name" class="form-select">
+                            </select>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label for="acad_cal_acad_year" class="form-label">
+                                Evaluation type
+                            </label>
+                            <select name="evaluation_type" id="evaluation_type" class="form-select" required>
+                                <option disabled selected>Evaluation type</option>
+                                <!-- <option disabled selected>Choose Academic Year</option> -->
+                                <option value="1">Regular Evaluation</option>
+                                <option value="2">Re-Evaluation</option>
+                                <option value="3">Challenge Evaluation</option>
+                            </select>
+                        </div>
+                        <div class="col-12 mb-3 mt-3 text-center">
+                            <button type="submit" name="btn_clicked" id="btn_clicked" value="get_exam_details"
+                                class="btn btn-success btn-sm"><b>Get Exam Details</b></button>
+                        </div>
+                        
+                    </div>
+            </div>
+        </section>
+
+        {% else %}
+
+        <section class="mt-2 mb-5">
+            <div class="container shadow rounded-3 p-4 bg-white">
+
+                <div class="card">
+                    <h5 class="card-header text-center">Subject Details</h5>
+                    <div class="card-body">
+                        <div class="tab-content text-center" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-lab" role="tabpanel"
+                                aria-labelledby="pills-lab-tab">
+                                <div class="row mt-2">
+                                    <input type="text" name="exam_id" value="{{ exam.exam_details_id }}" hidden>
+                                    {% comment %} <input type="text" name="acad_cal_sem" value="{{ exam.semester }}" hidden>
+                                    <input type="text" name="exam_type" value="{{ exam.exam_type }}" hidden> {% endcomment %}
+                                    <input type="text" name="department" value="{{ department }}" hidden>
+                                    <input type="text" name="course_name" value="{{ course_name }}" hidden>
+                                    <input type="text" name="evaluation_type" value="{{ evaluation_type }}" hidden>
+                                    <div class="col-4 mb-3">
+                                        <label for="acad_cal_see_theory_from" class="form-label">Academic Year: {{ exam.acad_cal_id.acad_cal_acad_year }}</label>
+                                    </div>
+                                    <div class="col-4 mb-3">
+                                        <label for="acad_cal_see_theory_from" class="form-label">Subject : {{ course_name }}</label>
+                                    </div>
+                                    <div class="col-4 mb-3">
+                                        <label for="acad_cal_see_theory_from" class="form-label">Semester: {{ exam.semester }}</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-4">
+                    <h5 class="card-header text-center">Student Marks</h5>
+                    <div class="card-body">
+                        <div class="tab-content text-center mb-5" id="pills-tabContent">
+                            <div class="tab-pane fade show active" id="pills-lab" role="tabpanel"
+                                aria-labelledby="pills-lab-tab">
+                                <div class="form-group row justify-content-center">
+                                    <label for="inputPassword" class="col-sm-2 col-form-label">Code Number : </label>
+                                    <div class="col-sm-3">
+                                        <input type="text" name="code-number" class="form-control" placeholder="code number">
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        {% for unit, ques in units.items %}
+                        <table class="table text-center mt-4">
+                            <tr class="table-danger" >
+                                <th scope="col" colspan="100%">
+                                    UNIT - {{ unit }}
+                                </th>
+
+                            </tr>
+                            <tr class="table-danger">
+                                {% for que, subques in ques.items %}
+                                <th scope="col" colspan="{{ subques|length }}">
+                                    Q{{ que }}
+                                </th>
+                                {% endfor %}
+                                <th scope="col" rowspan="2">
+                                    Total Marks
+                                </th>
+
+                            </tr>
+
+                            <tr class="table-danger">
+                                {% for que, subques in ques.items %}
+                                {% for subque in subques %}
+                                <th scope="col">
+                                    <div>Q{{ que }}{{ subque.subqnum }}</div>
+                                    <div>({{ subque.max_marks }})</div>
+                                </th>
+                                {% endfor %}
+                                {% endfor %}
+
+                            </tr>
+                            <tr class="table-danger">
+                                {% for que, subques in ques.items %}
+                                {% for subque in subques %}
+                                <td>
+                                    <div class="form-group row justify-content-center">
+                                        <div class="col-sm-8">
+                                            <input type="text" id="unit-{{ unit }}-q-{{ que }}-subq-{{ subque.subqnum }}-max_marks"
+                                                value="{{ subque.max_marks }}" hidden>
+                                            <input style="text-align:center" type="text" name="unit-{{ unit }}-q-{{ que }}-subq-{{ subque.subqnum }}-marks" class="form-control sub_question"
+                                                id="unit-{{ unit }}-q-{{ que }}-subq-{{ subque.subqnum }}-count-{{ subques|length }}-marks"
+                                                placeholder="Marks">
+                                            <span class="text-danger" id="unit-{{ unit }}-q-{{ que }}-subq-{{ subque.subqnum }}-error"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                                {% endfor %}
+                                {% endfor %}
+
+                                <td rowspan="2">
+                                    <div class="form-group row justify-content-center">
+                                        <div class="col-sm-8">
+                                            {% comment %} <input style="text-align:center" type="text" class="form-control"
+                                                id="unit-{{ unit }}-total-marks" placeholder="Marks"> {% endcomment %}
+                                            <p class="form-control" id="unit-{{ unit }}-total-marks">0</p>
+                                        </div>
+                                    </div>
+                                </td>
+
+                            </tr>
+                            <tr class="table-danger ">
+                                {% for que, subques in ques.items %}
+                                <td colspan="{{ subques|length }}" class="text-center">
+                                    <div class="form-group row justify-content-center">
+                                        <div class="col-sm-4">
+                                            {% comment %} <input style="text-align:center" type="text" class="form-control"
+                                                id="unit-{{ unit }}-q-{{ que }}-total-marks" placeholder="Marks">
+                                            {% endcomment %}
+                                            <p class="form-control" id="unit-{{ unit }}-q-{{que}}-total-marks">0</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                {% endfor %}
+
+                            </tr>
+
+                        </table>
+                        <hr>
+
+                        {% endfor %}
+
+                        {% comment %} <div class="form-group row justify-content-center">
+                            <div class="col-sm-2">
+                                <p class="form-control text-center" id="total-see-marks">0</p>
+                            </div>/
+                            <div class="col-sm-2">
+                                <p class="form-control text-center" >100</p>
+                            </div>
+                        </div> {% endcomment %}
+                        <div class="form-group row justify-content-center">
+                            <label for="inputPassword" class="col-sm-2 col-form-label">Total Marks : </label>
+                            <div class="col-sm-2">
+                                <p class="form-control text-center"  id="total-see-marks">0</p>
+                                <input type="text" id="total-see-in-marks" name="total_eval_marks" hidden/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="d-grid gap-4 col-3 mt-3 mx-auto">
+                                <button type="submit" name="btn_clicked" id="btn_scheme_allot" value="add_student_marks"
+                                    class="btn btn-primary">Submit</button>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    {% endif %}
+</form>
+<script>
+    $("#department").change(function () {
+        var url2 = $("#indexForm").attr("data-course-url");
+        var exam_id = $('#exam_id').val();
+        var department = $('#department').val();
+        
+        if ($('#department').val() != null) {
+          
+          $.ajax({
+            url: url2,
+            data: {
+              'department': department,
+              'exam_id': exam_id
+              
+            },
+            success: function (data) {
+                console.log("ppppppppppppppppppppp")
+                console.log(data)
+                console.log("ppppppppppppppppppppp")
+              
+              $("#course_name").html(data.html);
+             
+  
+            },
+            error: function (data) {
+              $('#course_name').empty();
+              alert(data.responseJSON.error);
+            }
+          });
+        }
+      });
+</script>
+
+
+
+<script>
+    $('input').focus(function () {
+        var ele = $(this);
+        $('html, body').animate({
+            scrollTop: ele.offset().top - 450
+        }, 50);
+    });
+    document.querySelectorAll('.sub_question').forEach(item => {
+        item.addEventListener('input', e => {
+
+            let qno = e.target.id.split("-");
+            // unit-1-q-1-subqum-a-count-2-marks 
+
+            // qno[1] -- unit number
+            // qno[3] -- question number
+            // qno[5] -- sub question
+            // qno[7] -- sub question count
+
+
+            let no_of_sub_questions = parseInt(qno[7]); // uid-19BE033-ia-14-q-1-subq-count
+
+            //console.log(`Number of sub question : ${no_of_sub_questions}`)
+
+            let entered_marks = e.target.value;
+
+
+            let max_marks = parseInt(document.getElementById(
+                    `unit-${qno[1]}-q-${qno[3]}-subq-${qno[5]}-max_marks`)
+                .value); // uid-19BE033-ia-14-q-1-subq-count
+            //console.log(`Max marks of sub question : ${max_marks}`)
+            
+            if (entered_marks > max_marks) {
+
+                //alert("Entered marks is greater than max marks");
+                document.getElementById(`unit-${qno[1]}-q-${qno[3]}-subq-${qno[5]}-error`)
+                    .innerHTML = "Invalid Marks";
+                e.target.value = '';
+            } else {
+                document.getElementById(`unit-${qno[1]}-q-${qno[3]}-subq-${qno[5]}-error`)
+                    .innerHTML = "";
+                //console.log("Marks is Ok...");
+            }
+
+            let total_marks = 0;
+
+            //to calculate all subQuestion Marks of a particular Question 
+            for (let i = 1; i <= no_of_sub_questions; i++) {
+                let marks = parseInt(document.getElementById(
+                        `unit-${qno[1]}-q-${qno[3]}-subq-${intToChar(i-1)}-count-${qno[7]}-marks`)
+                    .value);
+                if (!isNaN(marks)) {
+                    total_marks += marks;
+                }
+
+            }
+
+            document.getElementById(`unit-${qno[1]}-q-${qno[3]}-total-marks`)
+                .innerHTML = total_marks;
+
+            
+            let marks1 = parseInt(document.getElementById(`unit-${qno[1]}-q-${(qno[1]*2)-1}-total-marks`)
+                    .innerHTML)
+            let marks2 = parseInt(document.getElementById(`unit-${qno[1]}-q-${(qno[1]*2)}-total-marks`)
+                    .innerHTML)
+            if (marks1 < marks2) {
+                document.getElementById(`unit-${qno[1]}-total-marks`)
+                .innerHTML = marks2;
+            }
+            else{
+                document.getElementById(`unit-${qno[1]}-total-marks`)
+                .innerHTML = marks1;
+            }
+            
+            total_see = 0
+            for(let i=1;i<=5;i++){
+                let marks = parseInt(document.getElementById(`unit-${i}-total-marks`)
+                    .innerHTML)
+                if (!isNaN(marks)) {
+                    total_see += marks;
+                }   
+                
+            }
+
+            document.getElementById(`total-see-marks`)
+                .innerHTML = total_see;
+            document.getElementById(`total-see-in-marks`)
+                .value = total_see;
+
+
+        });
+    });
+
+    function intToChar(int) {
+        const code = 'a'.charCodeAt(0);
+        return String.fromCharCode(code + int);
+    }
+
+    /*$(document).ready(function () {
+        window.history.replaceState('', '', window.location.href)
+      }); */
+</script>
+
+{% endblock %}
+
+{% comment %}
+<div class="mb-2 table-responsive text-center">
+    <form action="/bitWiseMarksEntry" method="POST" id="">
+        {% csrf_token %}
+        <div class="card showTable" id="sTable">
+            <input type="text" name="uid" value="{{ student.st_uid }}">
+            <input type="text" name="assessment_id" value="{{ assessment_id }}">
+            <div class="card-body">
+                <table id="StudentSearchData" class="table table-sm table-bordered">
+
+                    <thead class="table-dark">
+                        <tr class="header">
+
+                            {% for que, subques in studentMarks.items %}
+                            <td>Q{{ que.qnum }}</td>
+                            {% endfor %}
+                            <td>Total</td>
+                        </tr>
+                    </thead>
+                    <tr>
+                        {% for que, subques in studentMarks.items %}
+                        <td>
+                            <div class="table-responsive-sm">
+                                <table class="table table-responsive-sm table-bordered">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            {% for subque in subques %}
+                                            <td>
+                                                <div>
+                                                    Q{{ que }}{{ subque.subqnum }}
+                                                </div>
+                                                <div>
+                                                    ({{ subque.max_marks }})
+                                                </div>
+                                            </td>
+                                            {% endfor %}
+                                        </tr>
+                                    </thead>
+                                    <tr>
+                                        {% for subque in subques %}
+                                        <td class="col-md-1">
+                                            {% if subque.obtained_marks is None %}
+                                            <input class="form-control" name="{{ que }}_{{ subque.subqnum }}"
+                                                max="{{ subque.max_marks }}"
+                                                onchange="disp(this);this.data = this.value;"
+                                                onfocus="this.data = this.value;" id="{{ student.st_uid }}"
+                                                style="text-align:center" type="number">
+
+                                            {% else %}
+                                            <input class="form-control" name="{{ que }}_{{ subque.subqnum }}"
+                                                max="{{ subque.max_marks }}"
+                                                onchange="disp(this);this.data = this.value;"
+                                                onfocus="this.data = this.value;" id="{{ student.st_uid }}"
+                                                style="text-align:center" type="number"
+                                                value="{{ subque.obtained_marks }}">
+                                            {% endif %}
+
+                                        </td>
+                                        {% endfor %}
+                                    </tr>
+
+
+
+                                </table>
+
+
+                            </div>
+                        </td>
+                        {% endfor %}
+                        <td class="col-md-1">
+                            <div id="input{{ student.st_uid }}">
+                            </div>
+                        </td>
+
+                    </tr>
+
+                </table>
+
+                <button type="submit" class="btn btn-info">Save</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="collapse"
+                    data-bs-target="#collapse{{ forloop.counter }}">Cancel</button>
+            </div>
+        </div>
+    </form>
+</div>
+</div> {% endcomment %}

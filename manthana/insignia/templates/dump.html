@@ -1,0 +1,98 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+{% endblock %} {% block page-content %}
+<form action="{% url 'dump'%}" method="POST" id="register_form" enctype="multipart/form-data">
+    {% csrf_token %}
+    <style>
+        body {
+            background-color: #f0f8ff; /* Light Sky Blue */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+<!DOCTYPE html>
+<html lang="en">
+
+    <title>Upload Excel File</title>
+
+        <body>
+            <div class="container">
+                <h2 style="text-align:center;">Import Excel</h2>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- File input field -->
+                <input type="file" name="excel_file" id="excel_file" accept=".xlsx, .xls">
+                <br><br>
+                <!-- Dropdown menu for competition name -->
+                <label for="cars">Competition Name:</label>
+                <input type="text" id="searchInput" onkeyup="filterOptions()" placeholder="Search for competition..">
+                <select name="cars" id="cars" required>
+                    {% for aca_yr in eve %}
+                    <option value="{{ aca_yr.id }}">{{ aca_yr.name }}</option>
+                    {% endfor %}
+                </select>
+                
+                <!-- Submit button -->
+                <div style="text-align:center;">  
+                    <input type="submit" value="Submit"/>  
+                </div>
+
+</body>
+</html>
+
+</form>
+<script>
+    function filterOptions() {
+      // Get input value and convert it to lowercase for case-insensitive comparison
+      var filter = document.getElementById('searchInput').value.toLowerCase();
+      // Get all options in the select element
+      var options = document.getElementById('cars').options;
+      // Iterate over options and hide those that don't match the filter
+      for (var i = 0; i < options.length; i++) {
+        var optionText = options[i].text.toLowerCase();
+        if (optionText.indexOf(filter) > -1) {
+          options[i].style.display = ''; // Show option
+        } else {
+          options[i].style.display = 'none'; // Hide option
+        }
+      }
+    }
+  </script>
+{% endblock %} 

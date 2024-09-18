@@ -1,0 +1,140 @@
+<!--
+    Author: Rashmi Patil
+    Date:   15-3-2022
+    Bootstrap: v5.1.3 [Stable Version]
+    JQuery: v3.6.0 [Latest Version]	
+-->
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+<title>Higher Semester Admission Details</title>{% endblock %} {% block page-content %}
+
+  <h2 align="center">Higher Semester Admission Details</h2>
+    <section class="mt-5 mb-5">
+      <div class="container shadow rounded-3 p-4 bg-white">
+        <form action="admitStudent_higher" method="POST" id="indexForm">
+          {% csrf_token %}
+
+          <div class="row">
+            <div class="col-6 mb-3">
+              <label for="acad_year" class="form-label">Academic Year: </label>
+              <select name="acad_year" id="acad_year" class="form-select" required>
+                <option value="" disabled selected>Choose Academic Year</option>
+                {% for aca_yr in academic_year %}
+                <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+                <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+                {% endfor %}
+              </select>
+              <!-- <label for="acad_year" class="form-label"> Academic Year:</label>
+              {% if flag %}
+              <select id="acad_year" name="acad_year" class="form-select" >
+                <option selected value ="{{ admit_year }}">{{ admit_year }}</option>
+                <option value="2023-24">2023-24</option>
+                <option value="2022-23">2022-23</option>
+                <option value="2021-22">2021-22</option>
+                <option value="2020-21">2020-21</option>
+                <option value="2019-20">2019-20</option>
+              </select>
+              {% else %}
+              <select id="acad_year" name="acad_year" class="form-select">
+              <option disabled selected>Choose Academic Year</option>
+              <option value="2023-24">2023-24</option>
+              <option value="2022-23">2022-23</option>
+              <option value="2021-22">2021-22</option>
+              <option value="2020-21">2020-21</option>
+              <option value="2019-20">2019-20</option>
+              </select>
+              {% endif %}   -->
+            </div>
+
+            <!-- <div class="col-6 mb-3">
+              <label for="semester-type" class="form-label"> Semester Type: </label>
+              <select id="semester-type" name="semester-type" class="form-select">
+                <option disabled selected>Choose Semester Type</option>
+                <option value=1>Even</option>
+                <option value=2>Odd</option>
+              </select>
+            </div> -->
+            <div class="col-6 mb-3">
+              <label for="semester-select" class="form-label"> Semester: </label>
+              {% if flag %}
+              <select id="semester-select" name="semester-select" class="form-select" >
+                <option selected value="{{ sem }}">{{ sem }}</option>
+              	<option value=3>3</option>
+                <!-- <option value=4>4</option> -->
+                <option value=5>5</option>
+                <!-- <option value=6>6</option> -->
+                <option value=7>7</option>
+                <!-- <option value=8>8</option> -->
+              </select>
+              {% else %}
+              <select id="semester-select" name="semester-select" class="form-select" >
+                <option disabled selected>Choose Semester </option>
+              	<option value=3>3</option>
+                <!-- <option value=4>4</option> -->
+                <option value=5>5</option>
+                <!-- <option value=6>6</option> -->
+                <option value=7>7</option>
+                <!-- <option value=8>8</option> -->
+              </select>
+              {% endif %}
+            </div>
+            <div class="col-6 mb-3">
+              <label for="offered_by" class="form-label"> Department: </label>
+              {%if flag %}
+              <select id="offered_by" name="offered_by" class="form-select" >
+                <option selected value="{{branch}}">{{ dept_name }}</option>
+               </select>
+               {% else %}
+               <select id="offered_by" name="offered_by" value="{{scheme_details.offered_by}}" class="form-select" required>
+                <option disabled selected>Choose Branch</option>
+                {% for i in dept %}
+                  <option value="{{i.dept_id}}">{{i.dept_name}}</option>
+                {% endfor %}
+            </select>
+              {% endif %}
+          </div>  
+         
+           <div class="col-6 mb-3">
+            <label for="uid">Student UID:</label>
+            {% if flag %}
+            <input type="text" class="form-control" id="uid" name="uid" value ="{{ st_uid }}" >
+            {% else %}
+            <input type="text" class="form-control" id="uid" name="uid" placeholder="Eg.21BE0001">
+            {% endif %}
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="d-grid gap-2 col-3 mx-auto">
+              <button type="submit" name="btn_clicked" id="btn_search" value="search" class="btn btn-primary">Search</button>
+            </div>
+            <div class="row">
+              {% if flag %}
+            <div class="col-6 mb-3">
+            <label for="feepaid">Fees Paid:</label>
+            <input type="text" class="form-control" name = "feepaid" id="feepaid">
+            </div>
+            <div class="col-6 mb-3">
+              <label for="challanid">Challan Number:</label>
+              <input type="text" class="form-control" name = "challanid" id="challanid" >
+            </div>
+              {% endif %}  
+            </div>
+            </div>
+            <div class="row">
+            <div class="d-grid gap-2 col-3 mx-auto">
+              <button type="submit" name="btn_clicked" id="btn_submit" value="submit" class="btn btn-primary">Submit</button>
+            </div>
+            <div class="d-grid gap-2 col-3 mx-auto">
+              <button type="reset" name="btn_clicked" id="btn_reset" value="reset" class="btn btn-primary">Reset</button>
+            </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+    <script>
+      function myfunction(){
+        document.getElementById('feepaid').disabled = false;
+      };
+    </script>
+{% endblock %}

@@ -1,0 +1,23 @@
+<!-- templates/upload.html -->
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Scheme Details</title>{% endblock %}
+
+{% block page-content %}
+<!DOCTYPE html>
+
+<html>
+<head>
+    <title>Upload File</title>
+</head>
+<body>
+    <h1>Upload an Excel File</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+</body>
+</html>
+{% endblock %}

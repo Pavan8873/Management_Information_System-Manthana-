@@ -1,0 +1,78 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+<title>Add Room</title>{% endblock %} {% block page-content %}
+<link href="{% static 'fonts/SansationLight/font.css' %}" rel="stylesheet">
+{% if userName is None %}
+<h3>You are not authorized to view this page!!</h3>
+{% else %}
+<div class="col-md mx-auto text-center h6" style="font-size: 0.9rem;">
+    <h5 align="center"><strong>Add Room</strong></h5>
+    <hr>
+    <form role="form" action="/CreateRoom" method="POST" id="room_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        {% for field in form %}
+                        <div class="form-group">
+                            <td class="text-end"><label>{{ field.label_tag }}</label></td>
+                            <td class="text-start">{{ field }}
+                                <span class="text-danger">{{ field.errors }}</span>
+                            </td>
+                        </div>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <div class="form-group">
+                            <td colspan="2">
+                                <button type="submit" name="btn_room_details" id="btn_room_details"
+                                    value="room_details" class="btn btn-success btn-sm"><b>Add Room</b></button>
+                            </td>
+                        </div>
+            </tr>
+        </table>
+        <div class="form-group">
+            {% if messages %}
+            {% for message in messages %}
+            {% if message.tags == 'error' %}
+            <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+            {% endif %}
+            {% if message.tags == 'success' %}
+            <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+            {% endif %}
+        {% endfor %}
+        {% endif %}
+            </div>
+        <div class="card showTable" id="sTable">
+        <div class="card-body">
+            <table id="RoomAllocation" class="table table-sm table-hover table-left">
+                <thead class="table-dark">
+                    <tr class="header">
+                        <th>Room Name</th>
+                        <th>Row</th>
+                        <th>Column</th>
+                        <th>Total Seat</th>
+                        <th>Delete</th>
+                        <th>Modify</th>
+                    </tr>
+                </thead>
+                {% for room in Roominfo %}
+                <tr>
+                    <td>{{room.room_name}}</td>
+                    <td>{{room.row}}</td>
+                    <td>{{room.column}}</td>
+                    <td>{{room.Total_seats}}</td>
+                    <td>
+                        <a href="/Editroom/{{room.room_id}}" class="btn btn-primary btn-sm">Edit</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+</div>
+</form>
+</div>
+{% endif %}
+{% endblock %}

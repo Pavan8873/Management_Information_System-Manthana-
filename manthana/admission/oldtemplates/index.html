@@ -1,0 +1,74 @@
+{%load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Sidebar 04</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link href="{% static 'https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700,800,900' %}" rel="stylesheet">
+
+    <link rel="stylesheet" href="{% static 'https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css' %}">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+    <div class="header">
+        <div class="logo"><img align="left" width="600px" height="100px" src="{% static 'images/SDME-logo.png' %}"></div>
+        <div class="header-right">
+            <a href="#home">Login</a>
+            <a href="#contact">Contact Us</a>
+        </div>
+    </div>
+    <div class="wrapper d-flex align-items-stretch">
+        <nav id="sidebar">
+            <div class="custom-menu">
+                <button type="button" id="sidebarCollapse" class="btn btn-primary">
+	          <i class="fa fa-bars"></i>
+	          <span class="sr-only">Toggle Menu</span>
+	        </button>
+            </div>
+            <h1><a href="{% static 'index.html' %}" class="logo">Project Name</a></h1>
+            <ul class="list-unstyled components mb-5">
+                <!-- <li class="active">
+            <a href="#"><span class="fa fa-home mr-3"></span> Homepage</a>
+          </li>
+          <li>
+              <a href="#"><span class="fa fa-user mr-3"></span> Dashboard</a>
+          </li>
+          <li>
+            <a href="#"><span class="fa fa-sticky-note mr-3"></span> Friends</a>
+          </li>
+          <li>
+            <a href="#"><span class="fa fa-sticky-note mr-3"></span> Subcription</a>
+          </li>
+          <li>
+            <a href="#"><span class="fa fa-paper-plane mr-3"></span> Settings</a>
+          </li>
+          <li>
+            <a href="#"><span class="fa fa-paper-plane mr-3"></span> Information</a>
+          </li>
+        </ul> -->
+
+        </nav>
+
+        <!-- Page Content  -->
+        <div id="content" class="p-4 p-md-5 pt-5">
+            {% block page-content %} {% endblock %}
+            <!-- <h2 class="mb-4">Sidebar #04</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      </div> -->
+        </div>
+        <div class="container">
+            <div class="footer">Copyright &copy; 2020 <a href="http://www.sdmcet.ac.in"> SDMCET</a></div>
+        </div>
+
+        <script src="{% static 'js/jquery.min.js' %}"></script>
+        <script src="{% static 'js/popper.js' %}"></script>
+        <script src="{% static 'js/bootstrap.min.js' %}"></script>
+        <script src="{% static 'js/main.js' %}"></script>
+</body>
+
+</html>

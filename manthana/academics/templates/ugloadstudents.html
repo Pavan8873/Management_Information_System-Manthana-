@@ -1,0 +1,19 @@
+<thead class="table-dark">
+    <tr class="header">
+      <th>Sl.No.</th>
+      <th>Student UID</th>
+      <th>Student Name</th>
+      <th>Allot Division</th>
+    </tr>
+  </thead>
+{% for st in st_list %}
+<tr>
+<td>{{forloop.counter}}</td>
+<td value="{{st.st_uid}}">{{st.st_uid}}</td>
+<td value="{{st.st_name}}">{{st.st_name}}</td>
+<td>
+    <input type="checkbox" name="checked_allot" id="st.uid" value="{{st.st_uid}}">
+    
+</td>
+</tr>
+{% endfor %}                 

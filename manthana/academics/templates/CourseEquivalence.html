@@ -1,0 +1,332 @@
+{% extends 'base_template.html' %}
+{% load static %}
+{% block title %}
+<title>Course Equivalence</title>{% endblock %}
+{% block page-content %}
+<link href="{% static 'fonts/SansationLight/font.css' %}" rel="stylesheet">
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/validate.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Title -->
+    <title>SDMCET - Course Equivalence</title>
+
+    <style type="text/css">
+        #myTable {
+            border-collapse: collapse;
+            width: 100%;
+            border: 1px solid #ddd;
+            font-size: 18px;
+        }
+
+
+        #myTable tr {
+            border-bottom: 1px solid #ddd;
+        }
+
+        #myTable th,
+        td {
+            text-align: center;
+        }
+
+        #myTable tr.header,
+        #myTable tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+    <h2 align="center">Course Equivalence</h2>
+    <section class="mt-5 mb-5">
+        <div class="container shadow rounded-3 p-4 bg-white">
+            <form action="/addCourseEquivalent" method="POST" id="indexForm"
+                data-oldsubj-url="{% url 'ajax_load_courseslist' %}"
+                data-newsubj-url="{% url 'ajax_load_newcourseslist' %}"
+                data-displaylist-url="{% url 'ajax_displaylist' %}">
+                {% csrf_token %}
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label for="course_head" class="form-label">Course Head</label>
+                        <select name="course_head" id="course_head" class="form-select" required>
+                            <option value="" disabled selected>Choose Course Head</option>
+                            <option value="UG">UG</option>
+                            <option value="PG">PG</option>
+                        </select>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label name="branch" for="branch" class="form-label"> Department : </label>
+                        <select name="branch" id="branch" class="form-select" required>
+                        {% if course_equi_obj is None %}
+                            <option value="" disabled selected>Choose Department</option>
+                            {% for dept in dept %}
+                                <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+                            {% endfor %}
+                        {% else %}
+                            <option value="{{branch_id}}">{{course_equi_obj.old_scheme_details_id.offered_by}}</option>
+                            
+                            {% for dept in dept %}
+                                {% if dept.dept_id != course_equi_obj.old_scheme_details_id %}
+                                    <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                        </select>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label for="acad_cal_acad_year" class="form-label">
+                            Academic Year
+                        </label>
+                        <select name="acad_cal_acad_year" id="acad_cal_acad_year" class="form-select" required>
+                            {% if acad_cal_obj is None %}
+                            <option value="" disabled selected>-- Choose Academic Year --</option>
+                            {% for aca_yr in acad_year_tbl %}
+                            <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+                            <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option> 
+                            {% endfor %}
+                            {%else%}
+                            <option value="" disabled selected>-- Choose Academic Year --</option>
+                            {% for aca_yr in acad_year_tbl %}
+                            <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+                            <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option> 
+                            {% endfor %}
+
+                            {% endif %}
+                        </select>
+                    </div>
+                    <div class="col-4 mb-3">
+                        <label for="acad_cal_type" class="form-label"> Academic Type </label>
+                        <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+                        
+                          <option disabled selected>Choose Academic_type</option>
+                          <option value="1">Regular Semester</option>
+                          <option value="2">STC Semester</option>
+                        
+                          
+                        </select>
+                      </div>
+                    <div class="col-6 mb-3">
+                        <label name="sem" for="sem" class="form-label"> Semester : </label>
+                        <select name="sem" id="sem" class="form-select" required>
+                            {% if course_equi_obj is None %}
+                            <option value="" disabled selected>Choose Semester</option>
+                            {%else%}
+                            <option value="{{course_equi_obj.old_scheme_details_id.sem_allotted}}">Semester {{course_equi_obj.old_scheme_details_id.sem_allotted}}</option>
+                            {%endif%}
+                            <option value="1">Semester 1</option>
+                            <option value="2">Semester 2</option>
+                            <option value="3">Semester 3</option>
+                            <option value="4">Semester 4</option>
+                            <option value="5">Semester 5</option>
+                            <option value="6">Semester 6</option>
+                            <option value="7">Semester 7</option>
+                            <option value="8">Semester 8</option>
+                            
+                        </select>
+                    </div>
+                </div><br>
+                <h4 align="center"> Add Subject Details </h4>
+                <div class="card mt-4">
+                    <div class="card-body">
+                        <label name="select_sub" for="select_sub" class="form-label"> Select Subject : </label>
+                        <select name="select_sub" id="select_sub" class="form-select" required>
+                            {% if course_equi_obj is not None %}
+                                <option value="{{course_equi_obj.old_course_code}}">{{course_equi_obj.old_course_code}} - {{old_course_title}}</option>
+                            {% endif %}
+                        </select><br>
+                        <div class="row">
+                            <div class="col-6 mb-3">
+                                <label name="equi_sem" for="equi_sem" class="form-label"> Equal Semester : </label>
+                                <select name="equi_sem" id="equi_sem" class="form-select" required>
+                                    {%if course_equi_obj is None%}
+                                    <option value="" disabled selected>Choose Semester</option>
+                                    {%else%}
+                                    <!-- <option value="{{equi_sem}}" selected>Semester {{equi_sem}}</option> -->
+                                    <option value="" disabled selected>Choose Semester</option>
+                                    
+                                    {%endif%}
+                                    <option value="1">Semester 1</option>
+                                    <option value="2">Semester 2</option>
+                                    <option value="3">Semester 3</option>
+                                    <option value="4">Semester 4</option>
+                                    <option value="5">Semester 5</option>
+                                    <option value="6">Semester 6</option>
+                                    <option value="7">Semester 7</option>
+                                    <option value="8">Semester 8</option>
+                                </select>
+                            </div>
+                            <div class="col-6 mb-3">
+                                <label name="equi_subject" for="equi_subject" class="form-label"> Select Subject :
+                                </label>
+                                <select name="equi_subject" id="equi_subject" class="form-select" required>
+                                    {% if course_equi_obj is not None %}
+                                        <option value="{{course_equi_obj.new_course_code}}" selected>{{course_equi_obj.new_course_code}} - {{new_course_title}}</option>
+                                        {%for newcourse in new_courselist%}
+                                        <option value="{{newcourse.course_code}}">{{newcourse.course_title}}- {{newcourse.course_code}}</option>
+                                        {%endfor%}
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div><br>
+                        <div class="row">
+                            <div class="d-grid gap-4 col-1 mx-auto">
+                                {% if course_equi_obj is None %}
+                                <input type="text" name="btn_equi_course" value="register" hidden>
+                                <button type="submit" name="btn_equi_course" id="btn_equi_course" value="register"
+                                    class="btn btn-primary">Add</button>
+                                {% else %}
+                                <input type="text" name="course_equivalence_id" value="{{course_equi_obj.course_equivalence_id}}" hidden>
+                                <input type="text" name="btn_equi_course" value="update" hidden>
+                                <button type="submit" name="btn_equi_course" id="btn_equi_course" value="update"
+                                    class="btn btn-primary">Update</button>
+                                {%endif%}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+    </section>
+    <h2 align="center">Modify Subject Details</h2>
+    <section class="mt-5 mb-5">
+        <div class="container shadow rounded-3 p-4 bg-white">
+            <div class="card showTable" id="sTable">
+                <div class="card-body">
+                    <table class="table table-sm" id="myTable">
+                        <thead class="table-dark">
+                            <tr class="header">
+                                <th>Old Courses</th>
+                                <th>New Courses</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Load Courses for the first time  -->
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            {% if course_equi_obj is None %}
+            $("#sem").change(function () {
+                if ($('#acad_cal_acad_year').val() == null) {
+                    alert("Select Academic Year");
+                }
+                else {
+                    var url1 = $("#indexForm").attr("data-oldsubj-url");
+                    var semId = $(this).val();
+                    var acadYrId = $('#acad_cal_acad_year').val();
+                    var deptId = $("#branch").val();
+                    
+                    var acad_cal_type = $("#acad_cal_type").val();
+                    console.log("lllllllll")
+                    $.ajax({
+                        url: url1,
+                        data: {
+                            'sem': semId,       
+                            'acad_year': acadYrId,
+                            'branch': deptId,
+                            'acad_cal_type':acad_cal_type
+                        },
+                        success: function (data) {
+                            $("#select_sub").html(data);
+                        }
+                    });
+                }
+            });
+        {%endif%}
+        });
+    </script>
+
+    <!-- Load Courses for second time -->
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#equi_sem").change(function () {
+                var url2 = $("#indexForm").attr("data-newsubj-url");
+                var equi_semId = $(this).val();
+                var deptId = $("#branch").val();
+                var acad_cal_type = $("#acad_cal_type").val();
+                var today = new Date();
+                var acadYrId = $('#acad_cal_acad_year').val();
+                var date = today.getFullYear();
+                console.log("lllllllll2")     //2022
+                var d = date;
+                var rem = d % 2000;     //22
+                if (date % 2 != 0) {      //odd year
+                    var temp = date.toString();     //'2021'
+                    var current_year = temp.concat("-", rem + 1);    //'2021-22'
+                }
+                else {           //even year
+                    var t = date - 1;        //2021
+                    var temp = t.toString();    //'2021'
+                    var current_year = temp.concat("-", rem);       //'2021-22'
+                }
+                console.log(current_year)
+                $.ajax({
+                    url: url2,
+                    data: {
+                        'equi_sem': equi_semId,
+                        'acad_cal_type':acad_cal_type,
+                        
+                        'branch': deptId
+                    },
+                    success: function (data) {
+                        console.log(data)
+                        $("#equi_subject").html(data);
+                    }
+                });
+            });
+        });
+    </script>
+
+    <!-- Display courses list which are already mapped  -->
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#sem").change(function () {
+                console.log("lllllllll3")
+                if ($('#acad_cal_acad_year').val() == null) {
+                    console.log("lllllllll3")
+                    alert("Select Academic Year");
+                }
+                else {
+                    var url3 = $("#indexForm").attr("data-displaylist-url");
+                    var semId = $(this).val();
+                    var acadYrId = $('#acad_cal_acad_year').val();
+                    var deptId = $("#branch").val();
+                    var acad_cal_type = $("#acad_cal_type").val();
+                    console.log(semId)
+                    console.log(acadYrId)
+                    console.log(deptId)
+
+                    $.ajax({
+                        url: url3,
+                        data: {
+                            'sem': semId,
+                            'acad_year': acadYrId,
+                            'branch': deptId,
+                            'acad_cal_type':acad_cal_type
+                        },
+                        success: function (data) {
+                            console.log("lllll")
+                            console.log(data)
+                            $("#myTable").html(data);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Results</title>{% endblock %}
+
+
+{% block page-content %}
+<!-- Date Range Picker CSS -->
+<link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}" />
+<script src="{% static 'plugins/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+<style>
+    .sub-que-tbl {
+        padding: 0px;
+    }
+
+    .head_font {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid white;
+        border-collapse: collapse;
+    }
+</style>
+
+<h3 class="head_font mb-2">Results</h3>
+
+<form action="/gen_result" method="POST" id="">
+    {% csrf_token %}
+    <section class="mt-5 mb-5">
+        <div class="container shadow rounded-3 p-4 bg-white">
+            
+            <div class="row">
+                <div class="row">
+                    <div class="col-6 mb-3"> 
+                        <label for="exam_id" class="form-label"> Exam </label> 
+                        <select name="exam_id" id="exam_id" class="form-select" required> 
+                            <option value="" disabled selected>Choose Exam</option> 
+                            {% for exam in exams %} 
+                            <option value="{{ exam.exam_details_id }}">{{ exam.description }}</option> 
+                            {% endfor %} 
+                        </select> 
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label for="department" class="form-label"> Department </label>
+                        <select name="department" id="department" class="form-select" required>
+                            <option value="" disabled selected>Choose Department</option>
+                            {% for department in departments %}
+                            <option value="{{ department.dept_id }}">{{ department.dept_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label for="acad_cal_acad_year" class="form-label">
+                            Evaluation type
+                        </label>
+                        <select name="evaluation_type" id="evaluation_type" class="form-select" required>
+                            <option disabled selected>Evaluation type</option>
+                            <!-- <option disabled selected>Choose Academic Year</option> -->
+                            <option value="1">Regular Evaluation</option>
+                            <option value="2">Re-Evaluation</option>
+                            <option value="3">Challenge Evaluation</option>
+                        </select>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="col-12 mb-3 mt-3 text-center">
+                        <button type="submit" name="btn_clicked" id="btn_clicked" value="get_exam_details"
+                            class="btn btn-success btn-sm"><b>Generate Results</b></button>
+                    </div>
+                    
+                </div>
+        </div>
+    </section>
+
+</form>
+
+
+
+
+<script>
+    $('input').focus(function () {
+        var ele = $(this);
+        $('html, body').animate({
+            scrollTop: ele.offset().top - 450
+        }, 50);
+    });
+    
+    /*$(document).ready(function () {
+        window.history.replaceState('', '', window.location.href)
+      }); */
+</script>
+
+{% endblock %}

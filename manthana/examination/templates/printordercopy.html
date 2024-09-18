@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDMCET Examination Section</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            border: 1px solid #000;
+            padding: 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+        .header, .footer {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .content {
+            margin-bottom: 20px;
+        }
+        .signature {
+            margin-top: 40px;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        table, th, td {
+            border: 1px solid #000;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+        }
+        @media print {
+            body {
+                margin: 0;
+                font-size: 14px;
+            }
+            .container {
+                border: none;
+                margin: 0;
+                padding: 0;
+                max-width: none;
+            }
+            .header, .footer {
+                margin-bottom: 10px;
+            }
+            .content {
+                margin-bottom: 10px;
+            }
+            .signature {
+                margin-top: 20px;
+            }
+            button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+{%for i in teacher_data%}
+<body>
+    <div class="container">
+        <div class="header">
+            <h2>SDM COLLEGE OF ENGINEERING & TECHNOLOGY</h2>
+            <p>Dhavalagiri, DHARWAD - 580 002 (India)</p>
+            <p>Autonomous Institution Affiliated to Visvesvaraya Technological University, Belagavi, Recognized by AICTE, New Delhi</p>
+        </div>
+        <div class="content">
+            <p>Ref No: SDMCET/Exam/2023-24/970</p>
+                <p>To,<br>{{i.name }},<br>{{i.designation}}, Dept. of {{i.department}},<br>SDMCET, Dharwad.</p>
+            <p>Dear Sir,</p>
+            <p><strong>Sub: Question Paper (QP) setting for {{des}}</strong></p>
+            <p>By the direction of the Principal, I request you to accept the setting of question paper and prepare the scheme with detailed solution in the course(s) mentioned below. You are requested to set the QP in consultation with other course instructor(s), if handled by more than one faculty.</p>
+            <table>
+                <tr>
+                    <th>Course Code</th>
+                    <th>Course Title</th>
+                    <th>No. of QP Sets</th>
+                    <th>Sem</th>
+                    <th>Hrs</th>
+                    <th>Max Marks</th>
+                    <th>Applicable to Students of Dept</th>
+                </tr>
+                <tr>
+                    <td>{{sub}}</td>
+                    <td>{{subname}}</td>
+                    <td>1</td>
+                    <td>{{exam}}</td>
+                    <td>{{time}}</td>
+                    <td>{{marks}}</td>
+                    <td>{{dept}}</td>
+                </tr>
+            </table>
+            <div class="guidelines">
+                <p><strong>Guidelines to be followed:</strong></p>
+                <ul>
+                    <li>The soft copy of the QP template and table having Bloom's Taxonomy (Revised) is sent to your department mail id on {{now}}. You are requested to submit the hardcopy of the QP and Scheme & Solution to COE office.</li>
+                    <li>Figures / Sketches drawn are to be indicated for proper identification, e.g. figure, figure pertaining to Q2(a) etc. and the final answers should be written next to the questions for clarity.</li>
+                    <li>Refer to the list of action verbs for assessment as per the Revised Bloom's taxonomy, while setting the QP.</li>
+                    <li>Course Outcomes are to be mentioned against each question.</li>
+                    <li>After the scrutiny of QP by the respective department BOE at the COE office, QP setters will be informed of the changes to be made in QP by department BOE - Member Secretary. The corresponding changes are to be made in the QP and Scheme & Solution as well. Final hard copy of QP should be sealed and submitted to COE office along with scheme and solution.</li>
+                </ul>
+                <p>If the QP cannot be set as per the above pattern and deviation is inevitable, written permission for doing so must be obtained from Dean (Academic program) and a copy of the permission letter is to be submitted to CoE.</p>
+                <p>In the scheme, clearly mention the marks for steps, figures, circuits, flow charts, block diagrams etc. to ensure uniform evaluation among the examiners.</p>
+                <p>I look forward to receive the QP along with scheme and solution on or before 30<sup>th</sup> July 2024.</p>
+            </div>
+            <p>Thanking you,</p>
+            <p>Yours truly,</p>
+            <div class="signature">
+                <p><strong>Controller of Examinations</strong></p>
+            </div>
+        </div>
+        <div class="footer">
+            <button onclick="window.print()">Print</button>
+        </div>
+    </div>
+    {%endfor%}
+</body>
+</html>

@@ -1,0 +1,217 @@
+{% extends "view_base.html" %}
+
+
+{% block view %}
+
+<p class="title"><strong>Details Of Previous Examinations Passed : SSLC / X</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Name of the board :</b> {{pacad_10th.ug_pacad_10th_board }}</td>
+
+        <td colspan="1"><b>Registration Number :</b> {{pacad_10th.ug_pacad_10th_reg_no}}</td>
+
+        <td colspan="1"><b>Month of Passing :</b>
+            {% if pacad_10th.ug_pacad_10th_pass_month_id  == 1 %}
+            January
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id  == 2 %}
+            February
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 3 %}
+            March
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 4 %}
+            April
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 5 %}
+            May
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 6 %}
+            June
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 7 %}
+            July
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 8 %}
+            August
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 9 %}
+            September
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 10 %}
+            October
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 11 %}
+            November
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 12 %}
+            December
+            {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Year of Passing :</b> {{pacad_10th.ug_pacad_10th_pass_year }}</td>
+
+        <td colspan="1"><b>Total Marks / CGPA Obtained :</b> {{pacad_10th.ug_pacad_10th_total_marks_cgpa}}</td>
+
+        <td colspan="1"><b>Percentage of Marks / CGPA obtained :</b> {{pacad_10th.ug_pacad_10th_percentage_cgpa }}</td>
+
+    </tr>
+    <!-- <tr>
+        <td colspan="1"><b>Percentage of Marks / CGPA obtained :</b>
+            {% if pacad_10th.ug_pacad_10th_class_obtained == "Distinction" %}
+            Distinction
+            {% elif pacad_10th.ug_pacad_10th_class_obtained == "First" %}
+            First
+            {% elif pacad_10th.ug_pacad_10th_class_obtained == "Second" %}
+            Second
+            {% elif pacad_10th.ug_pacad_10th_class_obtained == "Pass" %}
+            Pass
+            {% endif %}
+        </td>
+    </tr> -->
+</table>
+
+
+
+
+
+
+<p class="title"><strong>Details Of Previous Examinations Passed :diploma</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Name of the University :</b> {{pacad_dip.ug_pacad_dip_schoolname }}</td>
+
+        <td colspan="1"><b>Registration Number :</b> {{pacad_dip.ug_pacad_dip_reg_no}}</td>
+
+        <td colspan="1"><b>Month of Passing :</b>
+            {% if pacad_dip.ug_pacad_dip_pass_month == "Jan" %}
+            January
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Feb" %}
+            February
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Mar" %}
+            March
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Apr" %}
+            April
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "May" %}
+            May
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Jun" %}
+            June
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Jul" %}
+            July
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Aug" %}
+            August
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Sep" %}
+            September
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Oct" %}
+            October
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Nov" %}
+            November
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Dec" %}
+            December
+            {% endif %}
+        </td>
+        <td colspan="1"><b>Year of Passing :</b> {{pacad_dip.ug_pacad_dip_pass_year }}</td>
+    </tr>
+    <tr>
+        
+
+
+        <td colspan="1"><b>Percentage / CGPA (B.E. 5th Semester) :</b> {{pacad_dip.ug_pacad_dip_5th_marks }}
+        </td>
+        <td colspan="1"><b>Percentage / CGPA (B.E 6th Semester) :</b> {{pacad_dip.ug_pacad_dip_6th_marks }}
+        </td>
+        <td colspan="1"><b>Overall Percentage / CGPA :</b> {{pacad_dip.ug_pacad_total_percentage}}</td>
+   
+        <!-- <td colspan="1"><b>Class obtaine :</b>
+            {% if pacad_pg.ug_pacad_degree_class_obtained == "Distinction" %}
+            Distinction
+            {% elif pacad_pg.ug_pacad_degree_class_obtained == "First" %}
+            First
+            {% elif pacad_pg.ug_pacad_degree_class_obtained == "Second" %}
+            Second
+            {% elif pacad_pg.ug_pacad_degree_class_obtained == "Pass" %}
+            Pass
+            {% endif %} -->
+        </td>
+    </tr>
+</table>
+
+
+
+
+
+
+
+
+<p class="title"><strong>Admission Information : Details For Students Admitted Under MANAGEMENT Quota</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Rank :</b> {{mgmt_admission_ug.mgmt_rank}}</td>
+        <td colspan="1"><b>Entrance Exam Appeared :</b>
+            {% if mgmt_admission_ug.mgmt_exam == 1 %}
+            DCET
+            {% endif %}
+        </td>
+        <td colspan="1"><b>Fees Paid to College :</b> {{mgmt_admission_ug.mgmt_college_fees_paid}}</td>
+        <td colspan="1"><b>MGMT Challan Date :</b> {{mgmt_admission_ug.mgmt_challan_date|date:'Y-m-d'}}</td>
+        <td colspan="1"><b>MGMT Challan No. :</b> {{mgmt_admission_ug.mgmt_challan_no}}</td>
+    </tr>
+</table>
+<p class="title"><strong>Documents Submitted By The Applicant</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Allotment order copy :</b>
+            {% if student.st_adm_quota == 4 %}
+            MGMT
+            {% elif student.st_adm_quota == 5 %}
+            PGCET
+            {% endif %}
+        </td>
+        <td colspan="6">
+            {% if doc_details.st_10th_marks_card %}
+            SSLC / X Marks Card,
+            {% endif %}
+            {% if doc_details.st_12th_marks_card %}
+            PUC / XII Marks Card,
+            {% endif %}
+            {% if doc_details.st_degree_certificate %}
+            Degree Certificate,
+            {% endif %}
+            {% if doc_details.st_study_cerfiticate %}
+            Study Certificate,
+            {% endif %}
+            {% if doc_details.st_income_certificate %}
+            Caste / Income Certificate (if SC/ST/OBC),
+            {% endif %}
+            {% if doc_details.st_tulu_certificate %}
+            Tulu Linguistic Certificate (COMEDK Quota),
+            {% endif %}
+            {% if doc_details.st_eligibility_certificate %}
+            Eligibility Certificate (non-Karnataka only),
+            {% endif %}
+            {% if doc_details.st_migration_certificate %}
+            Migration Certificate (non-Karnataka only),
+            {% endif %}
+            {% if doc_details.st_transfer_certificate %}
+            Transfer Certificate,
+            {% endif %}
+            {% if doc_details.st_aadhar_card %}
+            AADHAR Card,
+            {% endif %}
+            {% if doc_details.st_pan_card %}
+            PAN Card,
+            {% endif %}
+        </td>
+    </tr>
+</table>
+
+<p class="title"><strong>Declaration By Student</strong></p>
+<p>I here by declare that the above information is true to best of my knowledge</p>
+<br>
+<div style="display: flex; justify-content: flex-end">
+    <span class="sign">Signature Of Student</span>
+</div>
+
+
+
+<p class="title"><strong>FOR OFFICE USE ONLY</strong></p>
+<table>
+    <tr>
+        <td><b>Total Fees :</b> {{student.st_total_fees}}</td>
+        <td><b>Rt/Challan No. :</b> {{student.st_rt_no}}</td>
+        <td><b>Date :</b> {{student.st_adm_date|date:'Y-m-d'}}</td>
+    </tr>
+</table>
+
+
+{% endblock view %}

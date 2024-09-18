@@ -1,0 +1,89 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Results</title>{% endblock %}
+
+
+{% block page-content %}
+<!-- Date Range Picker CSS -->
+<link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}" />
+<script src="{% static 'plugins/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+<style>
+    .sub-que-tbl {
+        padding: 0px;
+    }
+
+    .head_font {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid white;
+        border-collapse: collapse;
+    }
+</style>
+
+<h3 class="head_font mb-2">PROVISIONAL GRADE SHEET</h3>
+
+<form action="/pro" method="POST" id="">
+    {% csrf_token %}
+    <section class="mt-5 mb-5">
+        <div class="container shadow rounded-3 p-4 bg-white">
+            
+            <div class="row">
+                <div class="row">
+                    <table>
+                    <div class="col-6 mb-3"> 
+                        <tr>
+
+                        <td align="right">
+                        <label for="usn" class="form-label"> USN: </label> 
+                    </td>
+                    <td>
+                        <input name="usn" type="text" class="form-control" required>
+                        </td>
+                    </div>
+                </tr> 
+                <tr>
+                    <td align="right"><label for="exam_id" class="form-label"> Exam </label> </td>
+                       <td><select name="exam_id" id="exam_id" class="form-select" required> 
+                            <option value="" disabled selected>Choose Exam</option> 
+                            {% for exam in exams %} 
+                            <option value="{{ exam.exam_details_id }}">{{ exam.description }}</option> 
+                            {% endfor %} 
+                        </select> </td> 
+                </tr> 
+                </table> 
+                <div class="row" align="centre">
+                    <div class="col-12 mb-3 mt-3 text-center">
+                        <button type="submit" name="btn_clicked" id="btn_clicked" value="get_exam_details"
+                            class="btn btn-success btn-sm"><b>Generate Results</b></button>
+                    </div>
+                    
+                </div>
+        </div>
+    </section>
+
+</form>
+
+
+
+
+<script>
+    $('input').focus(function () {
+        var ele = $(this);
+        $('html, body').animate({
+            scrollTop: ele.offset().top - 450
+        }, 50);
+    });
+    
+    /*$(document).ready(function () {
+        window.history.replaceState('', '', window.location.href)
+      }); */
+</script>
+
+{% endblock %}

@@ -1,0 +1,190 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+
+{% block title %}<title>SEE Student Attendance List</title>{% endblock %}
+
+{% block page-content %}
+<style>
+  tr:hover {
+    background-color: lightgray;
+  }
+
+  .hide{
+    display: none;
+  }
+  i {
+  font-size: 50px;
+}
+</style>
+
+<section class="mt-5 mb-5">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-4 mb-3">
+        <b><label for="Date" class="form-label">Date :</label></b>
+        <label for="Date" class="form-label">{{attend_date}}</label><br>
+      </div>
+      <div class="col-4 mb-3">
+        <b><label for="subjcode" class="form-label">Subject Code :</label></b>
+        <label for="subjcode" class="form-label">{{scheme_detail.course_code}}</label><br>
+      </div>
+
+      <div class="col-3 mb-3">
+        <b><label for="subjname" class="form-label">Subject Name :</label></b>
+        <label for="subjname" class="form-label">{{scheme_detail.course_title}}</label><br>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-4 mb-3">
+        <b><label for="sem" class="form-label">Sem :</label></b>
+        <label for="sem" class="form-label">{{scheme_detail.sem_allotted}}</label><br>
+      </div>
+
+      <div class="col-4 mb-3">
+        <b><label for="subjcode" class="form-label">Department :</label></b>
+        <label for="subjcode" class="form-label">{{scheme_detail.offered_by.dept_name}}</label><br>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+<center>
+  <h4>Attendance List</h4>
+</center>
+<br>
+<center>
+  <div>
+    <i class = "loading-icon fa fa-spinner fa-spin hide" ></i>
+  </div>
+</center>
+
+<section class="mt-5 mb-5">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <form action="/seeattendancelist/{{attend_date}}/{{scheme_detail.course_code}}/{{acad_cal_id}}/{{exam_desc}}" method="POST" id="">
+      {% csrf_token %}
+    
+      <div class="card showTable" id="sTable">
+        <div class="card-body">
+          <table id="attendancelist" class="table table-sm">
+            <thead class="table-dark">
+              <tr class="header">
+                <th>Sl.No</th>
+                <th>UID</th>
+                <th>Hall Ticket ID</th>
+                <th>Name</th>  
+                <th>Status</th>
+              </tr>
+            </thead>
+
+
+            {% if edit_flag == 0 %}
+
+                      {% for uid,hall_ticket_id,name,ht_details_id in student_details_set %}
+                      <tr>
+                          <td>{{forloop.counter}}</td>
+                          <td>{{uid}}</td>
+                          <td>{{hall_ticket_id}}</td>
+                          <td>{{name}}</td>
+                          <td>
+                          <input type="checkbox" name="checked_allot" id="checked_allot" value="{{ht_details_id}}" onchange="handleCheckbox()" checked>
+                          </td>
+                      </tr>
+                      {% endfor %}
+
+                      <tr>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                          <td>
+                          <b><label>Absentees:</label></b>
+                          <b><label id="totalStudents">0</label></b>
+                          </td>
+                      </tr>
+                {%else%}
+                        {% for uid,hall_ticket_id,name,ht_details_id,old_attendance in student_details_set %}
+                              <tr>
+                                  <td>{{forloop.counter}}</td>
+                                  <td>{{uid}}</td>
+                                  <td>{{hall_ticket_id}}</td>
+                                  <td>{{name}}</td>
+                                  <td>
+                                  {%if old_attendance == 'P'%}
+                                        <input type="checkbox" name="checked_allot" id="checked_allot" value="{{ht_details_id}}" onchange="handleCheckbox()" checked>
+                                  {%endif%}
+                                  {%if old_attendance == 'A'%}
+                                        <input type="checkbox" name="checked_allot" id="checked_allot" value="{{ht_details_id}}" onchange="handleCheckbox()">
+                                  {%endif%}
+                                      </td>
+                              </tr>
+                          {% endfor %}
+
+                              <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                  <td>
+                                  <b><label>Absentees:</label></b>
+                                  <b><label id="totalStudents">{{absentee_count}}</label></b>
+                                  </td>
+                              </tr>
+                {%endif%}
+                   
+             
+          </table>
+        </div>
+      </div><br>
+          {% if edit_flag == 0 %}
+                    <div class="row">
+                      <div class="d-grid gap-4 col-1 mx-auto">
+                        <input type="text" name="btn_see_val" value="register" hidden>
+                        <button type="submit" name="btn_div_allot" id="btn_div_allot" value="register"
+                          class="btn btn-primary">Submit</button>
+                      </div>
+                    </div>
+          {%else%}
+                <div class="row">
+                  <div class="d-grid gap-4 col-1 mx-auto">
+                    <input type="text" name="btn_see_val" value="update" hidden>
+                    <button type="submit" name="btn_div_allot" id="btn_div_allot" value="update"
+                      class="btn btn-primary">Update</button>
+                  </div>
+                </div>
+          {%endif%}
+     
+      
+
+    </form>
+  </div>
+</section>
+
+<script>
+  function handleCheckbox() {
+
+    var inputElems1 = document.getElementsByName("checked_allot")
+    
+    count1 = 0;
+
+    for (var i = 0; i < inputElems1.length; i++) {
+      if (inputElems1[i].type === "checkbox" && inputElems1[i].checked === false) {
+        count1++;
+  
+      }
+      document.getElementById("totalStudents").innerHTML = count1;
+    }
+  }
+
+
+  $(document).ready(function(){
+    $('.btn').on('click',function() {
+      $('.loading-icon').removeClass('hide');
+    })
+  });
+</script>
+
+{% endblock %}

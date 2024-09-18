@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* CSS styles */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #000;
+            table-layout: fixed;
+        }
+        th, td {
+            border: 2px solid #000;
+            padding: 10px;
+
+            text-align: justify-all;
+            word-wrap: break-word;
+           
+        }
+        .header {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .sub-header {
+            font-size: 20px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .event-name {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .print-button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .print-button:hover {
+            background-color: #0056b3;
+        }
+        .hello
+        {
+            width:100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">INSIGNIA 2024</div>
+    <div class="sub-header">{{eve}} Eventwise Winner Details</div>
+    
+    <table>
+       
+        <tbody>
+            <div class="sub-header">DAY 1</div>
+        {% for i,k in list %}
+            
+            {% if k.day == "1"%}
+            
+            <table>
+        <tr><td class="hello"><div class="sub-header">{{k.name}}</div></td></tr>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <th>Si No.</th>
+                <th>Names</th>
+                <th>Insignia ID</th>
+                <th>Phone Number</th>
+                <th>Event</th>
+                <th>College</th>
+                <th>Winning Place</th>
+            </tr>
+        </thead>
+        {% for j in i%}
+        <thead>
+            <tr>
+                <td>{{j.winner}}</td>
+                
+                <td>{{ j.names}}</td>
+                <td>{{j.inid}}</td>
+                <td>{{j.number}}</td>
+                <td>{{k.name}}</td>
+                <td>{{j.college}}</td>
+                <td>{{j.winner}} Place</td> 
+            </tr>
+        </thead>
+        {% endfor%}
+        {% endif %}
+        {% endfor%}
+
+        </table><br>
+            <!-- Placeholder rows for data -->
+            <div class="sub-header">DAY 2</div>
+         
+        {% for i,k in list2 %}
+
+
+
+        {%  if k.day == "2" %}
+ 
+            <table>
+        <tr><td class="hello"><div class="sub-header">{{k.name}}</div></td></tr>
+    </table>
+    <table>
+        <thead>
+            <tr>
+                <th>Si No.</th>
+                <th>Names</th>
+                <th>Insignia ID</th>
+                <th>Phone Number</th>
+                <th>Event</th>
+                <th>College</th>
+                <th>Winning Place</th>
+            </tr>
+        </thead>
+        {% for j in i%}
+        <thead>
+            <tr>
+                <td>{{j.winner}}</td>
+                
+                <td>{{ j.names}}</td>
+                <td>{{j.inid}}</td>
+                <td>{{j.number}}</td>
+                <td>{{k.name}}</td>
+                <td>{{j.college}}</td>
+                <td>{{j.winner}} Place</td> 
+            </tr>
+        </thead>
+        {% endfor%}
+        {% endif %}
+        {% endfor%}
+            
+        
+            <!-- Add more rows as needed -->
+        </tbody>
+    </table>
+
+    <button class="print-button" onclick="printPage()">Print</button>
+
+  
+        <script>
+            // Assume 'list' is your data containing information about each day
+          
+            // Variable to keep track of whether day header is printed
+            let dayPrinted = false;
+          
+            // Iterate over the data
+            for (let k of list2) {
+              if (item.day === "2" && !dayPrinted) {
+                // Insert "Day 1" header if it's day 2 and not printed yet
+                document.getElementById('dayHeader').innerHTML += '<div class="sub-header">DAY 1</div>';
+                dayPrinted = true; // Mark day as printed
+              }
+          
+
+        
+            }
+        // Function to initiate print dialog and remove the print button
+        function printPage() {
+            document.querySelector('.print-button').style.display = 'none'; // Hide the print button
+            window.print(); // Trigger print dialog
+        }
+    </script>
+</body>
+</html>

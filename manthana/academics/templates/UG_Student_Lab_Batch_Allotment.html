@@ -1,0 +1,134 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Batch Allotment for Lab Courses</title>{% endblock %}
+
+{% block page-content %}
+
+<h2 align="center">UG Student Lab Batch Allottment</h2>
+    <!-- Main Content -->
+    <section class="mt-3 mb-3">
+      <div class="container shadow rounded-3 p-4 bg-white">
+        <form action="/ugAllotBatch" method="POST" id="batchAllotForm" data-student-url="{% url 'ajax_ugload_lab_student' %}">
+          {% csrf_token %}
+          <div class="row mt-4">
+            <div class="col-3 mb-3">
+              <label for="academic_year" class="form-label">
+                Academic Year
+              </label>
+              <select name="academic_year" id="academic_year" required class="form-select">
+                <option value="" disabled selected>-- Choose Academic Year --</option>
+                {% for aca_yr in acad_year_tbl %}
+                <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+                <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-4 mb-3">
+              <label for="acad_cal_type" class="form-label"> Academic Type </label>
+              <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+              
+                <option disabled selected>Choose Academic_type</option>
+                <option value="1">Regular Semester</option>
+                <option value="2">STC Semester</option>
+              
+                
+              </select>
+            </div>
+            <div class="col-3 mb-3">
+              <label for="offered_by" class="form-label"> Department: </label>
+              <select id="offered_by" name="offered_by" value="{{ scheme_details.offered_by_id }}" class="form-select" required>
+                <option disabled selected>-- Choose Branch --</option>
+                {% for i in dept %}
+                  <option value="{{i.dept_id}}">{{i.dept_name}}</option>
+                {% endfor %}
+            </select>
+          </div>  
+            <div class="col-3 mb-3">
+              <label for="course_sem" class="form-label"> Semester </label>
+              <select name="course_sem" id="course_sem" required class="form-select">
+                <option value="" disabled selected>-- Choose Semester --</option>
+                <option value="1">1st Semester</option>
+                <option value="2">2nd Semester</option>
+                <option value="3">3rd Semester</option>
+                <option value="4">4th Semester</option>
+                <option value="5">5th Semester</option>
+                <option value="6">6th Semester</option>
+                <option value="7">7th Semester</option>
+                <option value="8">8th Semester</option>
+              </select>
+            </div>
+            <div class="col-3 mb-3">
+              <label name="div" for="div" class="form-label"> Division </label>
+              <select name="div" id="div" required class="form-select">
+                <option value="" disabled selected>-- Choose Division --</option>
+                {% for div in div_tbl %}
+                <option value="{{div.id}}">{{div.division}}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-3 mb-3">
+              <label name="batch" for="batch" class="form-label"> Batch </label>
+              <select name="batch" id="batch" required class="form-select">
+                <option value="" disabled selected>-- Choose Batch --</option>
+                <option value="B1">B1</option>
+                <option value="B2">B2</option>
+                <option value="B3">B3</option>
+                <option value="B4">B4</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="mb-3 table-responsive text-center">
+            <label for="student-list" class="form-label">
+                Student List
+              </label>
+              <div class="card showTable" id="sTable">
+                <div class="card-body">
+                  <table id="StudentData" name="StudentData" class="table table-sm" >
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="d-grid gap-4 col-1 mx-auto">
+              <input type="text" name="btn_clicked" value="register" hidden>
+              <button type="submit" name="ug_btn_batch_allot" id="ug_btn_batch_allot" value="register" class="btn btn-primary">Submit</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+    <script>
+        //$("#course_sem").change(function () { 
+        $("#div").change(function () {
+        var url1 = $("#batchAllotForm").attr("data-student-url");  // get the url of the `load_student` view
+        var academic_year = $('#academic_year').val();  // get the selected programming ID from the HTML input
+        var sem = $('#course_sem').val();
+        var dept_name = $('#offered_by').val();
+        var div = $('#div').val();
+        
+        var acad_cal_type = $('#acad_cal_type').val();
+        alert(academic_year+" "+sem+" "+dept_name+" "+div+" "+acad_cal_type)
+        //echo(div);
+        $.ajax({                       // initialize an AJAX request
+          url: url1,                    // set the url of the request (= localhost:8000/load_student/)
+          data: {
+            'academic_year': academic_year,       // add the programming id to the GET parameters
+            'course_sem' : sem,
+            'offered_by': dept_name,
+            'div': div,
+            'acad_cal_type':acad_cal_type
+            //'batch' : batch
+          },
+          success: function (data) {   // `data` is the return of the `load_student` view function
+            $("#StudentData").html(data);  // replace the contents of the course input with the data that came from the server
+          },
+          error:function(data){
+            alert(data.responseJSON.error);
+          }
+        });
+      });
+    </script>
+{% endblock %}

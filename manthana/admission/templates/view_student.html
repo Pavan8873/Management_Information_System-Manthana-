@@ -1,0 +1,106 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+<title>Vew/Edit Students</title>{% endblock %} {% block page-content %}
+<link href="{% static 'fonts/SansationLight/font.css' %}" rel="stylesheet">
+<script src="{% static 'js/validate.js' %}"></script>
+{% if userName is None %}
+<h3>You are not authorized to view this page!!</h3>
+{% else %}
+<div class="col-md mx-auto text-center h6" style="font-size: 0.9rem;">
+    <h5 align="center"><strong>Enter Student Details to Search</strong></h5>
+    <hr>
+    <form action="/SearchStudent" method="POST" id="register_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        <div class="form-group">
+                            <td class="text-end"><label>Select Branch:</label></td>
+                            <td>
+                                <select class="form-select form-select-sm" name="st_branch" id="st_branch" class="form-control">
+                  <option value="0">--Select Branch--</option>
+                  {% for dept in department %}
+                  <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+                  {% endfor %}
+                </select>
+                            </td>
+                            <td class="text-end"><label>UID:</label></td>
+                            <td class="text-start">
+                                <input class="form-control input-sm" type="text" maxlength="50" name="st_uid" id="st_uid" value="" />
+                            </td>
+                        </div>
+                    </tr>
+                    <tr>
+                        <td class="text-end"><label>USN:</label></td>
+                        <td class="text-start"><input class="form-control input-sm" type="text" maxlength="50" name="st_usn" id="st_usn" value="" />
+                        </td>
+                        <td class="text-end"><label>Name:</label></td>
+                        <td class="text-start"><input class="form-control input-sm" type="text" maxlength="50" name="st_name" id="st_name" value="" />
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="4">
+                            <button type="submit" name="btn_admission_details" id="btn_admit_Search" value="admit_Search" class="btn btn-success btn-sm" onClick='submitDetailsForm()'><b>Search</b></button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </form>
+    <div class="card">
+        <div class="card-body">
+            <div class="card-text">
+                {% for message in messages %}
+                <h6>{{message}}</h6>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card showTable" id="sTable">
+    <div class="card-body">
+        <table id="StudentSearchData" class="table table-sm">
+            <thead class="table-dark">
+                <tr class="header">
+                    <th>Sl.No.</th>
+                    <th>Student UID</th>
+                    <th>Student Name</th>
+                    <th>Branch</th>
+                    <th>Date of Birth</th>
+                    <th>Mobile Number</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            {% for st in student %}
+            <tr>
+                <td>{{forloop.counter}}</td>
+                <td>{{st.st_uid}}</td>
+                <td>{{st.st_name}}</td>
+                {% for dept in department %} 
+                    {% if dept.dept_id == st.st_branch_applied_id %}
+                        <td>{{dept.dept_name}}</td>
+                    {% endif %}
+                 {% endfor %}
+                <td>{{st.st_dob}}</td>
+                <td>{{st.st_mobile_no}}</td>
+                <td>
+                    {% if "BE" in st.st_uid %}
+                    <a href="{% url 'view_ug' st.st_id %}" target="_blank" class="btn btn-info btn-sm">View</a> 
+                    {% elif "DP" in st.st_uid %}
+                    <a href="{% url 'view_lat' st.st_id %}" target="_blank" class="btn btn-info btn-sm">View</a> 
+                    {% elif "MT" in st.st_uid or "MB" in st.st_uid %}
+                    <a href="{% url 'view_pg'  st.st_id %}" target="_blank" class="btn btn-info btn-sm">View</a> {% endif %} 
+                    {% if "BE" in st.st_uid %}
+                    <a href="/EditUGStudent/{{ st.st_id }}" class="btn btn-primary btn-sm">Edit</a> 
+                    {% elif "DP" in st.st_uid %}
+                    <a href="/EditLateralStudent/{{ st.st_id }}" class="btn btn-primary btn-sm">Edit</a> 
+                    {% elif "MT" in st.st_uid or "MB" in st.st_uid %}
+                    <a href="/EditPGStudent/{{ st.st_id }}" class="btn btn-primary btn-sm">Edit</a>
+                </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
+{% endif %} {% endblock %}

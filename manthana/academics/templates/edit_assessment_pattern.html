@@ -1,0 +1,511 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Declare Assessment Pattern</title>{% endblock %}
+
+{% block page-content %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<!-- <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" /> -->
+<link href="{% static 'vendor/bootstrap-5.1.3-dist/css/bootstrap.min.css' %}" rel="stylesheet"/>
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/w3.css' %}">
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/validate.js' %}"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <!-- Title -->
+    <title>Declare Assessment Pattern</title>
+
+    <!-- Bootstrap CSS -->
+    <!--<link href="vendor/bootstrap-5.1.3-dist/css/bootstrap.min.css" rel="stylesheet" />-->
+    <style>
+        .hidden{
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body class="bg-light">
+    <!-- Navbar 
+    <nav class="navbar fixed-top navbar-light bg-light shadow bg-white">
+        <div class="container-fluid">
+            <span class="navbar-brand mb-0 h1 mx-auto">First Year Course Details</span>
+        </div>
+    </nav>
+    <br />
+    <br /> -->
+    <h2 align="center">Declare Assessment Pattern</h2>
+    <!-- Main Content -->
+    <section class="mt-5 mb-5">
+    <form id="myForm" action={% url 'edit_assessment_pattern' assessment.declare_assessment_id %} method="post">
+        {% csrf_token %}
+        {% comment %} <div class="container shadow rounded-3 p-4 bg-white">
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label for="academic-year" class="form-label">
+                            Academic Year
+                        </label>
+                        <select id="academic-year" name="academic-year" class="form-select" required>
+                            <option disabled selected>Choose Academic Year</option>
+                            <option value="2020-21">2020-21</option>
+                            <option value="2021-22">2021-22</option>
+                            <option value="2022-23">2022-23</option>
+                            <option value="2023-24">2023-24</option>
+                            <option value="2024-25">2024-25</option>
+                            <option value="2026-27">2026-27</option>
+                        </select>
+                    </div>
+
+                    <div class="col-6 mb-3">
+                        <label for="semester-select" class="form-label">
+                            Semester
+                        </label>
+                        <select id="semester-select" name="semester-select" class="form-select" required>
+                            <option disabled selected>Choose Semester</option>
+                            <option value="1">1st Semester</option>
+                            <option value="2">2nd Semester</option>
+                            <option value="3">3rd Semester</option>
+                            <option value="4">4th Semester</option>
+                            <option value="5">5th Semester</option>
+                            <option value="6">6th Semester</option>
+                            <option value="7">7th Semester</option>
+                            <option value="8">8th Semester</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label for="semester-cycle" class="form-label">
+                            Assessment Type
+                        </label>
+                        <select id="assessment-type" name="assessment-type" class="form-select" required>
+                            <option disabled selected>Choose type</option>
+                            <option value="IA-1">IA-1</option>
+                            <option value="IA-2">IA-2</option>
+                            <option value="IA-3">IA-3</option>
+                            <option value="CTA">CTA</option>
+                        </select>
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label for="course-title" class="form-label">
+                            Course Title
+                        </label>
+                        <!-- -->
+                        <select name="course_name" id="course_name" class="form-select" required>
+                            <option value="" disabled selected>Choose Course</option>
+                            {% for course in sd %}
+                              <option value="{{course.course_title}} - {{course.course_code}}">{{course.course_title}} - {{course.course_code}}</option>
+                            {% endfor %}
+                          </select>
+            
+                    </div>
+                <div class="row">
+                    <div class="col-12 mb-3">
+                        <label class="form-label" >
+                            No.of Questions
+                        </label>
+                        <input type="text" class="form-control"  name="no-of-question" id='no-of-question' required/>
+                    </div>
+                </div>
+        </div>             
+        </div> {% endcomment %}
+        
+        <div class="container shadow rounded-3 p-4 bg-white card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-4 mb-3">
+                        Academic Year : {{ assessment.acad_cal_id.acad_cal_acad_year }}
+                    </div>
+                    <div class="col-4 mb-3">
+                        Course : {{ assessment.scheme_details_id.course_title }}
+                    </div>
+                    <div class="col-4 mb-3">
+                        Sem : {{ assessment.scheme_details_id.sem_allotted }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-4 mb-3">
+                        Date : {{ assessment.date}}
+                    </div>
+                    <div class="col-4 mb-3">
+                        Assessment Type : {{ assessment.assessment_type }}
+                    </div>
+                    <div class="col-4 mb-3">
+                        Max Marks : {{ assessment.max_marks }}
+                    </div>
+                </div>
+            </div>
+            <input class="hidden" type="text" name="assessment_id" id='assessment_id' value={{assessment.declare_assessment_id}} />
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <label class="form-label" >
+                        No.of Questions
+                    </label>
+                    <input type="text" class="form-control"  name="no-of-question" id='no-of-question' required/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <label class="form-label" >
+                        No.of Questions to be Answered
+                    </label>
+                    <input type="text" class="form-control"  name="no-of-question-to-be-answered" id='no-of-question-to-be-answered' required/>
+                </div>
+            </div>
+            <div  class="row">
+                <div class="col-4 mb-3">
+                    Compulsary Questions: 
+                </div>
+                <div id='question-is-compulsary-container' class="col-8 mt-0 p-0 card-body d-flex flex-row flex-wrap" >
+                    
+                </div>
+            </div>
+        </div>
+        <div id='question-container'></div>
+        <div class="row">
+            <div class="d-grid gap-2 col-1 mx-auto">
+              
+              <input type="text" name="btn_clicked" value="register" hidden>
+              <button type="submit" name="btn_acad_cal" id="btn_acad_cal" value="register" class="btn btn-primary">Update</button>
+              
+            </div>
+        </div>
+    </form>
+    </section>
+
+
+    <div id="question-template" class="hidden" value="__number__">
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <div class="card-header question-no-__number__">
+                       Q No. __number__
+                    </div>
+                </div>
+                {% comment %} <div class=" card-header col-4 mb-3" >
+                    <label class="m-0" for="q-__number__-is-compulsory">
+                        <input type="checkbox" class="form-check-input" name="q-__number__-is-compulsory" id="q-__number__-is-compulsory" value="1">
+                        Compulsory
+                    </label> 
+                </div> {% endcomment %}
+                
+            </div>
+            <div class="row">
+              <div class="col-12 mb-3">
+                  <label class="form-label ">
+                      Max marks for QNO.__number__
+                  </label>
+                  <input type="text" id="q-__number__-max-marks" name="q-__number__-max-marks" class="form-control" required/>
+              </div>
+            </div>
+            <div class="row">
+                <div class="col-12 mb-3">
+                    <label class="form-label ">
+                    No.of sub Questions
+                    </label>
+                    <input type="text" class="form-control sub_question" id="q-__number__-sub-q" name="q-__number__-sub-q" sub-q required/>
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-body ">
+                    <div class="row">
+                        <div class="card-header col-2 mb-3 text-center">
+                            Sub Question
+                        </div>
+                        <div class="card-header col-5 mb-3 text-center">
+                            Marks
+                        </div>
+                        <div class="card-header col-5 mb-3 text-center">
+                            Course Outcome
+                        </div>
+                    </div>
+                    
+                    <div id="cont-for-sub-of-q-__number__">
+                    </div>
+                </div>        
+            </div>
+    </div>
+
+
+
+    <div class="hidden" id="sub-q-template">
+        <div class="row">
+            <div class="col-2 mb-3 text-center" >
+                __number__
+            </div>
+            <div class="col-5 mb-3">
+                <input type="text" class="form-control" name="q-__qno__-sub-q-__number__-marks" id="q-__qno__-sub-q-__number__-marks" required>
+            </div>
+            <div class="col-5 mb-3 card">
+                    <div class="card-body d-flex flex-row flex-wrap">
+                        {% for co in cos %}
+                        <div class="mx-1">
+                            <label for="q-__qno__-sub-q-__number__-cos-input-{{forloop.counter}}">
+                                <input class="mx-1 form-check-input" name="q-__qno__-sub-q-__number__-cos-input-{{forloop.counter}}" id="q-__qno__-sub-q-__number__-cos-input-{{forloop.counter}}" type="checkbox" value="{{co.co_num}}"/>{{co.co_name}}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+            </div>
+        </div>
+    </div>
+    
+
+<div class="hidden" id="is-comp-temp">
+    <label for="q-__number__-is-compulsory">
+        <input class="mx-1 form-check-input"name="q-__number__-is-compulsory" id="q-__number__-is-compulsory" value="1" type="checkbox"/>
+        QNO.__number__
+    </label>
+</div>
+
+
+
+    {% comment %} <label class="m-0" for="q-__number__-is-compulsory">
+        <input type="checkbox" class="form-check-input" name="q-__number__-is-compulsory" id="q-__number__-is-compulsory" value="1">
+        Compulsory
+    </label>  {% endcomment %}
+
+    
+
+
+
+    <script src="{% static 'plugins/popper/popper.min.js' %}"></script>
+      <!-- Option 1: Bootstrap Bundle with Popper -->
+      <script src="{% static '/vendor/bootstrap-5.1.3-dist/js/bootstrap.bundle.min.js' %}"></script>
+
+      <!-- Option 2: jQuery -->
+      <script src="{% static 'plugins/jquery/jquery-3.6.0.min.js' %}"></script>
+
+    <script src="{% static '/plugins/bsmultiselect/js/BsMultiSelect.min.js' %}"></script>
+
+    <script type="text/javascript">
+
+        function intToChar(int) {
+            const code = 'a'.charCodeAt(0);
+            return String.fromCharCode(code + int);
+        }
+
+
+        const questions_input = document.getElementById('no-of-question');
+        const question_container = document.getElementById('question-container');
+        const is_comp_container = document.getElementById('question-is-compulsary-container');
+        const is_comp_template = document.getElementById('is-comp-temp');
+        const question_template = document.getElementById('question-template');
+        const sub_q_template = document.getElementById('sub-q-template')
+        const regex = new RegExp('__number__', 'g');
+        const regex2 = new RegExp('__qno__', 'g');
+        const form = document.getElementById('myForm')
+        const no_of_question_to_be_answered = document.getElementById('no-of-question-to-be-answered');
+
+        var creating_elements = () => {
+            questions_input.value = {{ details.no_of_questions }};
+            no_of_question_to_be_answered.value = {{ details.no_of_questions_to_be_answered }};
+
+            for(let i=1; i<={{ details.no_of_questions }}; i++){   
+
+                const question_element =  question_template.cloneNode(true);
+                question_element.setAttribute('class', ' mt-5 mb-5 container shadow rounded-3 p-4 bg-white');
+                question_element.setAttribute('id', 'question-'+i);
+                question_element.innerHTML =  question_element.innerHTML.replace(regex, i);
+                question_container.appendChild(question_element);
+
+                const is_comp_ele =  is_comp_template.cloneNode(true);
+                is_comp_ele.setAttribute('class', 'mx-1');
+                is_comp_ele.innerHTML =  is_comp_ele.innerHTML.replace(regex, i);
+                is_comp_container.appendChild(is_comp_ele);
+                
+            };
+
+
+            document.querySelectorAll('.sub_question').forEach(item => {
+                item.addEventListener('input', e => {
+                    var qno = e.target.id[2];
+                    let nsq = e.target.value;
+                    let sub_q_container = document.getElementById(`cont-for-sub-of-q-${qno}`);
+                    sub_q_container.innerHTML="";
+                    for(let i=1; i<=nsq; i++){               
+                        const sub_q_element = sub_q_template.cloneNode(true);
+                        sub_q_element.setAttribute('class', 'hello');
+                        sub_q_element.innerHTML = sub_q_element.innerHTML.replace(regex, intToChar(i-1));
+                        sub_q_element.innerHTML = sub_q_element.innerHTML.replace(regex2, qno);
+                        sub_q_container.appendChild(sub_q_element);
+                    };
+                })
+            })
+
+            {% comment %} 
+            ---------After creating question elements we have to add the event to all 
+            ---------the input fields in each question elements which take no.of sub question as the input
+            ---------===== Working : selecting all the elements with classname '.sub_question' and adding the eventListner=========
+            {% endcomment %}
+             {% comment %} Creating the Sub Question Elements {% endcomment %}
+             let sub_q_container_onload;
+             let no_of_sub_questions_onload;
+             {% for question_num, qd in qlist.items %}
+                 sub_q_container_onload = document.getElementById(`cont-for-sub-of-q-{{ forloop.counter }}`);
+                 no_of_sub_questions_onload = {{ qd.no_of_sub_questions }};
+                 for(let i=1; i<=no_of_sub_questions_onload; i++){               
+                     const sub_q_element = sub_q_template.cloneNode(true);
+                     sub_q_element.setAttribute('class', 'hello');
+                     sub_q_element.innerHTML = sub_q_element.innerHTML.replace(regex, intToChar(i-1));
+                     sub_q_element.innerHTML = sub_q_element.innerHTML.replace(regex2, {{ forloop.counter }});
+                     sub_q_container_onload.appendChild(sub_q_element);
+                 }; 
+             {% endfor %}
+
+
+
+        }
+
+
+        var assign_values = () => {
+
+            {% for question_num, qd in qlist.items %}
+
+                if({{qd.compulsory}} == 1){
+                    document.getElementById('q-{{ forloop.counter }}-is-compulsory').checked = true;
+                    document.getElementById('q-{{ forloop.counter }}-is-compulsory').value = 1;
+                }else{
+                    document.getElementById('q-{{ forloop.counter }}-is-compulsory').checked = false;
+                    document.getElementById('q-{{ forloop.counter }}-is-compulsory').value = 0;
+                }
+                console.log('question-cumpulsary :  {{ qd.compulsory }}' );
+                console.log('question-max-marks  : {{ qd.max_marks }}');
+
+                document.getElementById('q-{{ forloop.counter }}-max-marks').value = {{ qd.max_marks }}
+                document.getElementById('q-{{ forloop.counter }}-sub-q').value = {{ qd.no_of_sub_questions }}
+
+                {% for subq, subqd in qd.sub_q_list.items %}
+                    document.getElementById('q-{{question_num}}-sub-q-{{subq}}-marks').value = {{ subqd.max_marks }};
+                    console.log('subquesion : {{ subq }}');
+                    console.log('subquesion max_marks for {{ subq }} : {{ subqd.max_marks }}');
+                    {% for co in subqd.co %}
+                        document.getElementById('q-{{question_num}}-sub-q-{{subq}}-cos-input-{{co.co_num}}').checked = true;
+                    {% endfor %}
+                {% endfor %}    
+
+
+            {% endfor %}
+        }
+
+        window.onload = () => { 
+            creating_elements();
+        }  
+
+        window.addEventListener('load', (event) => {
+            assign_values();
+        });
+
+        questions_input.addEventListener('input', e => {
+            let n = e.target.value;
+
+            question_container.innerHTML="";
+            is_comp_container.innerHTML="";
+            
+            for(let i=1; i<=n; i++){               
+                const question_element = question_template.cloneNode(true);
+                question_element.setAttribute('class', ' mt-5 mb-5 container shadow rounded-3 p-4 bg-white');
+                question_element.innerHTML = question_element.innerHTML.replace(regex, i);
+                question_container.appendChild(question_element);
+
+
+                const is_comp_ele = is_comp_template.cloneNode(true);
+                is_comp_ele.setAttribute('class', 'mx-1');
+                is_comp_ele.innerHTML = is_comp_ele.innerHTML.replace(regex, i);
+                is_comp_container.appendChild(is_comp_ele);
+
+                element = document.getElementById()
+            };
+
+
+            
+            {% comment %} 
+            ---------After creating question elements we have to add the event to all 
+            ---------the input fields in each question elements which take no.of sub question as the input
+            ---------===== Working : selecting all the elements with classname '.sub_question' and adding the eventListner========= 
+            {% endcomment %}
+            
+            document.querySelectorAll('.sub_question').forEach(item => {
+                item.addEventListener('input', e => {
+                    var qno = e.target.id[2];
+                    let nsq = e.target.value;
+                    let sub_q_container = document.getElementById(`cont-for-sub-of-q-${qno}`);
+                    sub_q_container.innerHTML="";
+                    for(let i=1; i<=nsq; i++){               
+                        const sub_q_element = sub_q_template.cloneNode(true);
+                        sub_q_element.setAttribute('class', 'hello');
+                        sub_q_element.innerHTML = sub_q_element.innerHTML.replace(regex, intToChar(i-1));
+                        sub_q_element.innerHTML = sub_q_element.innerHTML.replace(regex2, qno);
+                        sub_q_container.appendChild(sub_q_element);
+                    };
+                });
+            });
+
+
+        });
+
+
+        
+
+
+
+
+        form.addEventListener("submit", function(e){
+
+            no_of_questions = questions_input.value;
+            max_marks_ia_dec = {{ assessment.max_marks }};
+            max_marks_ia = 0;
+            for(let i=1; i<=no_of_questions; i++){   
+
+                no_of_sub_questions = document.getElementById('q-'+i+'-sub-q').value;
+                max_marks = document.getElementById('q-'+i+'-max-marks').value;
+
+
+                let total_marks = 0;
+                for(let j=1; j<=no_of_sub_questions; j++){  
+                    let sub_q_marks = document.getElementById('q-'+i+'-sub-q-'+intToChar(j-1)+'-marks').value; 
+                    total_marks += parseInt(sub_q_marks);
+                };
+
+                if(max_marks != total_marks){
+                    e.preventDefault();
+                    alert("Enter the marks correctly in Q.No"+ i);
+                }
+
+                max_marks_ia += total_marks;
+            };
+
+            {% comment %} if( max_marks_ia!= parseInt(max_marks_ia_dec)){
+                e.preventDefault();
+                alert("Enter the marks according the declared marks");
+            } {% endcomment %}
+
+        });
+
+
+
+
+
+        $(document).ready(function() {
+            $(window).keydown(function(event){
+              if(event.keyCode == 13) {
+                event.preventDefault();
+                return false;
+              }
+            });
+          });
+
+        
+
+    </script>
+</body>
+
+</html>
+{% endblock %}

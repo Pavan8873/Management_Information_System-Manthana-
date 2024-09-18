@@ -1,0 +1,103 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}
+<title>Failed Students Report</title>
+{% endblock %}
+
+{% block page-content %}
+<h2 align="center">Failed Students Report</h2>
+
+<!-- Form for selecting filters -->
+<section class="mt-3 mb-3">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <form id="failedStudentsForm" method="POST" action="{% url 'fetch_failed_students' %}">
+      {% csrf_token %}
+      <div class="row mt-4">
+        <div class="col-3 mb-3">
+          <label for="academic_year" class="form-label">Academic Year</label>
+          <select name="academic_year" id="academic_year" required class="form-select">
+            <option value="" disabled selected>Choose Academic Year</option>
+            {% for aca_yr in acad_year_tbl %}
+            <option value="{{ aca_yr.id }}">{{ aca_yr.acayear }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-3 mb-3">
+          <label for="department" class="form-label">Department</label>
+          <select name="department" id="department" required class="form-select">
+            <option value="" disabled selected>Choose Department</option>
+            {% for dept in departments %}
+            <option value="{{ dept.dept_id }}">{{ dept.dept_name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-3 mb-3">
+          <label for="semester" class="form-label">Semester</label>
+          <select name="semester" id="semester" class="form-select" required>
+            <option value="" disabled selected>Choose Semester</option>
+            {% for sem in semesters %}
+            <option value="{{ sem.id }}">{{ sem.name }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-3 mb-3">
+          <label for="division" class="form-label">Division</label>
+          <select name="division" id="division" class="form-select" required>
+            <option value="" disabled selected>Choose Division</option>
+            {% for div in division %}
+            <option value="{{ div.id }}">{{ div.division }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary">Fetch Failed Students</button>
+    </form>
+  </div>
+</section>
+
+<!-- Section to display the list of failed students -->
+<section class="mt-3 mb-3">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <h4 class="mb-3">Failed Students List</h4>
+    <div id="failedStudentsList">
+      <!-- The failed students list will be populated here -->
+    </div>
+  </div>
+</section>
+
+<script src="{% static 'path/to/jquery.js' %}"></script>
+<script>
+$(document).ready(function() {
+  $('#failedStudentsForm').on('submit', function(e) {
+    e.preventDefault(); // Prevent the form from submitting the traditional way
+
+    $.ajax({
+      type: 'POST',
+      url: $(this).attr('action'),
+      data: $(this).serialize(),
+      success: function(response) {
+        let failedStudentsList = $('#failedStudentsList');
+        failedStudentsList.empty();
+
+        if (response.failed_students.length > 0) {
+          let table = '<table class="table table-striped">';
+          table += '<thead><tr><th>Student Name</th><th>Grade</th></tr></thead><tbody>';
+          $.each(response.failed_students, function(index, student) {
+            table += `<tr><td>${student.st_uid__st_name}</td><td>${student.cie_grade}</td></tr>`;
+          });
+          table += '</tbody></table>';
+          failedStudentsList.append(table);
+        } else {
+          failedStudentsList.append('<p>No failed students found for the selected criteria.</p>');
+        }
+      },
+      error: function(xhr, status, error) {
+        console.error('Error fetching failed students:', error);
+        $('#failedStudentsList').html('<p>An error occurred while fetching the failed students.</p>');
+      }
+    });
+  });
+});
+</script>
+{% endblock %}

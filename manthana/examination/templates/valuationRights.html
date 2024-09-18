@@ -1,0 +1,138 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Subject Rights to SEE Valuators</title>{% endblock %}
+
+{% block page-content %}
+<h2 align="center"> Assign Subject Rights to SEE Valuators</h2>
+<section class="mt-5 mb-5">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <form action="/assignRightsToValuators" method="POST" id="SEE_rights_form" data-course-url="{% url 'ajax_load_see_subjects' %}">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-4 mb-3">
+          <label for="valuator_type" class="form-label">
+            Valuator Type :
+          </label>
+          <select id="valuator_type" name="valuator_type" required class="form-select">
+            <option disabled selected>-- Choose Valuator Type --</option>
+            <option value='1'>Internal</option>
+            <option value=2>External</option>
+          </select>
+        </div>
+        <div class="col-4  mb-3">
+            <label for="valuator_empid" class="form-label"> Faculty ID: </label>
+            <input type="text" id="valuator_empid" name="valuator_empid" required class="form-control"
+              placeholder="e.g. CSDT114" />
+          </div>
+          <div class="col-4 mb-3">
+            <label for="pan_no" class="form-label"> PAN No: </label>
+            <input type="text" id="pan_no" name="pan_no" required class="form-control"
+              placeholder="e.g. ABCTY1234D" />
+          </div>
+       </div> 
+       <div class="row">
+       <div class="col-4 mb-3">
+          <label for="exam_descr" class="form-label"> Examination: </label>
+          <select id="exam_descr" name="exam_descr" required class="form-select">
+            <option disabled selected>-- Choose Exam --</option>
+            {% for exam in exam_list %}
+            <option value="{{exam.exam_details_id}}">{{exam.description}}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="col-3 mb-3">
+          <label for="offered_by" class="form-label w-60"> Offered By : </label>
+          <select id="offered_by" name="offered_by" required class="form-select">
+            <option value="" disabled selected>-- Choose Branch --</option>
+            {% for dept in department %}
+            <option value="{{dept.dept_id}}">{{dept.dept_name}}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="col-2 mb-3">
+          <label for="acad_cal_sem" class="form-label">
+            Semester Allotted :
+          </label>
+          <select id="sem" name="sem" required class="form-select">
+            <option value="" disabled selected>-- Choose Semester --</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+          </select>
+        </div> 
+        <div class="col-3 mb-3">
+          <label for="course_code" class="form-label">Subject</label>
+          <select name="course_code" id="course_code" class="form-select">
+            <option value="" disabled selected>-- Choose Subject -- </option>
+          </select>
+        </div>
+      </div>
+
+      <div class="container my-3 bg-light">
+        <div class="col-md-12 text-center">
+            <input type="text" name="btn_clicked" value="register" hidden>
+            <button type="submit" name="btn_see_val" id="btn_see_val" value="register" class="btn btn-primary">Submit</button>
+            <button type="reset" name="btn_reset" id="btn_reset" value="reset" class="btn btn-primary" onclick="resetPage()">Reset</button>
+        </div>
+    </div>
+  </form>
+  </div>
+</section>
+<script>
+  $(document).ready(function () {
+  $("#valuator_type").change(function () {
+    var val_type = $('#valuator_type').val();
+    if(val_type==1){ // Internal Valuator
+      $('#valuator_empid').prop('disabled',false)
+      $('#valuator_empid').val('')
+      $('#pan_no').prop('disabled',true)
+      $('#pan_no').val("NA")
+    }
+    else if(val_type==2){ // External Valuator
+      $('#pan_no').prop('disabled',false)
+      $('#pan_no').val('')
+      $('#valuator_empid').prop('disabled',true)
+      $('#valuator_empid').val("NA")
+    }
+  });
+  $("#offered_by").change(function () {
+    //reset the Subject dropdown
+    $('#sem').prop('selectedIndex',0);
+    $('#course_code').prop('selectedIndex',0);
+    $('#course_code').empty();
+  });
+  $("#sem").change(function () {
+    //reset the Subject dropdown
+    //$('#course_code').prop('selectedIndex',0);
+    //$('#course_code').empty();
+    // Creating ajax-request to load subject-list based on Exam-ID(Acad_Year), Dept and Semester
+    var offered_by = $('#offered_by').val();
+    var url1 = $("#SEE_rights_form").attr("data-course-url");
+    var sem = $(this).val();
+    var exam_descr = $('#exam_descr').val();
+    $.ajax({                       
+      url: url1,                   
+      data: {
+        'offered_by': offered_by,
+        'sem': sem,
+        'exam_descr' : exam_descr  
+      },
+      success: function (data) {   
+        $("#course_code").html(data);  
+      },
+      error: function(data){
+        $('#course_code').
+        alert(data.responseJSON.error);
+      }
+  });
+});
+});
+</script>
+{% endblock %}

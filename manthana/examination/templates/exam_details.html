@@ -1,0 +1,304 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>UG SEE Exam Details</title>{% endblock %}
+
+{% block page-content %}
+<!-- Date Range Picker CSS -->
+<link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}" />
+<script src="{% static 'plugins/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+
+<h2 align="center">UG SEE Exam Details</h2>
+<section class="mt-5 mb-5">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <form action="/addExamDetails" method="POST" id="">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-4 mb-3">
+          <label for="acad_cal_acad_year" class="form-label">
+            Academic Year
+          </label>
+          <select name="acad_cal_acad_year" id="acad_cal_acad_year" class="form-select" required>
+            {% if acad_cal_obj is None %}
+            <option value="" disabled selected>-- Choose Academic Year --</option>
+            {% for aca_yr in academic_year_tbl %}
+             <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> 
+            <!-- <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option> -->
+            {% endfor %}
+            {% else %}
+            {% for aca_yr in academic_year_tbl %}
+            {% if aca_yr.acayear == acad_cal_obj.acad_cal_acad_year%}
+            <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> 
+            <!-- <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>-->
+            {% endif %}
+          {% endfor %}
+          {% for aca_yr in academic_year_tbl %}
+            {% if aca_yr.acayear != acad_cal_obj.acad_cal_acad_year%}
+            <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> 
+             <!--<option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>-->
+            {% endif %}
+          {% endfor%}
+          {% endif %}
+          </select>
+        </div>
+        <div class="col-4 mb-3">
+          <label for="acad_cal_sem" class="form-label">Semester</label>
+          <select name="acad_cal_sem" id="acad_cal_sem" class="form-select" required>
+            {% if acad_cal_obj is None %}
+            <option disabled selected>-- Choose Semester --</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% else %}
+            {% if acad_cal_obj.acad_cal_sem == 1%}
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 2 %}
+            <option value="2">2nd Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 3 %}
+            <option value="3">3rd Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 4 %}
+            <option value="4">4th Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 5 %}
+            <option value="5">5th Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 6 %}
+            <option value="6">6th Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="7">7th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 7 %}
+            <option value="7">7th Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="8">8th Semester</option>
+            {% elif acad_cal_obj.acad_cal_sem == 8 %}
+            <option value="8">8th Semester</option>
+            <option value="1">1st Semester</option>
+            <option value="2">2nd Semester</option>
+            <option value="3">3rd Semester</option>
+            <option value="4">4th Semester</option>
+            <option value="5">5th Semester</option>
+            <option value="6">6th Semester</option>
+            <option value="7">7th Semester</option>
+            {% endif %}
+            {% endif %}
+          </select>
+        </div>
+     
+    
+      <div class="col-4 mb-3">
+        <label for="exam_type" class="form-label"> Exam Type </label>
+        <select name="exam_type" id="exam_type" class="form-select" required>
+          {% if acad_cal_obj is None %}
+          <option disabled selected>-- Choose Exam Type --</option>
+          <option value=1>Regular</option>
+          <option value=2>Regular-MakeUP</option>
+          <option value=3>Regular-Special-MakeUP</option>
+          <option value=4>STC</option>
+          <option value=5>STC-MakeUP</option>
+          <option value=6>STC-Special-Exam</option>
+          {% else %}
+          {% if acad_cal_obj.acad_cal_sem == 1%}
+          <option value=1>Regular</option>
+          <option value=2>Regular-MakeUP</option>
+          <option value=3>Regular-Special-MakeUP</option>
+          <option value=4>STC</option>
+          <option value=5>STC-MakeUP</option>
+          <option value=6>STC-Special-Exam</option>
+          {% elif acad_cal_obj.acad_cal_sem == 2 %}
+          <option value=2>Regular-MakeUP</option>
+          <option value=1>Regular</option>
+          
+          <option value=3>Regular-Special-MakeUP</option>
+          <option value=4>STC</option>
+          <option value=5>STC-MakeUP</option>
+          <option value=6>STC-Special-Exam</option>
+          {% elif acad_cal_obj.acad_cal_sem == 3 %}
+          <option disabled selected>-- Choose Exam Type --</option>
+          <option value=3>Regular-Special-MakeUP</option>
+          <option value=1>Regular</option>
+          <option value=2>Regular-MakeUP</option>
+          
+          <option value=4>STC</option>
+          <option value=5>STC-MakeUP</option>
+          <option value=6>STC-Special-Exam</option>
+          {% elif acad_cal_obj.acad_cal_sem == 4 %}
+          <option disabled selected>-- Choose Exam Type --</option>
+          <option value=4>STC</option>
+          <option value=1>Regular</option>
+          <option value=2>Regular-MakeUP</option>
+          <option value=3>Regular-Special-MakeUP</option>
+         
+          <option value=5>STC-MakeUP</option>
+          <option value=6>STC-Special-Exam</option>
+          {% elif acad_cal_obj.acad_cal_sem == 5 %}
+          <option disabled selected>-- Choose Exam Type --</option>
+          <option value=5>STC-MakeUP</option>
+          <option value=1>Regular</option>
+          <option value=2>Regular-MakeUP</option>
+          <option value=3>Regular-Special-MakeUP</option>
+          <option value=4>STC</option>
+         
+          <option value=6>STC-Special-Exam</option>
+          {% elif acad_cal_obj.acad_cal_sem == 6 %}
+          <option disabled selected>-- Choose Exam Type --</option>
+          <option value=6>STC-Special-Exam</option>
+          <option value=1>Regular</option>
+          <option value=2>Regular-MakeUP</option>
+          <option value=3>Regular-Special-MakeUP</option>
+          <option value=4>STC</option>
+          <option value=5>STC-MakeUP</option>
+          
+          {% endif %}
+          {% endif %}
+        </select>
+      </div>
+     <!-- <div class="col-6 mb-3">
+        <label for="exam_desc" class="form-label">Exam Description</label>
+        <input type="text" class="form-control" id="exam_desc" name="exam_desc" placeholder="e.g. 2021-22 Regular SEE Even Sem July-Aug-22">
+      </div>-->
+</div>
+      <div class="card mt-4">
+        <h5 class="card-header">Theory Exams</h5>
+        <div class="card-body">
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-lab" role="tabpanel" aria-labelledby="pills-lab-tab">
+              <div class="row mt-2">
+                <div class="col-6 mb-3">
+                    <label for="acad_cal_see_theory_from" class="form-label">From Date </label>
+                    {% if acad_cal_obj is None %}
+                    <input type="text" id="acad_cal_see_theory_from" name="acad_cal_see_theory_from" class="form-control"
+                      date-picker="date" placeholder="Select From Date" required />
+                    {% else %}
+                    <input type="" id="acad_cal_see_theory_from" name="acad_cal_see_theory_from"
+                      value="{{ acad_cal_obj.acad_cal_see_theory_from | date:'Y-m-d'}}" class="form-control"
+                      date-picker="date" />
+                    {% endif %}
+                  </div>
+                  <div class="col-6 mb-3">
+                    <label for="acad_cal_see_theory_to" class="form-label">To Date </label>
+                    {% if acad_cal_obj is None %}
+                    <input type="text" id="acad_cal_see_theory_to" name="acad_cal_see_theory_to" class="form-control"
+                      date-picker="date" placeholder="Select To Date" required />
+                    {% else %}
+                    <input type="" id="acad_cal_see_theory_to" name="acad_cal_see_theory_to"
+                      value="{{ acad_cal_obj.acad_cal_see_theory_to | date:'Y-m-d'}}" class="form-control"
+                      date-picker="date" />
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      
+ <div class="card mt-4">
+        <h5 class="card-header">Lab Exams</h5>
+        <div class="card-body">
+          <div class="tab-content" id="pills-tabContent">
+            <div class="tab-pane fade show active" id="pills-lab" role="tabpanel" aria-labelledby="pills-lab-tab">
+              <div class="row mt-2">
+                <div class="col-6 mb-3">
+                    <label for="acad_cal_see_lab_from" class="form-label">From Date </label>
+                    {% if acad_cal_obj is None %}
+                    <input type="text" id="acad_cal_see_lab_from" name="acad_cal_see_lab_from" class="form-control"
+                      date-picker="date" placeholder="Select From Date" required />
+                    {% else %}
+                    <input type="" id="acad_cal_see_lab_from" name="acad_cal_see_lab_from"
+                      value="{{ acad_cal_obj.acad_cal_see_lab_from | date:'Y-m-d'}}" class="form-control"
+                      date-picker="date" />
+                    {% endif %}
+                  </div>
+                  <div class="col-6 mb-3">
+                    <label for="acad_cal_see_lab_to" class="form-label">To Date </label>
+                    {% if acad_cal_obj is None %}
+                    <input type="text" id="acad_cal_see_lab_to" name="acad_cal_see_lab_to" class="form-control"
+                      date-picker="date" placeholder="Select To Date" required />
+                    {% else %}
+                    <input type="" id="acad_cal_see_lab_to" name="acad_cal_see_lab_to"
+                      value="{{ acad_cal_obj.acad_cal_see_lab_to | date:'Y-m-d'}}" class="form-control"
+                      date-picker="date" />
+                    {% endif %}
+                </div>
+              </div>
+            </div>
+            
+          </div>
+        </div>
+      </div>
+      </div>
+     <!-- <div class="row">
+        <div class="d-grid gap-2 col-1 mx-auto">
+          {% if acad_cal_obj is None %}
+          <input type="text" name="btn_clicked" value="register" hidden>
+          <button type="submit" name="btn_acad_cal" id="btn_acad_cal" value="register" class="btn btn-primary">Submit</button></div>
+          <div class="d-grid gap-2 col-1 mx-auto">
+          <button type="reset" name="btn_reset" id="btn_reset" value="reset" class="btn btn-primary" onclick="resetPage()">Reset</button></div>
+          {% else %}
+          <input type="text" name="acad_cal_id" value="{{ acad_cal_obj.acad_cal_id }}" hidden>
+          <input type="text" name="btn_clicked" value="update" hidden>
+          <button type="submit" name="btn_acad_cal" value="update" id="btn_acad_cal"
+            class="btn btn-success btn-lg">Update</button>
+          {% endif %}
+        </div>
+      </div> -->
+      <div class="container my-3 bg-light">
+        <div class="col-md-12 text-center">
+            <input type="text" name="btn_clicked" value="register" hidden>
+            <button type="submit" name="btn_acad_cal" id="btn_acad_cal" value="register" class="btn btn-primary">Submit</button>
+            <button type="reset" name="btn_reset" id="btn_reset" value="reset" class="btn btn-primary" onclick="resetPage()">Reset</button>
+        </div>
+    </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

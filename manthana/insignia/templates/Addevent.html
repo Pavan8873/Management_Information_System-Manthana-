@@ -1,0 +1,129 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+{% endblock %} {% block page-content %}
+<form action="{% url 'addeven'%}" method="POST" id="register_form" enctype="multipart/form-data">
+    {% csrf_token %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Event</title>
+<style>
+    body {
+        background-color: #f0f8ff; /* Light Sky Blue */
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+    .container {
+        max-width: 500px;
+        margin: 50px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+        font-weight: bold;
+    }
+    input[type="text"],
+    input[type="number"],
+    select {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 16px;
+    }
+    input[type="radio"] {
+        margin-right: 5px;
+    }
+    input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        font-size: 16px;
+    }
+    input[type="submit"]:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+
+
+
+    <div class="container">
+<h2 >Add Events</h2>
+    <div>
+        <label for="eventName">Event Name:</label><br>
+        <input type="text" id="eventName" name="eventName" required><br>
+    </div>
+    <div>
+        <label for="eventType">Event Type:</label><br>
+        <select id="eventType" name="eventType" onchange="updateDepartments()">
+            <option value="1">CENTRALIZED</option>
+            <option value="2">DEPARTMENT</option>
+            <option value="3">CULTURAL</option>
+       
+        </select><br>
+    </div>
+    <div>
+        <label for="eventType">DAY:</label><br>
+        <select id="day" name="day" onchange="updateDepartments()">
+            <option value="1">1</option>
+            <option value="2">2</option>
+       
+        </select><br>
+    </div>
+    <div id="departmentSection" style="display: none;">
+        <label for="departmentName">Department Name:</label><br>
+        <select id="departmentName" name="departmentName">
+        </select><br>
+    </div>
+    
+    <div style="text-align:center;">  
+        <input type="submit" value="Submit"/>  
+    </div>
+</form>
+
+<script>
+    // Function to update department list based on selected event type
+    function updateDepartments() {
+        const eventType = document.getElementById("eventType").value;
+        const departmentSection = document.getElementById("departmentSection");
+
+        if (eventType === "2") {
+            departmentSection.style.display = 'block'; // Show department section
+            populateDepartments();
+        } else {
+            departmentSection.style.display = 'none'; // Hide department section
+        }
+    }
+
+    // Function to populate department list
+    function populateDepartments() {
+        // This function would typically be handled by the server-side code
+        // Since we're only using HTML and JavaScript here, we're simulating it.
+        const departments = ["Information Science & Engineering", "Computer Science & Engineering","Electronics & Communication Engineering","Electrical & Electronics Engineering","Mechanical Engineering","Civil","Chemical","MBA","Mathematics","Artificial Intelligence & Machine Learning","Chemistry","Physics"];
+
+        const departmentSelect = document.getElementById("departmentName");
+        departmentSelect.innerHTML = ''; // Clear previous options
+
+        departments.forEach(function(department,index) {
+            const option = document.createElement("option");
+            option.text = department;
+            option.value = index+1;
+            departmentSelect.add(option);
+        });
+    }
+</script>
+</div>
+</body>
+</html>
+{% endblock %}

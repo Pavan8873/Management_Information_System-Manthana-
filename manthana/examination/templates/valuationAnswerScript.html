@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valuation of Answer Scripts</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f9f9f9;
+            color: #000; /* Set all text color to black */
+        }
+        .container {
+            max-width: 800px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .header img {
+            width: 100px;
+            margin-bottom: 10px;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 1.5em;
+        }
+        .header p {
+            margin: 5px 0;
+            font-size: 1em;
+        }
+        h3 {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        table, th, td {
+            border: 1px solid #000;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+        p {
+            margin: 10px 0;
+            font-size: 1em;
+        }
+        .print-button {
+            display: block;
+            width: 120px;
+            margin: 20px auto;
+            padding: 10px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #000; /* Set button background color to black */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .print-button:hover {
+            background-color: #333; /* Darker shade of black for hover effect */
+        }
+        .header, .footer {
+            margin-bottom: 700px;
+        }
+        @media print {
+            .print-button {
+                display: none;
+            }
+            body {
+                margin: 0;
+                background-color: #fff;
+                color: #000; /* Ensure text color is black in print view */
+            }
+            .container {
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                max-width: none;
+            }
+            .header {
+                margin-bottom: 10px;
+            }
+            .header h2 {
+                font-size: 1.2em;
+            }
+            .header p {
+                font-size: 0.9em;
+            }
+            h3 {
+                font-size: 1em;
+            }
+            p {
+                margin: 5px 0;
+                font-size: 0.9em;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% for faculty in faculty_list %}
+    <div class="container">
+        <div class="header">
+            <h2>SDM COLLEGE OF ENGINEERING & TECHNOLOGY</h2>
+            <p>Dhavalagiri, DHARWAD – 580 002 (India)</p>
+            <p>Autonomous Institution Affiliated to Visvesvaraya Technological University, Belagavi</p>
+            <p>Recognized by AICTE, New Delhi</p>
+        </div>
+        <h3>EXAMINATION SECTION</h3>
+        <p>Ph. No. 0836-2328041/42, 2447465 Fax 0836-2464638 website: <a href="http://www.sdmcet.ac.in" style="color: #000;">www.sdmcet.ac.in</a> E-mail: <a href="mailto:coe@sdmcet.ac.in" style="color: #000;">coe@sdmcet.ac.in</a></p>
+        <p>Ref No: SDMCET/Exam/2023-24/441</p>
+        <p>Date: {{ reporting_date }}</p>
+        <p>To,<br>
+            {{ faculty.name }}<br>
+            Department of {{ faculty.department }}<br>
+            SDMCET, Dharwad.</p>
+        <p>Dear {{ faculty.name }},</p>
+        <p><strong>Sub: Valuation of answer scripts reg...</strong></p>
+        <p>By the direction of the Principal, I am pleased to inform you that you are required to report to the valuation work of the {{ desc }}. Details of the same are as mentioned below.</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sem</th>
+                    <th>Course Code</th>
+                    <th>Course Title</th>
+                    <th>Reporting Date</th>
+                    <th>Reporting Time</th>
+                    <th>Approx. No. of Scripts</th>
+                    <th>Complete within days</th>
+                    <th>No. of valuators</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>{{ semester }}</td>
+                    <td>{{ subject }}</td>
+                    <td>{{ course_title }}</td>
+                    <td>{{ reporting_date }}</td>
+                    <td>{{ reporting_time }}</td>
+                    <td>{{ faculty.num_scripts }}</td>
+                    <td>{{ faculty.complete_within }}</td>
+                    <td>{{ num_valuators }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <p>If the number of valuators is more than 1, conduct the meeting with other valuators of the said course before starting the valuation work. Submit the valuation meeting report to the valuation coordinator.</p>
+        <p>Your cooperation is highly solicited.</p>
+        <p>Note:<br>
+        Your services may also be required in Revaluation / Third Valuation based on the requirement of the situations at the valuation center; in such cases, we request you to respond and act accordingly.</p>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <p><strong>Controller of Examinations</strong></p>
+        <div class="footer">
+            <button onclick="window.print()"></button>
+        </div>
+    </div>
+    {% endfor %}
+    
+</body>
+</html>

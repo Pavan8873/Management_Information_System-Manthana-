@@ -1,0 +1,639 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Add Lateral Student</title>{% endblock %}
+
+{% block page-content %}
+<script src="{% static 'js/jquery.min.js' %}"></script>
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+<link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet" />
+<link href="{% static 'css/styles.css' %}" rel="stylesheet" />
+<link rel="stylesheet" href="{% static 'css/w3.css' %}">
+<script src="{% static 'js/script.js' %}"></script>
+<script src="{% static 'js/main.js' %}"></script>
+<script src="{% static 'js/validate.js' %}"></script>
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+
+
+  .box {
+    width: 920px;
+    margin: 0 auto;
+  }
+
+  .active_tab1 {
+    background-color: #fff;
+    color: #333;
+    font-weight: 600;
+  }
+
+  .inactive_tab1 {
+    background-color: #f5f5f5;
+    color: #333;
+    cursor: not-allowed;
+  }
+
+  .has-error {
+    border-color: #cc0000;
+    background-color: #ffff99;
+  }
+
+
+  th,
+  td {
+    padding: 5px;
+  }
+
+  @media screen and (max-width: 500px) {
+    .header a {
+      float: none;
+      display: block;
+      text-align: left;
+    }
+
+    .header-right {
+      float: none;
+    }
+  }
+
+  /* camera styles */
+  /* fallback */
+  @font-face {
+    font-style: normal;
+    font-weight: 15;
+  }
+
+  .material-icons {
+    font-size: 15px;
+    letter-spacing: normal;
+    padding: 30px 0;
+  }
+</style>
+
+{% if userName is None %}
+<h3>You are not authorized to view this page!!</h3>
+{% else %}
+<div class="row">
+  <div class="container box">
+    <h2 align="center">APPLICATION FOR ADMISSION TO LATERAL ENTRY STUDENTS</h2><br />
+    <form action="/admitStudent" method="POST" id="register_form">
+      <ul class="nav nav-tabs">
+        <li class="nav-item">
+          <a class="nav-link active_tab1" style="border:1px solid #ccc" id="list_photo_details">Student photograph</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link inactive_tab1" style="border:1px solid #ccc" id="list_login_details">Student
+            Information</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link inactive_tab1" id="list_personal_details" style="border:1px solid #ccc">Personal
+            Information</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link inactive_tab1" id="list_academic_details" style="border:1px solid #ccc">Academic
+            Information</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link inactive_tab1" id="list_admission_details" style="border:1px solid #ccc">Admission
+            Information</a>
+        </li>
+      </ul>
+      <div class="tab-content" style="margin-top:10px;">
+        <div class="tab-pane active" id="photo_details">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <table>
+                <tr>
+                  <td><label>Student Photo:</label></td>
+                  <td align="center">
+                    <div class="app">
+                      <a href="#" id="start-camera" class="visible"></a>
+                      <video id="camera-stream" width="50" height="200"></video>
+                      <img id="snap">
+                      <p id="error-message"></p>
+                      <div class="controls">
+                        <a href="#" id="take-photo" title="Take Photo" class="material-icons">Capture</a>
+                        <a href="#" id="delete-photo" title="Delete Photo" class="material-icons">Retake</a>
+                        <a href="#" id="download-photo" download="selfie.png" title="Save Photo" class="disabled"><i
+                            class="material-icons">Download</i></a>
+                      </div>
+                      <!-- Hidden canvas element. Used for taking snapshot of video. -->
+                      <canvas></canvas>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <div align="center">
+                <button type="button" name="btn_photo_details" id="btn_photo_details"
+                  class="btn btn-info btn-lg">Next</button>
+              </div>
+              <br />
+            </div>
+          </div>
+        </div>
+
+        <div class="tab-pane fade" id="login_details">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <table>
+                <tr>
+                  <td><label>Name of the Applicant: </br> (as per 10th Marks Card) </label></td>
+                  <td><input type="text" size="50" name="txtname" id="txtname"/>
+                    <span id="error_txtname" class="text-danger"></span></td>
+                  </tr>
+                  <tr>
+                    <td><label>Branch Applied for: </label></td>
+                    <td><select name="branch" id="branch" >
+                      <option value="select">--Select Branch--</option>
+                      <option value="cv">Civil Engineering</option>
+                      <option value="me">Mechanical Engineering</option>
+                      <option value="ee">Electrical &amp; Electronics Engineering</option>
+                      <option value="ec">Electronics &amp; Communication Engineering</option>
+                      <option value="che">Chemical Engineering</option>
+                      <option value="cse">Computer Science &amp; Engineering</option>
+                      <option value="ise">Information Science &amp; Engineering</option>
+                    </select>
+                    <span id="error_branch" class="text-danger"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label>Admission Quota: </label></td>
+                  <td><input type="radio" id="cet" name="quota" value="cet" checked>
+                    <label for="dcet">DCET</label>
+                    <input type="radio" id="mgmt" name="quota" value="mgmt">
+                    <label for="mgmt">MANAGEMENT</label>
+                    <input type="radio" id="cet" name="quota" value="mgmt">
+                    <label for="cet">CET</label>
+                    <span id="error_quota" class="text-danger"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label>Date of Birth: <br> (as appeared in 10th Marks Card ONLY)</label></td>
+                  <td><input type="date" id="dob" name="dob"></td>
+                </tr>
+                <tr>
+                  <td><label>Gender:</label></td>
+                  <td><input type="radio" id="male" name="gender" value="male" checked>
+                    <label for="male">Male</label>
+                    <input type="radio" id="female" name="gender" value="female">
+                    <label for="female">Female</label>
+                    <input type="radio" id="others" name="gender" value="others">
+                    <label for="others">Others</label>
+                    <span id="error_gender" class="text-danger"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label>Urban/Rural:</label></td>
+                  <td><input type="radio" id="urban" name="locality" value="urban" checked>
+                    <label for="urban">Urban</label>
+                    <input type="radio" id="rural" name="locality" value="rural">
+                    <label for="rural">Rural</label>
+                    <span id="error_localcity" class="text-danger"></span>
+                  </td>
+                </tr>
+                <tr>
+                  <td><label>Blood Group:</label></td>
+                  <td><select name="bgroup" id="bgroup">
+                    <option value="select">--Select Blood Group--</option>
+                    <option value="ap">A +ve</option>
+                    <option value="an">A -ve</option>
+                    <option value="bp">B +ve</option>
+                    <option value="bn">B -ve</option>
+                    <option value="abp">AB +ve</option>
+                    <option value="abn">AB -ve</option>
+                    <option value="op">O +ve</option>
+                    <option value="on">O -ve</option>
+                  </select>
+                  <span id="error_bgroup" class="text-danger"></span>
+                </td>
+              </tr>
+              <tr>
+                <td><label>Place of Birth: </label></td>
+                <td><input type="text" size="50" name="txtpob" id="txtpob" />
+                  <span id="error_txtpob" class="text-danger"></span></td>
+              </tr>
+              <tr>
+                <td><label>Mothertongue: </label></td>
+                <td><input type="text" size="50" name="txtmt" id="txtmt" />
+                  <span id="error_txtmt" class="text-danger"></span></td>
+              </tr>
+              <tr>
+                <td><label>Nationality: </label></td>
+                <td><input type="radio" id="indian" name="nation" value="indian" checked>
+                  <label for="indian">Indian</label>
+                  <input type="radio" id="other" name="nation" value="other">
+                  <label for="other">Other</label>
+                  <span id="error_nation" class="text-danger"></span></td></td>
+                </tr>
+                <tr>
+                  <td><label>Religion: </label></td>
+                  <td><select name="religion" id="religion">
+                    <option value="select">--Select Religion--</option>
+                    <option value="hindu">Hindu</option>
+                    <option value="muslim">Muslim</option>
+                    <option value="christian">Christian</option>
+                    <option value="sikh">Sikh</option>
+                    <option value="buddhist">Buddhist</option>
+                  </select>
+                  <span id="error_religion" class="text-danger"></span></td>
+                </tr>
+                <tr>
+                  <td><label>Caste: </label></td>
+                  <td><input type="text" size="50" name="txtcaste" id="txtcaste" />
+                    <span id="error_txtcaste" class="text-danger"></span></td>
+                </tr>
+                <tr>
+                  <td><label>Sub-Caste: </label></td>
+                  <td><input type="text" size="50" name="txtsubcaste" id="txtsubcastecaste" /></td>
+                </tr>
+                <tr>
+                  <td><label>Actual Category: </label></td>
+                  <td><input type="radio" id="gm" name="category" value="gm" checked>
+                    <label for="gm">GM</label>
+                    <input type="radio" id="sc" name="category" value="sc">
+                    <label for="sc">SC</label>
+                    <input type="radio" id="st" name="category" value="st">
+                    <label for="st">ST</label>
+                    <input type="radio" id="cat1" name="category" value="cat1">
+                    <label for="cat1">CAT-1</label>
+                    <input type="radio" id="2a" name="category" value="2a">
+                    <label for="2a">2A</label>
+                    <input type="radio" id="2b" name="category" value="2b">
+                    <label for="2b">2B</label>
+                    <input type="radio" id="3a" name="category" value="3a">
+                    <label for="3a">3A</label>
+                    <input type="radio" id="3b" name="category" value="3b">
+                    <label for="3b">3B</label>
+                    <span id="error_category" class="text-danger"></span>
+                  </td>			  
+                </tr>
+                <tr>
+                      <td><label>Mobile Phone Number of the student</label></td>
+                    <td><input type="Number" maxlength=10 name="st_mobno" id="st_mobno" required>
+                    <span id="error_st_mobno" class="text-danger"></span></td>
+                </tr>
+                <tr>
+                  <td><label>E-mail ID of the student</label></td>
+                  <td><input type="email" name="st_email" id="st_email" required>
+                    <span id="error_st_email" class="text-danger"></span></td>
+                </tr>
+                <tr>
+                  <td><label>AADHAR Number</label></td>
+                  <td><input type="text" name="st_aadhar" id="st_aadhar" onkeypress="return onlyNumberKey(event)" maxlength="11"></td>
+                </tr>
+              </table>
+              <div align="center">
+                <button type="button" name="prev_lbtn_login_details" id="prev_lbtn_login_details" class="btn btn-info btn-lg">Previous</button>
+                <button type="button" name="lbtn_login_details" id="lbtn_login_details" class="btn btn-info btn-lg">Next</button>
+              </div>
+              <br />
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="personal_details">
+            <div class="panel panel-default">
+          <div class="panel-body">
+          <table>
+            <tr>
+                    <td><label>Father's Name as per 10th marks card</label></td>
+                <td><input type="text" name="st_fathername" id="st_fathername" required>                         <span id="error_st_fathername" class="text-danger"></span></td>
+            </tr>
+            <tr>
+                <td><label>Mother's Name as per 10th marks card</label></td>
+                <td><input type="text" name="st_mothername" id="st_mothername" required>
+                <span id="error_st_mothername" class="text-danger"></span></td>
+            </tr>
+            <tr>
+                <td><label>Father's Occupation</label></td>
+                <td><input type="text" name="st_fatherjob" id="st_fatherjob" required></td>
+            </tr>
+            <tr>
+                <td><label>Mother's Occupation</label></td>
+                <td><input type="text" name="st_motherjob" id="st_motherjob" required></td>
+            </tr>
+            <tr>
+                <td><label>Father's / Mother's Annual Income</label></td>
+                <td><input type="number" min=10000 name="st_parentincome" id="st_parentincome" required></td>
+            </tr>
+            <tr>
+                <td><label>Father's / Mother's Mobile Phone Number</label></td>
+                <td><input type="number" maxlength=10 name="st_parentmobno" id="st_parentmobno" required>
+                <span id="error_st_parentmobno" class="text-danger"></span></td>
+            </tr>
+            <tr>
+                <td><label>Parent's PAN</label></td>
+                <td><input type="text" maxlength=10 name="st_parentpan" id="st_parentpan" required></td>
+            </tr>
+            <tr>
+                <td><label>Parent's E-mail ID</label></td>
+                <td><input type="email" id="st_parentemail" id="st_parentemail" required></td>
+            </tr>
+            <tr>
+                <td><label>Permanent Address of the Father/Guardian</label></td>
+                <td><textarea name="pmtaddress" id="pmtaddress" rows="08" cols="25" required></textarea></td>
+            </tr>
+            <tr>
+                <td><label>Postal Address of the Father/Guardian</label></td>
+                <td><textarea name="postaladdress" id="postaladdress" rows="08" cols="25" required></textarea></td>
+            </tr>
+            <tr>
+                <td><label>Phone Number of the Local Guardian</td>
+                <td><input type="number" maxlength=10 name="st_gmobno" id="st_gmobno"></td>
+            </tr>
+            <tr>
+                <td><label>Local Guardian's E-mail ID</label></td>
+                <td><input type="email" name="st_gemail" id="st_gemail"></td>
+            </tr>
+            </table>
+            <div align="center">
+            <button type="button" name="previous_lbtn_personal_details" id="previous_lbtn_personal_details" class="btn btn-default btn-lg">Previous</button>
+            <button type="button" name="lbtn_personal_details" id="lbtn_personal_details" class="btn btn-info btn-lg">Next</button>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div class="tab-pane fade" id="academic_details">
+        <div class="panel panel-default">
+        <div class="panel-body">
+        <table>
+            <tr>
+                  <td colspan="2" style="background-color: gray;"><strong>Details of Previous Examination Passed</strong></td>
+            </tr>
+            <tr>
+<td><strong>X Std / SSLC</strong></td>
+<td></td>
+</tr>
+<tr><td>Name of the board</td>
+<td><input type="text" name="10thboard" id="10thboard" required></td>
+</tr>
+<tr><td>Name of the Institution</td>
+<td><input type="text" name="schoolname" id="schoolname" required></td></tr> 
+<tr>
+<tr><td>Month & Year of Passing</td>
+    <td><input type="month" id="10passyr" name="10passyr" required></td></tr>
+<tr><td>State from which passed</td>
+<td><input type="text" name="10state" name="10state" required></td>
+</tr>
+<tr><td>Medium of instruction</td>
+<td><input type="text" name="10medium" name="10medium" required></td>
+</tr>
+<tr>
+<td>Registration Number</td>
+<td><input type="number" name="10regno" name="10regno"  id="10regno"required>
+<span id="error_10regno" class="text-danger"></span></td>
+</tr>
+<tr>
+<td>Total Marks Obtained</td>
+<td><input type="number" name="10marks" name="10marks" min="1" required></td>
+</tr>
+<tr><td>Percentage of Marks obtained</td>
+<td><input type="number" name="10percent" name="10percent" min="40" max="100" required></td>
+</tr>        
+<tr>
+<td><strong>XII Std / PUC (if applicable)</strong></td>
+<td></td>
+</tr>
+<tr><td>Name of the board</td>
+<td><input type="text" name="12thboard" id="12thboard"></td>
+</tr>
+<tr><td>Name of the Institution</td>
+<td><input type="text" name="12schoolname" id="12schoolname"></td></tr> 
+<tr>
+<tr><td>Month & Year of Passing</td>
+    <td><input type="month" id="12passyr" name="12passyr"></td></tr>
+<tr><td>State from which passed</td>
+<td><input type="text" name="12state" name="12state"></td>
+</tr>
+<tr><td>Medium of instruction</td>
+<td><input type="text" name="12medium" name="12medium"></td>
+</tr>
+<tr>
+<td>Registration Number</td>
+<td><input type="number" name="12regno" name="12regno" id="12regno">
+<span id="error_12regno" class="text-danger"></span></td>
+</tr>
+<tr>
+<td>Overall Marks Obtained</td>
+<td><input type="number" name="12marks" name="12marks" min="1"></td>
+</tr>
+<tr><td>Overall Percentage</td>
+<td><input type="number" name="12percent" name="12percent" min="40" max="100"></td>
+</tr> 
+<tr>
+<td><strong>Marks obtained in PCM</strong></td>
+<td></td>
+</tr>
+<tr>
+<td>Physics</td>
+<td><input type="number" name="12pmarks" id="12pmarks"></td>
+</tr>
+<tr>
+<td>Chemistry</td>
+<td><input type="number" name="12cmarks" id="12cmarks"></td>    
+</tr>
+<tr>
+<td>Mathematics</td>
+<td><input type="number" name="12matmarks" id="12matmarks"></td>    
+</tr>
+<tr>
+<td>Total Marks in PCM</td>
+<td><input type="number" name="12marks" id="12marks"></td>    
+</tr>
+<tr>
+<td>PCM %</td>
+<td><input type="number" name="12pcmpercent" id="12pcmpercent"></td>  
+</tr>
+<tr>
+<td><strong>Diploma - 5th and 6th Semester</strong></td>
+<td></td>
+</tr>
+<tr><td>Name of the board</td>
+<td><input type="text" name="dipboard" id="dipboard"></td>
+</tr>
+<tr><td>Name of the Institution</td>
+<td><input type="text" name="dipschoolname" id="dipschoolname"></td></tr> 
+<tr>
+<tr><td>Month & Year of Passing</td>
+    <td><input type="month" id="dippassyr" name="dippassyr"></td></tr>
+<tr><td>State from which passed</td>
+<td><input type="text" name="dipstate" name="dipstate"></td>
+</tr>
+<tr><td>Medium of instruction</td>
+<td><input type="text" name="dipmedium" name="dipmedium"></td>
+</tr>
+<tr>
+<td>Registration Number</td>
+<td><input type="text" name="dipregno" id="dipregno">
+<span id="error_dipregno" class="text-danger"></span></tr>
+<tr>
+<td>Marks obtained in 5th Sem</td>
+<td><input type="number" name="dip5marks" id="dip5marks">
+<span id="error_dip5marks" class="text-danger"></span></td>
+</tr>
+<tr>
+<td>Marks obtained in 6th Sem</td>
+<td><input type="number" name="dip6marks" id="dip6marks">
+<span id="error_dip6marks" class="text-danger"></span></td>
+</tr>
+<tr>
+    <td>Total Marks obtained in 5th and 6th Sem</td>
+    <td><input type="number" name="dipmarks" id="dipmarks">
+    <span id="error_dipmarks" class="text-danger"></span></td>
+    </tr>
+<tr>
+<td>Overall % (5th & 6th Sem)</td>
+<td><input type="number" name="dippercent" id="dippercent"></td>  
+</tr>
+</table>
+<div align="center">
+<button type="button" name="previous_lbtn_academic_details" id="previous_lbtn_academic_details" class="btn btn-default btn-lg">Previous</button>
+<button type="button" name="lbtn_academic_details" id="lbtn_academic_details" class="btn btn-info btn-lg">Next</button>
+</div>
+            
+</div>
+</div>
+</div>
+
+<div class="tab-pane fade" id="admission_details">
+<div class="panel panel-default">
+<div class="panel-body">
+  <table>
+
+<tr>
+<td colspan="2" style="background-color: gray;"><strong>Details for students admitted under DCET / CET quota</strong></td>
+</tr>
+<tr>
+<td>Admission Order Number</td>
+<td><input type="text" name="admorderno" id="admorderno" required></td>
+</tr>
+<tr>
+<td>DCET / CET Number</td>
+<td><input type="text" name="dcetno" id="dcetno" required></td>
+</tr>
+<tr>
+<td>Rank</td>
+<td><input type="number" name="cetrank" id="cetrank"></td>
+</tr>
+<tr>
+<td>Category Claimed</td>
+<td><input type="text" name="clmcat" id="clmcat"></td>
+</tr>
+<tr>
+<td>Category Allotted</td>
+<td><input type="text" name="altcat" id="altcat"></td>
+</tr>
+<tr>
+<td>Allottment Date</td>
+<td><input type="date" name="altdate" id="altdate"></td>
+</tr>
+
+<tr>
+<td colspan="2" style="background-color: gray;"><strong>Documents submitted by the applicant</strong></td>
+</tr>
+<tr>
+<td>Allotment order copy</td>
+<td><input type="radio" name="alt_order_copy" id="order_copy_cet" required>DCET / CET
+    <input type="radio" name="alt_order_copy" id="order_copy_mgmt" required>MGMT</tr></td>
+</tr>
+<tr>
+<td>SSLC / X Marks Card</td>
+<td><input type="checkbox" id="10card" name="10card" value="10card"></td>
+</tr>
+<tr>
+<td>PUC / XII Marks Card</td>
+<td><input type="checkbox" id="12card" name="12card" value="12card"></td>
+</tr>
+<tr>
+<td>Study Certificate</td>
+<td><input type="checkbox" id="studycerti" name="studycerti" value="studycerti"></td>
+</tr>
+<tr>
+<td>Caste / Income Certificate (if SC/ST/OBC)</td>
+<td><input type="checkbox" id="castecerti" name="castecerti" value="castecerti"></td>
+</tr>
+<tr>
+<td>Tulu Linguistic Certificate (COMEDK Quota)</td>
+<td><input type="checkbox" id="eligcerti" name="eligcerti" value="eligcerti"></td>
+</tr>
+<tr>
+<td>Eligibility Certificate (non-Karnataka only)</td>
+<td><input type="checkbox" id="eligcerti" name="eligcerti" value="eligcerti"></td>
+</tr>
+<tr>
+<td>Migration Certificate (non-Karnataka only)</td>
+<td><input type="checkbox" id="migcerti" name="migcerti" value="migcerti"></td>
+</tr>
+<tr>
+<td>Transfer Certificate</td>
+<td><input type="checkbox" id="transcerti" name="transcerti" value="10card"></td>
+</tr>
+<tr>
+<td>AADHAR Card</td>
+<td><input type="checkbox" id="aadharcard" name="aadharcard" value="aadharcard"></td>
+</tr>
+<tr>
+<td>PAN Card</td>
+<td><input type="checkbox" id="pancard" name="pancard" value="pancard"></td>
+</tr>
+<tr>
+<td colspan="2" style="background-color: gray;"><strong>FOR OFFICE USE ONLY</strong></td>
+</tr>
+<tr>
+<td>Total Fees</td>
+<td><input type="number" name="fees" id="fees" required>
+  <span id="fees" class="text-danger"></span></td>
+</tr>
+<tr>
+<td>Rt/Challan No.</td>
+<td><input type="number" id="challan" name="challan" required>
+<span id="error_challan" class="text-danger"></span></td>
+</tr>
+<tr>
+<td>Date</td>
+<td><input type="Date" id="12card" name="12card" value="12card" required></td>
+</tr>
+
+<tr>
+<td></td>
+</tr>	
+
+            </table>
+              <div align="center">
+                <button type="button" name="previous_lbtn_admission_details" id="previous_lbtn_admission_details" class="btn btn-default btn-lg">Previous</button>
+                <button type="submit" name="lbtn_admission_details" id="lbtn_admission_details" class="btn btn-success btn-lg">Register</button>
+              </div>
+              <br />
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+<div>
+  {% for message in messages %}
+  <h3>{{message}}</h3>
+  {% endfor %}
+</div>
+{% endif %}
+<script> 
+  function onlyNumberKey(evt) { 
+        
+      // Only ASCII charactar in that range allowed 
+      var ASCIICode = (evt.which) ? evt.which : evt.keyCode 
+      if (ASCIICode > 31 && (ASCIICode < 48 || ASCIICode > 57)) 
+          return false; 
+      return true; 
+  } 
+  function retrieveImage() {
+		alert(document.getElementById('take-photo').value)
+  }
+</script> 	
+{% endblock %}

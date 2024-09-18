@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CO-PO Mapping Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h2 class="mb-4">CO-PO Mapping Report</h2>
+
+        <div class="mb-4">
+            <p><strong>Academic Year:</strong> {{ acad_year }}</p>
+            <p><strong>Semester:</strong> {{ semester }}</p>
+            <p><strong>Academic Calendar Type:</strong> {{ acad_cal_type }}</p>
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Course Outcome (CO)</th>
+                    <th>Description of the Course Outcome</th>
+                    <th>Substantial Level (3)</th>
+                    <th>Moderate Level (2)</th>
+                    <th>Slight Level (1)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if grouped_data %}
+                {% for co_id, co_group in grouped_data.items %}
+                {% with co_description=co_group.0.co_description %}
+                <tr>
+                    <td>CO-{{ co_id }}</td>
+                    <td>{{ co_description }}</td>
+                    <td>
+                        {% for item in co_group %}
+                            {% if item.mapping_level == 'Substantial' %}
+                                PO-{{ item.po_id }}<br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in co_group %}
+                            {% if item.mapping_level == 'Moderate' %}
+                                PO-{{ item.po_id }}<br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% for item in co_group %}
+                            {% if item.mapping_level == 'Slight' %}
+                                PO-{{ item.po_id }}<br>
+                            {% endif %}
+                        {% endfor %}
+                    </td>
+                </tr>
+                {% endwith %}
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <td colspan="5" class="text-center">No data available for the selected courses.</td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

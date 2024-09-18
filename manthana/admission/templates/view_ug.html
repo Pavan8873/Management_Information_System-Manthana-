@@ -1,0 +1,162 @@
+{% extends "view_base.html" %}
+{% block view %}
+
+<p class="title"><strong>Details Of Previous Examinations Passed</strong></p>
+<p class="title"><strong>SSLC / X</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Name of the Board :</b> {{ pacad_10th.ug_pacad_10th_board }}</td>
+        <td colspan="2"><b>Name of the Institution :</b> {{ pacad_10th.ug_pacad_10th_schoolname }}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Month of Passing :</b> {{ pacad_10th.ug_pacad_10th_pass_month }}</td>
+        <td colspan="1"><b>Year of Passing :</b> {{pacad_10th.ug_pacad_10th_pass_year}}</td>
+        <td colspan="1"><b>State :</b> {{pacad_10th.ug_pacad_10th_pass_state}}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Medium of Instruction :</b> {{ pacad_10th.ug_pacad_10th_medium }}</td>
+        <td colspan="1"><b>Registration Number :</b> {{ pacad_10th.ug_pacad_10th_reg_no }}</td>
+        <td colspan="1"><b>Total Marks / CGPA Obtained :</b> {{ pacad_10th.ug_pacad_10th_total_marks_cgpa }}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Percentage of Marks / CGPA obtained :</b> {{ pacad_10th.ug_pacad_10th_percentage_cgpa }}</td>
+    </tr>
+</table>
+<p class="title"><strong>Class XII / PUC-II</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Name of the Board :</b> {{ pacad_12th.ug_pacad_12th_board }}</td>
+        <td colspan="2"><b>Name of the Institution :</b> {{ pacad_12th.ug_pacad_12th_schoolname }}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Month of Passing :</b> {{ pacad_12th.ug_pacad_12th_pass_month }}</td>
+        <td colspan="1"><b>Year of Passing :</b> {{ pacad_12th.ug_pacad_12th_pass_year }}</td>
+        <td colspan="1"><b>State :</b> {{ pacad_12th.ug_pacad_12th_pass_state }}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Medium of Instruction :</b> {{ pacad_12th.ug_pacad_12th_medium }}</td>
+        <td colspan="1"><b>Registration Number :</b> {{ pacad_12th.ug_pacad_12th_reg_no }}</td>
+        <td colspan="1"><b>Total Marks / CGPA Obtained :</b> {{ pacad_12th.ug_pacad_12th_total_marks }}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Percentage of Marks / CGPA obtained :</b> {{ pacad_12th.ug_pacad_12th_percentage }}</td>
+    </tr>
+</table>
+<p class="title"><strong>Class XII / PUC-II : Marks Obtained in PCM</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Physics :</b> {{ pacad_12th.ug_pacad_12th_physics_marks }}</td>
+        <td colspan="1"><b>Chemistry :</b> {{ pacad_12th.ug_pacad_12th_chemistry_marks }}</td>
+        <td colspan="1"><b>Mathematics :</b> {{ pacad_12th.ug_pacad_12th_maths_marks }}</td>
+        <td colspan="1"><b>Biology / Computer Science :</b> {%if pacad_12th.ug_pacad_12th_bio_cs_marks is not none %}
+            {{ pacad_12th.ug_pacad_12th_bio_cs_marks }} {% endif %}
+        </td>
+        <td colspan="1"><b>Total Marks in PCM :</b> {{ pacad_12th.ug_pacad_12th_pcm_total_marks }}</td>
+        <td colspan="1"><b>PCM % :</b> {{ pacad_12th.ug_pacad_12th_pcm_percentage }}</td>
+    </tr>
+</table>
+
+<p class="title"><strong>CET Admission Details</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Admission Order Number :</b> {{ cet_admission_ug.cet_order_no }}</td>
+        <td colspan="1"><b>CET Number :</b> {% if cet_admission_ug.cet_rank is not none %} {{ cet_admission_ug.cet_rank }} {% endif %}</td>
+        <td colspan="1"><b>Rank :</b> {% if cet_admission_ug.cet_rank is not none %} {{ cet_admission_ug.cet_rank }} {% endif %}</td>
+        <td colspan="1"><b>Category Claimed :</b> {{ cet_admission_ug.cet_cat_claimed }}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Category Allotted :</b> {{ cet_admission_ug.cet_cat_allotted }}</td>
+        <td colspan="1"><b>Allottment Date :</b> {{ cet_admission_ug.cet_allot_date|date:'Y-m-d' }}</td>
+        <td colspan="1"><b>Fees Paid to KEA :</b> {% if cet_admission_ug.cet_kea_fees_paid is not none %}
+            {{ cet_admission_ug.cet_kea_fees_paid }} {% endif %}
+        </td>
+        <td colspan="1"><b>Fees Paid to college :</b> {% if cet_admission_ug.cet_college_fees_paid is not none %}
+            {{ cet_admission_ug.cet_college_fees_paid }} {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Total Fees Paid :</b> {% if cet_admission_ug.cet_total_fees_paid is not none %} 
+            {{ cet_admission_ug.cet_total_fees_paid }} {% endif %}
+        </td>
+        <td colspan="1"><b>KEA Challan Date :</b> {{cet_admission_ug.cet_challan_date|date:'Y-m-d'}}</td>
+        <td colspan="1"><b>KEA Challan Number :</b> {% if cet_admission_ug.cet_challan_no is not none %} 
+            {{ cet_admission_ug.cet_challan_no }} {% endif %}
+        </td>
+    </tr>
+</table>
+<p class="title"><strong>COMEDK Admission Details</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Sl Number :</b> {{ comedk_admission_ug.comedk_sl_no }}</td>
+        <td colspan="1"><b>TAT Number :</b> {{ comedk_admission_ug.comedk_sl_no }}</td>
+        <td colspan="1"><b>Rank :</b> {{ comedk_admission_ug.comedk_sl_no }}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Category Allotted :</b> {{ comedk_admission_ug.comedk_cat_allotted }}</td>
+        <td colspan="1"><b>Allottment Date :</b> {{ comedk_admission_ug.comedk_allot_date|date:'Y-m-d' }}</td>
+        <td colspan="1"><b>Fees Paid to COMEDK :</b> {% if comedk_admission_ug.comedk_fees_paid is not none %}
+            {{ comedk_admission_ug.comedk_fees_paid }} {% endif %}
+        </td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Fees Paid to College :</b> {% if comedk_admission_ug.comedk_college_fees_paid is not none %}
+            {{ comedk_admission_ug.comedk_college_fees_paid }} {% endif %}
+        </td>
+        <td colspan="1"><b>COMEDK Challan Date :</b> {{ comedk_admission_ug.comedk_challan_date|date:'Y-m-d' }}</td>
+        <td colspan="1"><b>COMEDK Challan No :</b> {% if comedk_admission_ug.comedk_challan_no is not none %}
+            {{ comedk_admission_ug.comedk_challan_no }} {% endif %}
+        </td>
+    </tr>
+</table>
+<p class="title"><strong>MANAGEMENT Admission Details</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Rank :</b> {% if mgmt_admission_ug.mgmt_rank is not none %}
+            {{ mgmt_admission_ug.mgmt_rank }} {% endif %}
+        </td>
+        <td colspan="1"><b>Entrance Exam Appeared :</b> 
+            {% if mgmt_admission_ug.mgmt_exam == 3 %} 
+            CET, COMEDK 
+            {% elif mgmt_admission_ug.mgmt_exam == 2 %} 
+            COMEDK 
+            {% elif mgmt_admission_ug.mgmt_exam == 1 %} 
+            CET 
+            {% endif %}
+        </td>
+        <td colspan="1"><b>Fees Paid to College :</b> {% if mgmt_admission_ug.mgmt_college_fees_paid is not none %} 
+            {{ mgmt_admission_ug.mgmt_college_fees_paid }} {% endif %}
+        </td>
+        <td colspan="1"><b>MGMT Challan Date :</b> {{mgmt_admission_ug.mgmt_challan_date|date:'Y-m-d'}}</td>
+        <td colspan="1"><b>MGMT Challan No. :</b> {% if mgmt_admission_ug.mgmt_challan_no is not none %}
+            {{ mgmt_admission_ug.mgmt_challan_no }} {% endif %}
+        </td>
+    </tr>
+</table>
+<p class="title"><strong>Documents Submitted By The Applicant</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Entrance Exam Appeared :</b> 
+            {% if student.st_adm_quota == 1 or student.st_adm_quota == 2 %} 
+            CET 
+            {% elif student.st_adm_quota == 3 %} 
+            COMEDK 
+            {% elif student.st_adm_quota == 4 %} 
+            MANAGEMENT 
+            {% endif %}
+        </td>
+        <td colspan="6">
+            {% if doc_details.st_10th_marks_card %} SSLC / X Marks Card; {% endif %} 
+            {% if doc_details.st_12th_marks_card %} PUC / XII Marks Card; {% endif %} 
+            {% if doc_details.st_study_cerfiticate %} Study Certificate; {% endif %} 
+            {% if doc_details.st_income_certificate %} Caste / Income Certificate; {% endif %} 
+            {% if doc_details.st_tulu_certificate %} Tulu Linguistic Certificate; {% endif %} 
+            {% if doc_details.st_eligibility_certificate %} Eligibility Certificate; {% endif %} 
+            {% if doc_details.st_migration_certificate %} Migration Certificate; {% endif %}
+            {% if doc_details.st_transfer_certificate %} Transfer Certificate; {% endif %}
+            {% if doc_details.st_aadhar_card %} AADHAR Card; {% endif %}
+            {% if doc_details.st_pan_card %} PAN Card; {% endif %}
+        </td>
+    </tr>
+</table>
+
+{% endblock view %}

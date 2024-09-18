@@ -1,0 +1,184 @@
+{% extends "ack_pdf_base.html" %}
+
+{% block content %}
+<p class="title"><strong>Details Of Previous Examinations Passed : SSLC / X</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Name of the board :</b> {{pacad_10th.ug_pacad_10th_board }}</td>
+
+        <td colspan="2"><b>Name of the Institution :</b> {{pacad_10th.ug_pacad_10th_schoolname}}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Month of Passing :</b>
+            {% if pacad_10th.ug_pacad_10th_pass_month_id == 1 %}
+            January
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 2 %}
+            February
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 3 %}
+            March
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 4 %}
+            April
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 5 %}
+            May
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 6 %}
+            June
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 7 %}
+            July
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 8 %}
+            August
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 9 %}
+            September
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 10 %}
+            October
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 11 %}
+            November
+            {% elif pacad_10th.ug_pacad_10th_pass_month_id == 12 %}
+            December
+            {% endif %}
+        </td>
+
+        <td colspan="1"><b>Year of Passing :</b> {{pacad_10th.ug_pacad_10th_pass_year}}</td>
+
+        <td colspan="1"><b>State :</b> {{pacad_10th.ug_pacad_10th_pass_state}}</td>
+    </tr>
+
+    <tr>
+        <td colspan="1"><b>Medium of instruction :</b> {{pacad_10th.ug_pacad_10th_medium}}</td>
+        <td colspan="1"><b>Registration Number :</b> {{pacad_10th.ug_pacad_10th_reg_no}}</td>
+        <td colspan="1"><b>Total Marks / CGPA Obtained :</b> {{pacad_10th.ug_pacad_10th_total_marks_cgpa}}</td>
+    </tr>
+
+    <tr>
+        <td colspan="1"><b>Percentage of Marks / CGPA obtained :</b> {{pacad_10th.ug_pacad_10th_percentage_cgpa}}</td>
+    </tr>
+</table>
+
+<p class="title"><strong> Details Of Previous Examinations Passed : DIPLOMA</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Name of the board :</b> {{pacad_dip.ug_pacad_dip_board}}</td>
+
+        <td colspan="2"><b>Name of the Institution :</b> {{pacad_dip.ug_pacad_dip_schoolname }}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Month of Passing :</b>
+            {% if pacad_dip.ug_pacad_dip_pass_month == "Jan" %}
+            January
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Feb" %}
+            February
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Mar" %}
+            March
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Apr" %}
+            April
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "May" %}
+            May
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Jun" %}
+            June
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Jul" %}
+            July
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Aug" %}
+            August
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Sep" %}
+            September
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Oct" %}
+            October
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Nov" %}
+            November
+            {% elif pacad_dip.ug_pacad_dip_pass_month == "Dec" %}
+            December
+            {% endif %}
+        </td>
+
+        <td colspan="1"><b>Year of Passing :</b> {{pacad_dip.ug_pacad_dip_pass_year}}</td>
+
+        <td colspan="1"><b>State :</b> {{pacad_dip.ug_pacad_dip_pass_state}}</td>
+    </tr>
+
+    <tr>
+        <td colspan="1"><b>Medium of instruction :</b> {{pacad_dip.ug_pacad_dip_medium}}</td>
+        <td colspan="2"><b>Registration Number :</b> {{pacad_dip.ug_pacad_dip_reg_no}}</td>
+    </tr>
+</table>
+<p class="title"><strong>DIPLOMA : Marks Obtained In 5th & 6th Sem</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>5th Sem Marks :</b> {{pacad_dip.ug_pacad_dip_5th_marks}}</td>
+        <td colspan="1"><b>6th Sem Marks :</b> {{pacad_dip.ug_pacad_dip_6th_marks}}</td>
+        <td colspan="1"><b>5th & 6th Total Marks Obtained :</b> {{pacad_dip.ug_pacad_dip_total_marks}}</td>
+        <td colspan="1"><b>5th & 6th Overall Percentage :</b> {{pacad_dip.ug_pacad_total_percentage}}</td>
+    </tr>
+
+</table>
+<p class="title"><strong>Admission Information : Details For Students Admitted Under DCET Quota</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Admission Order Number :</b> {{lateral_admission_ug.dip_adm_order_no}}</td>
+        <td colspan="1"><b>DCET Number :</b> {{lateral_admission_ug.dip_dcet_no}}</td>
+        <td colspan="1"><b>Rank :</b> {{lateral_admission_ug.dip_rank}}</td>
+        <td colspan="1"><b>Category Claimed :</b> {{lateral_admission_ug.dip_cat_claimed}}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Category Allotted :</b> {{lateral_admission_ug.dip_cat_allotted}}</td>
+        <td colspan="1"><b>Allottment Date :</b> {{lateral_admission_ug.dip_allot_date|date:'Y-m-d'}}</td>
+        <td colspan="1"><b>Fees Paid to DCET :</b> {{lateral_admission_ug.dip_fees_paid}}</td>
+        <td colspan="1"><b>Fees Paid to college :</b> {{lateral_admission_ug.dip_college_fees_paid}}</td>
+    </tr>
+    <tr>
+        <td colspan="1"><b>Total Fees Paid :</b> {{lateral_admission_ug.dip_total_fees_paid}}</td>
+        <td colspan="1"><b>DCET Challan Date :</b> {{lateral_admission_ug.dip_challan_date|date:'Y-m-d'}}</td>
+        <td colspan="1"><b>DCET Challan No. :</b> {{lateral_admission_ug.dip_challan_no}}</td>
+    </tr>
+</table>
+<p class="title"><strong>Admission Information : Details For Students Admitted Under MANAGEMENT Quota</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Rank :</b> {{mgmt_admission_ug.mgmt_rank}}</td>
+        <td colspan="1"><b>Entrance Exam Appeared :</b>
+            {% if mgmt_admission_ug.mgmt_exam == 1 %}
+            DCET
+            {% endif %}
+        </td>
+        <td colspan="1"><b>Fees Paid to College :</b> {{mgmt_admission_ug.mgmt_college_fees_paid}}</td>
+        <td colspan="1"><b>MGMT Challan Date :</b> {{mgmt_admission_ug.mgmt_challan_date|date:'Y-m-d'}}</td>
+        <td colspan="1"><b>MGMT Challan No. :</b> {{mgmt_admission_ug.mgmt_challan_no}}</td>
+    </tr>
+</table>
+<p class="title"><strong>Documents Submitted By The Applicant</strong></p>
+<table>
+    <tr>
+        <td colspan="1"><b>Allotment order copy :</b>
+            {% if student.st_adm_quota == 1 %}
+            DCET
+            {% elif student.st_adm_quota == 2 %}
+            MANAGEMENT
+            {% endif %}
+        </td>
+        <td colspan="6">
+            {% if doc_details.st_10th_marks_card %}
+            SSLC / X Marks Card,
+            {% endif %}
+            {% if doc_details.st_12th_marks_card %}
+            {% endif %}
+            PUC / XII Marks Card,
+            {% if doc_details.st_study_cerfiticate %}
+            Study Certificate,
+            {% endif %}
+            {% if doc_details.st_dip_marks_card %}
+            Diploma Marks Card / Certificate,
+            {% endif %}
+            {% if doc_details.st_income_certificate %}
+            Caste / Income Certificate (if SC/ST/OBC),
+            {% endif %}
+            {% if doc_details.st_tulu_certificate %}
+            Tulu Linguistic Certificate (COMEDK Quota),
+            {% endif %}
+            {% if doc_details.st_eligibility_certificate %}
+            Eligibility Certificate (non-Karnataka only),
+            {% endif %}
+            {% if doc_details.st_migration_certificate %}
+            Migration Certificate (non-Karnataka only),
+            {% endif %}
+        </td>
+    </tr>
+</table>
+{% endblock content %}

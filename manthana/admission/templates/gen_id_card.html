@@ -1,0 +1,171 @@
+{% load static %}
+
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View PDF</title>
+  </head>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Libre+Barcode+39+Text&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@300&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
+    @page{
+      size: "A4";
+      margin: 1cm;
+      /* columns: 2;
+      column-gap: 0px; */
+    }
+    html {
+      font-family: 'Roboto', sans-serif;
+      font-size: 10px;
+      /* columns: 2;
+      column-gap: 0px; */
+    }
+    .barcode39 {
+      font-family: 'Libre Barcode 39 Text', cursive;
+      font-size: 30px;
+      font-weight: lighter;
+      text-align: center;
+      color: rgb(0, 0, 0);
+    }
+    .idCard {
+      width: 51mm;
+      height: 73mm;
+    }
+    .idCardHeader {
+      padding-bottom: 3mm;
+      padding-top:1mm;
+      padding-right: 0.5mm;
+      line-height: 1.2em;
+      color: darkblue;
+      font-weight: bold;
+    }
+    .idCardLogo {
+      border: 0px;
+      padding-left:0.5mm;
+    }
+    .img1 {
+      width: 82px;
+      height: 114px;
+    }
+    .img2 {
+      width: 92px;
+      height: 37px;
+    }
+    .img3 {
+      width:8mm;
+      height:1.1cm;
+    }
+    .name {
+      height:4mm;
+      padding-bottom: 2mm;
+      padding-top:1mm;
+      font-weight: bold;
+      text-transform: uppercase;
+      font-size: 12px;
+    }
+    .degree {
+      height:3mm;
+      padding-bottom: 2mm;
+      padding-top:2mm;
+      font-size:10px;
+    }
+    .barcode {
+      padding-bottom: 2mm;
+      padding-top:1mm;
+    }
+    .txt {
+      padding-left: 3mm; 
+      padding-bottom: 1mm;
+      padding-top:1mm;
+      line-height: 1.2em;
+      font-variant-caps: all-small-caps;
+    }
+    table { 
+      border-collapse: collapse;
+      text-align: center;
+     }
+    td{
+      align-items: center;
+      overflow: hidden;
+      border-style: solid;
+      border-color: black;
+      border-width: 1px;
+      /* padding-bottom: 1px; */
+    }
+  </style>
+<body>
+  <h1> Hello </h1>
+  {% for st in student %}
+
+  <table class="table">
+    <tbody class="tbody">
+        <tr>
+          <td>
+            <div class="idCard">
+              <table>
+                <tr>
+                  <td class="idCardLogo">
+                    <img src="media/sdm_logo.png" class="img3" alt="">
+                  </td>
+                  <td style="border: 0px;">
+                    <div class="idCardHeader">
+                      S.D.M. College of Engineering &#38; Technology, DHARWAD &ndash; 580002, KARNATAKA, INDIA
+                    </div>
+                  </td>
+                </tr>
+              </table>
+              <span>
+                <img src="media/{{ st.st_profile_pic }}" class="img1" alt="">
+              </span>
+              <div class="name">
+                {{ st.st_name }}
+              </div>
+              <div class="degree">
+                <b>Bachelor of Engineering</b>  
+              </div>
+              <div class="barcode">
+                <span class="barcode39">*{{st.st_uid}}*</span>
+              </div>
+            </div>
+          </td>
+          <td>
+            <div class="idCard" style="text-align: left;">
+              <div class="txt">
+                <b>Validity:</b> 2020-21
+              </div>
+              <div class="txt">
+                <b>D.O.B:</b> {{ st.st_dob|date:'d-m-Y' }}
+              </div>
+              <div class="txt">
+                <b>Blood Group:</b> {{ st.st_blgroup }}
+              </div>
+              <div class="txt">
+                <b>Mobile No.:</b> {{ st.st_mobile_no }}
+              </div>
+              <div class="txt" style="height: 8mm;">
+                <b>Permanent Address:</b> {{ st.st_parent_address }}
+              </div>
+              <div class="txt" style="height: 8mm;">
+                <b>Local Address:</b> {{ st.st_postal_address }}
+              </div>
+              <div style="padding-left: 3mm; padding-right: 3mm; padding-bottom: 1mm;padding-top:1mm;line-height: 1.2em;text-align: center;font-weight: bold;">
+                <img src="media/principal_signature.jpg" class="img2" alt=""/><br>
+                Principal <br>
+                <hr>
+                SDMCET, Dharwad &ndash; 580002 <br>
+                Website: www.sdmcet.ac.in <br>
+                Phone: 0836 &ndash; 2447465, 2448327
+              </div>
+            </div>
+          </td>
+        </tr>
+    </tbody>
+  </table>
+  <table>
+    <tr style="height:5mm;border-width:0px;"><td colspan="2" style="border-width:0px;">&nbsp;</td></tr>
+  </table>
+  {% endfor %}
+  </body>
+  </html>

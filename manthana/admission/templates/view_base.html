@@ -1,0 +1,237 @@
+{% load static %}
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Acknowledgemnet PDF</title>
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+    body {
+        width: 80%;
+        margin: 30px auto 60px auto;
+    }
+
+    html {
+        font-family: 'Inter', sans-serif;
+        font-size: 9.5px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    tr td {
+        padding: 1px 0 1px 3px;
+    }
+
+    table,
+    th,
+    td {
+        border: .5px solid black;
+        border-collapse: collapse;
+    }
+
+    .img {
+        width: 82px;
+        height: 114px;
+    }
+
+    h1 {
+        margin-top: 0;
+        font-size: 20px;
+    }
+
+    .title {
+        padding: 5px, 0, 5px 0;
+        background-color: #CDD3CE;
+        text-align: center;
+        font-size: 18px;
+    }
+
+    h1:not(:first-child) {
+        margin-top: 8px;
+    }
+
+    .box {
+        padding: 0.75px;
+        border: .5px solid black;
+    }
+
+    hr {
+        border: 1px solid black;
+    }
+
+    .sign {
+        font-size: 15px;
+        padding-top: 1px;
+        border-top: 1px dashed black;
+    }
+</style>
+
+<body>
+    <h1 style="text-align: center;" class="title">S.D.M. College of Engineering &#38; Technology, DHARWAD &ndash;
+        580002, KARNATAKA, INDIA</h1>
+    <h1 class="title">Student Information</h1>
+    <table>
+        <!-- 1 -->
+        <tr>
+            <td colspan="6" style="padding: 0; text-align:center;" class="img" rowspan="7">
+                <img style="text-align:center;" class="img" src="/media/{{student.st_profile_pic}}"
+                    alt="Student Photograph">
+            </td>
+            <td colspan="2"><b>Name of the Applicant :</b> {{ student.st_name }}</td>
+            <td colspan="1"><b>Academic Year :</b> {{ student.st_acad_year }}</td>
+
+        </tr>
+
+        <!-- 2 -->
+        <tr>
+            <td colspan="2"><b>Branch Applied for :</b> {{student.st_branch_applied }}</td>
+            <td colspan="1"><b>Date of Admission :</b> {{ student.adm_date|date:'Y-m-d'}}</td>
+        </tr>
+
+        <!-- 3 -->
+        <tr>
+
+            <td><b>Admission Quota :</b>
+                {% for quota in quota_tbl %}
+                {% if quota.id == student.st_adm_quota_id %}
+                {{quota.name}}
+                {% endif %}
+                {% endfor %}
+            </td>
+
+            <td><b>Date of Birth :</b> {{student.st_dob|date:'Y-m-d'}}</td>
+
+
+            <td><b>Gender :</b>
+                {% if student.st_gender == 1 %}
+                Male
+                {% elif student.st_gender == 2 %}
+                Female
+                {% elif student.st_gender == 3 %}
+                Others
+                {% endif %}
+            </td>
+        </tr>
+        <!-- 4 -->
+        <tr>
+            <td><b>Locality :</b> {% if student.st_locality == 1 %} Urban
+                {% elif student.st_locality == 2 %} Rural
+                {% endif %}
+            </td>
+            <td><b>Blood Group :</b> {% for bld in bld_grp_tbl %}
+                {% if bld.id == student.st_bld_group_id %}
+                {{bld.name}}
+                {% endif %}
+                {% endfor %}
+            </td>
+            <td><b>Place of Birth :</b> {{student.st_pob}}</td>
+        </tr>
+        <!-- 5 -->
+        <tr>
+            <td><b>Mothertongue :</b> {{student.st_mother_tongue}}</td>
+
+            <td><b>Nationality :</b>
+                {% if student.st_nationality == 1 %}
+                Indian
+                {% elif student.st_nationality == 2 %}
+                Other
+                {% endif %}
+            </td>
+
+
+            <td><b>Religion :</b>
+                {% for rel in rel_tbl %}
+                {% if rel.id == student.st_religion_id %}
+                {{rel.name}}
+                {% endif %}
+                {% endfor %}
+            </td>
+        </tr>
+
+
+        <!-- 6 -->
+        <tr>
+
+            <td><b>Caste :</b> {{student.st_caste }}</td>
+
+            <td><b>Actual Category :</b>
+                {% for cat in category_tbl %}
+                {% if cat.id == student.st_category_id %}
+                {{cat.name}}
+                {% endif %}
+                {% endfor %}
+            </td>
+
+            <td colspan="1"><b>Mobile Ph No. of the student :</b> {{student.st_mobile_no}}</td>
+
+
+            <!-- 7 -->
+        </tr>
+        <tr>
+            <td colspan="1"><b>Student E-mail ID :</b> {{ student.st_email_id }}</td>
+            <td colspan="1"><b>AADHAR Number :</b> {% if student.st_aadhar_no is not none %} {{ student.st_aadhar_no }}
+                {% endif %}</td>
+            <td colspan="1"><b>Extra-Curricular Activities :</b> {{ student.st_extracurr_activity }}</td>
+        </tr>
+    </table>
+
+    <h1 class="title">Personal Information</h1>
+    <table>
+        <tr>
+            <td colspan="2"><b>Father's Name (as per 10<sup>th</sup> Marks Card) :</b> {{ student.st_father_name }}</td>
+            <td colspan="5"><b>Mother's Name (as per 10<sup>th</sup> Marks Card) :</b> {{ student.st_mother_name }}</td>
+            <td colspan="5"><b>Father's Annual Income :</b> {{ student.st_father_income }}</td>
+
+        </tr>
+        <tr>
+            <td colspan="2"><b>Mother's Annual Income :</b> {% if student.st_mother_income is not none %} 
+                {{student.st_mother_income }} {% endif %}</td>
+            <td colspan="5"><b>Father's Mobile No. :</b> {{ student.st_father_mobile_no }}</td>
+            <td colspan="5"><b>Mother's Mobile No. :</b> {{ student.st_mother_mobile_no }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><b>Father's Occupation :</b> {{ student.st_father_occupation }}</td>
+            <td colspan="5"><b>Mother's Occupation :</b> {{ student.st_mother_occupation }}</td>
+            <td colspan="5"><b>Father's PAN :</b> {{ student.st_father_pan }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><b>Mother's PAN :</b> {{ student.st_mother_pan }}</td>
+            <td colspan="5"><b>Father's E-mail ID :</b> {{ student.st_father_email_id }}</td>
+            <td colspan="5"><b>Mother's E-mail ID :</b> {{ student.st_mother_email_id }}</td>
+        </tr>
+        <tr>
+            <td colspan="12"><b>Permanent Address of the Father/Guardian :</b> {{ student.st_parent_address }}</td>
+        </tr>
+        <tr>
+            <td colspan="3"><b>City :</b> {{ student.st_parent_address_city }}</td>
+            <td colspan="3"><b>District :</b> {{ student.st_parent_address_district }}</td>
+            <td colspan="3"><b>State :</b> {{ student.st_parent_address_state }}</td>
+            <td colspan="3"><b>PIN :</b> {{ student.st_parent_address_pincode }}</td>
+        </tr>
+        <tr>
+            <td colspan="12"><b>Postal Address of the Father/Guardian :</b> {{ student.st_postal_address }}</td>
+        </tr>
+        <tr>
+            <td colspan="3"><b>City :</b> {{ student.st_postal_address_city }}</td>
+            <td colspan="3"><b>District :</b> {{ student.st_postal_address_district }}</td>
+            <td colspan="3"><b>State :</b> {{ student.st_postal_address_state }}</td>
+            <td colspan="3"><b>PIN :</b> {{ student.st_postal_address_pincode }}</td>
+        </tr>
+        <tr>
+            <td colspan="12"><b>Local Guardian Address :</b> {{ student.st_local_guardian_addr }}</td>
+        </tr>
+        <tr>
+            <td colspan="2"><b>Local Guardian's Ph No.:</b> {{ student.st_guardian_mobile_no }}</td>
+            <td colspan="5"><b>Local Guardian's E-mail ID :</b> {{student.st_guardian_email }}</td>
+            <td colspan="5"><b>Health Issues (if any) :</b> {{ student.st_health_issues }}</td>
+        </tr>
+    </table>
+    {% block view %}{% endblock view %}
+</body>
+
+</html>

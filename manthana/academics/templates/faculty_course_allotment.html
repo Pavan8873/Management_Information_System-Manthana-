@@ -1,0 +1,224 @@
+<!--
+    Author: Rashmi Patil
+    Date:   15-3-2022
+    Bootstrap: v5.1.3 [Stable Version]
+    JQuery: v3.6.0 [Latest Version]
+-->
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+<title>Academic Calendar</title>{% endblock %} {% block page-content %}
+
+<head>
+  <!-- Title -->
+  <title>SDMCET - Faculty Course Allotment</title>
+</head>
+<h2 align="center"> Faculty Course Allotment </h2>
+<section class="mt-5 mb-5">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <form action="/allotCourseToFaculty" method="POST" id="indexForm" data-faculty-url="{% url 'ajax_load_faculty' %}"
+      data-course-url="{% url 'ajax_load_courses' %}">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label for="acad_year" class="form-label">
+            Academic Year:
+          </label>
+          <select id="acad_year" name="acad_year" class="form-select" required>
+            <option value="" disabled selected>Choose Academic Year</option>
+            {% for aca_yr in academic_year %}
+            <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+            <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+            {% endfor %}
+          </select>
+          <input type="text" name="academic_yr" id="academic_yr" hidden>
+        </div>
+        
+
+        <div class="col-6 mb-3">
+          <label for="offered_by" class="form-label"> Department: </label>
+          <select id="offered_by" name="offered_by" value="{{ scheme_details.offered_by_id }}" class="form-select"
+            required>
+            <option disabled selected>Choose Branch</option>
+            {% for i in dept %}
+            <option value="{{i.dept_id}}">{{i.dept_name}}</option>
+            {% endfor %}
+          </select>
+          <input type="text" name="offered_dept" id="offered_dept" hidden>
+        </div>
+      </div>
+      <div class="col-4 mb-3">
+        <label for="acad_cal_type" class="form-label"> Academic Type </label>
+        <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+        
+          <option disabled selected>Choose Academic_type</option>
+          <option value="1">Regular Semester</option>
+          <option value="2">STC Semester</option>
+        
+          
+        </select>
+      </div>
+
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label for="sem" class="form-label"> Semester: </label>
+          <select id="sem" name="sem" class="form-select" required>
+            <option disabled selected>Choose Semester</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+          </select>
+          <input type="text" name="academic_sem" id="academic_sem" hidden>
+        </div>
+
+        <div class="col-6 mb-3">
+          <label for="employee_emp_id" class="form-label"> Faculty ID: </label>
+          <select id="employee_emp_id" name="employee_emp_id" class="form-select">
+          </select>
+        </div>
+
+      </div>
+      <div class="row">
+        <div class="col-6 mb-3">
+          <label for="division" class="form-label"> Division: </label>
+          <select id="division" name="division" class="form-select" >
+            <option value="" disabled selected>Choose Division</option>
+            {% for div in div_tbl %}
+            <option value="{{div.id}}">{{div.division}}</option>
+            {% endfor %}
+       
+
+          </select>
+        </div>
+
+        <div class="col-6 mb-3">
+          <label for="courselist" class="form-label"> Course List </label>
+          <select id="courselist" name="courselist" class="form-select">
+          </select>
+        </div>
+        <div class="row">
+          <div class="col-6 mb-3">
+            <div id="labbatches" style="display: none">
+              <label for="batch" class="form-label"> Batch: </label>
+              <select id="batch" name="batch" class="form-select">
+                <option value="" disabled selected>Choose Batch</option>
+                <option value="B1">B1</option>
+                <option value="B2">B2</option>
+                <option value="B3">B3</option>
+                <option value="B4">B4</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+      </div>
+  </div>
+  <div class="row">
+    <div class="d-grid gap-2 col-3 mx-auto">
+      <input type="text" name="btn_clicked" value="register" hidden>
+      <button type="submit" name="btn_allot_detail" id="btn_allot_detail" value="register"
+        class="btn btn-primary">Assign Rights</button>
+    </div>
+  </div>
+  </form>
+  </div>
+</section>
+<div>
+</div>
+
+<script type="text/javascript">
+  $(document).ready(function () {
+    $("#offered_by").prop('disabled', true);
+    $('#sem').prop('disabled', true);
+    $("#acad_year").change(function () {
+      $('#offered_by').prop('disabled', false);
+    });
+    $("#offered_by").change(function () {
+      $('#sem').prop('disabled', false);
+    });
+    $("#sem").change(function () {
+      $("#offered_by").prop('disabled', true);
+      $('#acad_year').prop('disabled', true);
+    });
+    $("#employee_emp_id").change(function () {
+      $('#sem').prop('disabled', true);
+    });
+  });
+</script>
+
+<script>
+  $("#offered_by").change(function () {
+    var url1 = $("#indexForm").attr("data-faculty-url");  // get the url of the `load_faculty` view
+    var programmingId = $(this).val();  // get the selected programming ID from the HTML input
+
+    $.ajax({
+    url: url1,
+    data: {
+      'offered_by': programmingId
+    },
+    success: function (data) {
+    
+      $("#employee_emp_id").html(data.html); // Update the faculty dropdown
+    },
+    error: function (data) {
+      console.error("Error:", data);
+    }
+  });
+    $("#sem").change(function () {
+      var url2 = $("#indexForm").attr("data-course-url");
+      var acadYrID = $('#acad_year').val();
+      var acad_cal_type = $('#acad_cal_type').val();
+      
+      if ($('#acad_year').val() != null) {
+        $('#academic_yr').val($('#acad_year').val());
+        $('#acad_year').prop('disabled', true);
+        $('#offered_dept').val($('#offered_by').val());
+        $('#offered_by').prop('disabled', true);
+        $('#academic_sem').val($('#sem').val());
+        $('#sem').prop('disabled', true);
+        var semID = $(this).val();
+        console.log(acad_cal_type,"acad_cal_typeacad_cal_typeacad_cal_typeacad_cal_type")
+        $.ajax({
+          url: url2,
+          data: {
+            'offered_by': programmingId,
+            'sem': semID,
+            'acad_year': acadYrID,
+            'acad_cal_type':acad_cal_type
+          },
+          success: function (data) {
+            
+            $("#courselist").html(data.html);
+            console.log(data.html)
+
+          },
+          error: function (data) {
+            $('#courselist').empty();
+            alert(data.responseJSON.error);
+          }
+        });
+      }
+    });
+  });
+</script>
+<!-- For Lab Batches -->
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script type="text/javascript">
+      $(function () {
+          $("#courselist").change(function () {
+  
+              var temp= $(this).val()
+              var bool = temp.includes("L")
+              if (bool) {
+                  $("#labbatches").show();
+              } else{
+                $("#labbatches").hide();
+              }
+          });
+      });
+  </script>
+</form>
+{% endblock %}

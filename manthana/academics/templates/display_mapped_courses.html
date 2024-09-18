@@ -1,0 +1,16 @@
+<thead class="table-dark">
+    <tr class="header">
+        <th>Old Courses</th>
+        <th>New Courses</th>
+        <th>Action</th>
+    </tr>
+</thead>
+<tbody>
+    {% for c in courselist %}
+    <tr>
+        <td>{{ c.old_course_code }} - {{ c.old_course_title }}</td>
+        <td>{{ c.new_course_code }} - {{ c.new_course_title }}</td>
+        <td><a href="/EditCourseEquivalence/{{ c.course_equivalence_id }}">Edit</a></td>
+    </tr>
+    {% endfor %}
+</tbody>

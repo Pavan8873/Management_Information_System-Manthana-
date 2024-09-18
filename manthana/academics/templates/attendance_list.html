@@ -1,0 +1,301 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+
+{% block title %}<title>Student Attendance</title>{% endblock %}
+
+{% block page-content %}
+<style>
+  tr:hover {
+    background-color: lightgray;
+  }
+
+  .hide{
+    display: none;
+  }
+  i {
+  font-size: 50px;
+}
+</style>
+
+
+<section class="mt-5 mb-5">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    {% csrf_token %}
+    <div class="row">
+      <div class="col-4 mb-3">
+        <b><label for="Date" class="form-label">Date :</label></b>
+        <label for="Date" class="form-label">{{attend_date}}</label><br>
+      </div>
+      <div class="col-4 mb-3">
+        <b><label for="subjcode" class="form-label">Subject Code :</label></b>
+        <label for="subjcode" class="form-label">{{scheme_detail.course_code}}</label><br>
+      </div>
+
+      <div class="col-3 mb-3">
+        <b><label for="subjname" class="form-label">Subject Name :</label></b>
+        <label for="subjname" class="form-label">{{scheme_detail.course_title}}</label><br>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-4 mb-3">
+        <b><label for="sem" class="form-label">Sem :</label></b>
+        <label for="sem" class="form-label">{{scheme_detail.sem_allotted}}</label><br>
+      </div>
+
+      <div class="col-4 mb-3">
+        <b><label for="div" class="form-label">Div :</label></b>
+        <!--<label for="div" class="form-label">{{division}}</label>-->
+        <label for="div" class="form-label">{{div_html}}</label>
+      </div>
+      
+      <div class="col-3 mb-3">
+        <b><label for="acad_year" class="form-label">Academic Year :</label></b>
+        <label for="acad_year" class="form-label">{{acad_year_html}}</label><br>
+      </div>
+      <div class="col-3 mb-3">
+        <b><label for="acad_year" class="form-label">Academic Type :</label></b>
+        <label for="acad_year" class="form-label">{{acad_cal_type}}</label><br>
+      </div>
+      <div class="col-3 mb-3">
+        <b><label for="acad_year" class="form-label">Batch_no  :</label></b>
+        <label for="acad_year" class="form-label">{{batch_no}}</label><br>
+      </div>
+    </div>
+  </div>
+</section>
+<center>
+  <h4>Attendance List</h4>
+</center>
+<br>
+<center>
+  <div>
+    <i class = "loading-icon fa fa-spinner fa-spin hide" ></i>
+  </div>
+</center>
+
+<section class="mt-5 mb-5">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <!--<form action="/attendancelist/{{attend_date}}/{{numberofclasses}}/{{scheme_detail.course_code}}/{{division}}/{{acad_year}}/{{session1}}/{{session2}}/{{batch_type}}" method="POST" id=""> -->
+      <form action="/attendancelist/{{attend_date}}/{{numberofclasses}}/{{scheme_detail.course_code}}/{{division}}/{{acad_year}}/{{session1}}/{{session2}}/{{acad_cal_type}}/{{batch_no}}" method="POST" id="">
+      {% csrf_token %}
+    
+      <div class="card showTable" id="sTable">
+        <div class="card-body">
+          <table id="attendancelist" class="table table-sm">
+            <thead class="table-dark">
+              <tr class="header">
+                <th>Sl.No</th>
+                <th>UID</th>
+            
+                <th>Name</th>
+               
+
+                {% if edit_permission is None %}
+                      {% if numberofclasses == 1 %}
+                            <th>Session  {{session1}} </th>
+                      {% else %}
+                            <th>Session  {{session1}}</th>
+                            <th>Session  {{session2}}</th>
+                      {% endif %}
+                {%else%}
+                      {% if numberofclasses == "1" %}
+                            <th>Session  {{session1}} </th>
+                      {% else %}
+                            <th>Session  {{session1}}</th>
+                            <th>Session  {{session2}}</th>
+                      {% endif %}
+                {%endif%}
+                
+
+              </tr>
+
+            </thead>
+
+            
+            {% if edit_permission is None %}
+                    {% for student,s1,s2 in old_attendance %}
+                    <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td>{{student.st_uid.st_uid}}</td>
+        
+                      <td>{{student.st_uid.st_name}}</td>
+                      
+                      {% if numberofclasses == 1 %}
+                              {% if s1 == "A" %}
+                                  <td>
+                                    <input type="checkbox" name="checked_allot_1" id="checked_allot" value="{{student.st_uid.st_uid}}" onchange="handleCheckbox1()">
+                                  </td>
+                              {% endif %}
+
+                              {% if s1 == "P" %}
+                                <td>
+                                  <input type="checkbox" name="checked_allot_1" id="checked_allot" value="{{student.st_uid.st_uid}}" onchange="handleCheckbox1()" checked>
+                                </td>
+                              {% endif %}
+          
+                      {% else %}
+                      
+                        {% if s1 == "A" %}
+                            <td>
+                              <input type="checkbox" name="checked_allot_1" id="checked_allot" value="{{student.st_uid.st_uid}}" onchange="handleCheckbox1()">
+                            </td>
+                        {% endif %}
+
+                        {% if s1 == "P" %}
+                          <td>
+                            <input type="checkbox" name="checked_allot_1" id="checked_allot" value="{{student.st_uid.st_uid}}" onchange="handleCheckbox1()" checked>
+                          </td>
+                        {% endif %}
+
+
+                        {% if s2 == "A" %}
+                        <td>
+                          <input type="checkbox" name="checked_allot_2" id="checked_allot" value="{{student.st_uid.st_uid}}" onchange="handleCheckbox2()">
+                        </td>
+                        {% endif %}
+
+                        {% if s2 == "P" %}
+                        <td>
+                          <input type="checkbox" name="checked_allot_2" id="checked_allot" value="{{student.st_uid.st_uid}}" onchange="handleCheckbox2()" checked>
+                        </td>
+                        {% endif %}                   
+                      
+                      {% endif %}
+
+                    </tr>
+                    {% endfor %}
+
+            {%else%}
+
+                    {% for student in student_obj %}
+                    <tr>
+                      <td>{{forloop.counter}}</td>
+                      <td>{{student.st_uid.st_uid}}</td>
+                      
+                      <td>{{student.st_uid.st_name}}</td>
+                      
+                      {% if numberofclasses == "1" %}
+                      <td>
+                        <input type="checkbox" name="checked_allot_1" id="checked_allot" value="{{student.st_uid.st_uid}}" onchange="handleCheckbox1()" checked>
+                      </td>
+                      {% else %}
+                      <td>
+                        <input type="checkbox" name="checked_allot_1" id="checked_allot" value="{{student.st_uid.st_uid}}" onchange="handleCheckbox1()" checked>
+                      </td>
+                      <td>
+                        <input type="checkbox" name="checked_allot_2" id="checked_allot" value="{{student.st_uid.st_uid}}" onchange="handleCheckbox2()" checked>
+                      </td>
+                      {% endif %}
+
+                    </tr>
+                    {% endfor %}
+
+            {%endif%}
+
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              {% if edit_permission is None %}
+                        {% if numberofclasses == 1 %}
+                        <td>
+                          <b><label>Absentees:</label></b>
+                          <b><label id="totalStudents_session_1">{{absentee_count_s1}}</label></b>
+                        </td>
+                        {% else %}
+                        <td>
+                          <b><label>Absentees:</label></b>
+                          <b><label id="totalStudents_session_1" >{{absentee_count_s1}}</label></b>
+                        </td>
+                        <td>
+                          <b><label>Absentees:</label></b>
+                          <b><label id="totalStudents_session_2">{{absentee_count_s2}}</label></b>
+                        </td>
+                      </tr>
+                      {% endif %}
+              {%else%}
+                      {% if numberofclasses == "1" %}
+                      <td>
+                        <b><label>Absentees:</label></b>
+                        <b><label id="totalStudents_session_1">0</label></b>
+                      </td>
+                      {% else %}
+                      <td>
+                        <b><label>Absentees:</label></b>
+                        <b><label id="totalStudents_session_1" >0</label></b>
+                      </td>
+                      <td>
+                        <b><label>Absentees:</label></b>
+                        <b><label id="totalStudents_session_2">0</label></b>
+                      </td>
+                    </tr>
+                    {% endif %}
+              {%endif%}
+             
+          </table>
+        </div>
+      </div><br>
+      {% if edit_permission is None %}
+          <div class="row">
+            <div class="d-grid gap-4 col-1 mx-auto">
+              <input type="text" name="btn_clicked" value="update" hidden>
+              <button type="submit" name="btn_div_allot" id="btn_div_allot" value="update"
+                class="btn btn-primary">Update</button>
+            </div>
+          </div>
+      {%else%}
+          <div class="row">
+            <div class="d-grid gap-4 col-1 mx-auto">
+              <input type="text" name="btn_clicked" value="register" hidden>
+              <button type="submit" name="btn_div_allot" id="btn_div_allot" value="register"
+                class="btn btn-primary">Submit</button>
+            </div>
+          </div>
+      {%endif%}
+      
+
+    </form>
+  </div>
+</section>
+
+<script>
+  function handleCheckbox1() {
+
+    var inputElems1 = document.getElementsByName("checked_allot_1")
+    
+    count1 = 0;
+
+    for (var i = 0; i < inputElems1.length; i++) {
+      if (inputElems1[i].type === "checkbox" && inputElems1[i].checked === false) {
+        count1++;
+  
+      }
+      document.getElementById("totalStudents_session_1").innerHTML = count1;
+    }
+  }
+
+  function handleCheckbox2() {
+
+    var inputElems2 = document.getElementsByName("checked_allot_2"),
+    
+    count2 = 0;
+    for (var j = 0; j < inputElems2.length; j++) {
+      if (inputElems2[j].type === "checkbox" && inputElems2[j].checked === false) {
+        count2++;
+
+      }
+      document.getElementById("totalStudents_session_2").innerHTML = count2;
+    }
+  }
+
+  $(document).ready(function(){
+    $('.btn').on('click',function() {
+      $('.loading-icon').removeClass('hide');
+    })
+  });
+</script>
+
+{% endblock %}

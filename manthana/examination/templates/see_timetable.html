@@ -1,0 +1,147 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Examination Schedule</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .container-custom {
+            width: fit-content; /* Adjust to fit the table's width */
+            max-width: 390mm; /* A4 width */
+            border: 1px solid #000; /* Extended border width */
+            padding: 20px;
+            margin: auto;
+        }
+        .logo {
+            width: 100px; /* Set a specific width for the image */
+            margin-bottom: 20px; /* Add margin below the image */
+        }
+        .header {
+            text-align: center;
+        }
+        .main-title, .sub-title {
+            font-size: 24px; /* Set the size for the main title and subtitle */
+            font-weight: bold;
+        }
+        .normal-text {
+            font-size: 16px; /* Normal size for the rest of the text */
+        }
+        .center-text {
+            text-align: center;
+        }
+        @media print {
+            .container-custom {
+                border: none;
+                padding: 0;
+            }
+            .print-button {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-custom">
+        <div class="header mb-4">
+            <img class="logo float-left" src="{% static 'images/sdm_logo.png' %}" alt="SDM Logo">
+            <div class="text-center">
+                <p class="main-title">SDM COLLEGE OF ENGINEERING & TECHNOLOGY</p>
+                <p class="sub-title">Dhavalagiri, DHARWAD - 580 002 (India)</p>
+                <p class="normal-text">Autonomous Institution Affiliated to Visvesvaraya Technological University, Belagavi, Recognized by AICTE, New Delhi</p>
+                <hr>
+                <p class="normal-text">Ph. No. 0836-2328041/42/46, 2447465 &nbsp;&nbsp; Fax: 0836-2464638 &nbsp;&nbsp; Website: www.sdmcet.ac.in &nbsp;&nbsp; E-mail: coe@sdmcet.ac.in</p>
+                <hr>
+                <p class="normal-text">Ref No: SDMCET/Exam/{{ current_year }} &nbsp;&nbsp; Date: {{ current_date }}</p>
+            </div>
+        </div>
+        <div class="center-text">
+            <h3 class="text-primary">{{ exam_desc }}</h3>
+        </div>
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Exam Date & Day</th>
+                    <th>Timing</th>
+                    <th>CH</th>
+                    <th>CS</th>
+                    <th>CV</th>
+                    <th>EC</th>
+                    <th>EE</th>
+                    <th>IS</th>
+                    <th>ME</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in schedule_data %}
+                    <tr>
+                        <td>{{ item.exam_date }}</td>
+                        <td>{{ item.timing }}</td>
+                        <td>{{ item.CH|default:"-" }}</td>
+                        <td>{{ item.CS|default:"-" }}</td>
+                        <td>{{ item.CV|default:"-" }}</td>
+                        <td>{{ item.EC|default:"-" }}</td>
+                        <td>{{ item.EE|default:"-" }}</td>
+                        <td>{{ item.IS|default:"-" }}</td>
+                        <td>{{ item.ME|default:"-" }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center">No schedule data available</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p class="font-weight-bold">Note: Practical Examinations for the BE - VI Semester will be held from - to -</p>
+
+        <!-- New section for displaying course titles and unique branches -->
+        <div class="mt-4">
+            
+            <div class="mt-4">
+                
+                <ul class="list-unstyled text-center">
+                    {% for branch in branches %}
+                        <h3>{{ branch }}</h3>
+                    {% empty %}
+                        <li>No branches available</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Course Code</th>
+                        <th>Course Title</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in schedule_data %}
+                        <tr>
+                            <td>{{ item.course_code }}</td>
+                            <td>{{ item.course_title }}</td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="2" class="text-center">No course data available</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Unique branches section -->
+        
+
+        <div class="text-center mt-4">
+            <button class="btn btn-primary print-button" onclick="window.print()">Print</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

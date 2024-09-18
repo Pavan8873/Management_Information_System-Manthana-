@@ -1,0 +1,198 @@
+{% load static %}
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>View Results</title>
+    
+
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+    @page{
+      size: landscape;
+      
+      margin: 1cm;
+      @bottom-center{
+        content: "Page " counter(page) " of " counter(pages)"\A\A\A";
+        white-space: pre;
+      }
+      @bottom-left{
+        
+        content: "Controller of Examination \A\A Note : NA";
+        white-space: pre;
+       
+      }
+      @bottom-right{
+        content: "Principal\A\A\A ";
+        white-space: pre;
+      }
+    }
+    html {
+      font-family: 'Inter', sans-serif;
+      font-weight: bold;
+      font-size: 8.0px;
+    }
+    table{
+        width: 100%;
+    }
+
+    h1{
+        margin-top: 0;
+        font-size: 10px;
+    }
+    table, th {
+        text-align: center;
+        
+    }
+    td{
+        text-align: center;
+        border: 1px solid black;
+    }
+    .box{
+        margin-left: 50px;
+        
+    }
+    h4{
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    h3{
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    .box1{
+        height: 10px;
+    }
+    hr{
+        border: 1px solid black;
+    }
+    .college{
+        padding: 0px 40px;
+    }
+    .lbl{
+        height: 15px;
+    }
+    
+    .box {
+        display: flex;
+        align-items: stretch;
+      }
+
+      .spec_table {
+        border: none !important;
+       
+        }
+     
+    hr.new3 {
+        border: 1px dotted rgb(5, 5, 5);
+      }
+
+
+      td.course_grade{
+        width: 5px;
+      }
+      .student_list{
+        height: 400px;
+      }
+
+</style>
+
+<body>
+    
+    <table>
+        <tr>
+            <td><div class="college">
+                <div>
+                    <h2>PROVISIONAL RESULTS SHEET</h2>
+                </div>
+                <h2> Shri Dharmasthala Manjunatheshwara College of Engineering & Technology, Dhavalagiri, Dharwad - 580002 </h2>
+                <div>
+                    <h3>{{exam.description}}</h3>
+                </div>
+                <!-- <div>
+                    <h3>Hall Ticket - {{exam.description}}</h3>
+                </div>
+                <div>
+                    <h3>PROGRAM : {{program}} {{dept.dept_name}}</h3>
+                </div> -->
+            </div></td>
+            
+        </tr>
+    </table>
+
+
+    <table>
+        <tr>
+            <td>Program : {{dept.dept_name}}</td>
+            <td>Date : 01/03/2023</td>
+        </tr>
+    </table>
+
+    <table class="student_list">
+        <tr>
+            <td>SL no</td>
+            <td>USN</td>
+            <td>Roll No</td>
+            {% for course in course_list %} 
+                <td> {{ course.course_code.course_code }}
+                    <div >
+                        <table >
+                            <td >GR</td>
+                            <td >GP</td>
+                            <td >CE</td>
+                            <td >B/L</td>
+
+                        </table>
+                    </div>
+                </td>
+            {% endfor %} 
+            <td>SGPA</td>
+            <td>Total crs</td>
+            <td>Earned crs</td>
+            <td>CGPA</td>
+
+        </tr>
+
+        {% for student, result in student_results.items %} 
+
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ student.st_uid.st_uid }}</td>
+            <td>{{ forloop.counter }}</td>
+            {% for course, grade in result.course_grade.items %} 
+                <td>
+                    <div>
+                        <table>
+                            <td>{{ grade.exam_new_grade}}</td>
+                            <td>{{ grade.exam_gp_earned }} </td>
+                            {% if grade.exam_new_grade != "F" %}
+                            <td>{{ grade.scheme_details_id.credits}}</td>
+                            {% else %} 
+                             <td></td>
+                             {% endif %}
+                            <td></td>
+                        </table>
+                         
+                    </div>
+                </td>
+                
+            {% endfor %} 
+            <td>{{result.sgpa}}</td>
+            <td>{{result.total_crs}}</td>
+            <td>{{result.earned_crs}}</td>
+            <td>{{result.cgpa}}</td>
+
+        </tr>
+                
+        {% endfor %} 
+
+
+        
+
+    </table>
+    
+</body>
+
+</html>

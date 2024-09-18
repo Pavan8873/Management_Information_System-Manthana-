@@ -1,0 +1,104 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>Results222</title>{% endblock %}
+
+
+{% block page-content %}
+<!-- Date Range Picker CSS -->
+<link rel="stylesheet" href="{% static 'plugins/daterangepicker/daterangepicker.css' %}" />
+<script src="{% static 'plugins/daterangepicker/moment.min.js' %}"></script>
+<script src="{% static 'plugins/daterangepicker/daterangepicker.js' %}"></script>
+<style>
+    .sub-que-tbl {
+        padding: 0px;
+    }
+
+    .head_font {
+        text-align: center;
+        padding-top: 10px;
+    }
+
+    table,
+    th,
+    td {
+        border: 1px solid white;
+        border-collapse: collapse;
+    }
+</style>
+
+<h3 class="head_font mb-2">Scheme Generation</h3>
+
+<form action="/view_scheme" method="POST" id="">
+    {% csrf_token %}
+        <div class="container shadow rounded-3 p-4 bg-white">
+            
+            <div class="row">
+                    <div class="col-6 mb-3"> 
+                        <table><tr><td>
+                        <label for="Scheme_id" class="form-label"> Semester </label> 
+                        <select name="Scheme_id" id="Scheme_id" class="form-select" required> 
+                            <option value="" >Choose Semester</option> 
+                            <option value="1" >1 Semester</option> 
+                            <option value="2" >2 Semester</option> 
+                            <option value="3" >3 Semester</option> 
+                            <option value="4" >4 Semester</option> 
+                            <option value="5" >5 Semester</option> 
+                            <option value="6" >6 Semester</option> 
+                            <option value="7" >7 Semester</option> 
+                            <option value="8" >8 Semester</option> 
+                        </select></td>
+
+                        <td><label for="department" class="form-label"> Department </label>
+                            <select name="department" id="department" class="form-select" required>
+                                <option value="" disabled selected>Choose Department</option>
+                                {% for department in departments %}
+                                <option value="{{ department.dept_id }}">{{ department.dept_name }}</option>
+                                {% endfor %}
+                            </select></td>
+                        <td>
+                          
+                                <label for="academic_year" class="form-label">
+                                  Academic Year
+                                </label>
+                                <select name="academic_year" id="academic_year" required class="form-select">
+                                  <option value="" disabled selected>Choose Academic Year</option>
+                                  {% for aca_yr in academic_year_tbl %}
+                                  <!-- <option value="{{aca_yr.acayear}}">{{aca_yr.acayear}}</option> -->
+                                  <option value="{{aca_yr.id}}">{{aca_yr.acayear}}</option>
+                                  {% endfor %}
+                                </select>
+                            
+                        </td>
+                    <td>
+                
+                            <label for="acad_cal_type" class="form-label"> Academic Type </label>
+                            <select name="acad_cal_type" id="acad_cal_type" class="form-select" required>
+                            
+                              <option disabled selected>Choose Academic_type</option>
+                              <option value="1">Regular Semester</option>
+                              <option value="2">STC Semester</option>
+                            
+                              
+                            </select>
+                  
+                    </td></tr></table>
+                    </div>
+               
+            </div> 
+            <div class="column">
+                <div class="col-6 mb-3"> 
+                   <button type="submit" name="btn_scheme_allot" id="btn_scheme_allot" value="register" class="btn btn-primary">Submit</button>
+                   </div>
+                   </div>
+            
+        </div>
+        
+         
+
+</form>
+
+
+
+
+{% endblock %}

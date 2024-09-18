@@ -1,0 +1,74 @@
+{% extends 'base_template.html' %}
+{% load static %}
+
+{% block title %}<title>SEE External Valuators</title>{% endblock %}
+
+{% block page-content %}
+<h2 align="center"> SEE External Valuators </h2>
+<section class="mt-5 mb-5">
+  <div class="container shadow rounded-3 p-4 bg-white">
+    <form action="/addExternalValuators" method="POST" id="">
+      {% csrf_token %}
+      <div class="row">
+        <div class="col-4  mb-3">
+          <label for="valuator_name" class="form-label"> Faculty Name: </label>
+          <input type="text" id="valuator_name" name="valuator_name" required class="form-control"
+            placeholder="Eg. Prof.Cormen" />
+        </div>
+    
+          <div class="col-4 mb-3">
+            <label for="department" class="form-label"> Department: </label>
+            <input type="text" id="department" name="department" required class="form-control"
+              placeholder="Computer Science and Engineering" />
+          </div>
+          <div class="col-4 mb-3">
+            <label for="designation" class="form-label">
+             Designation
+            </label>
+            <select name="designation" id="designation" required class="form-select">
+              <option value="" disabled selected>-- Choose Designation --</option>
+              <option value="1">Professor</option>
+              <option value="2">Associate Professor</option>
+              <option value="3">Assistant Professor</option>
+              <option value="4">Senior lecturer</option>
+              <option value="5">Lecturer</option>
+            </select>
+          </div>
+       </div>   
+
+       <div class="row">
+          <div class="col-6 mb-3">
+            <label for="college_name" class="form-label"> College Name: </label>
+            <select name="college_name" id="college_name" required class="form-select">
+              <option value="" disabled selected>-- Choose College --</option>
+              {% for coll in ext_colleges_tbl %}
+              <option value="{{coll.id}}">{{coll.name}}</option>
+              {% endfor %}
+            </select>
+          </div>
+       
+          <div class="col-3 mb-3">
+            <label for="pan_no" class="form-label"> PAN No: </label>
+            <input type="text" id="pan_no" name="pan_no" maxlength=10 required class="form-control"
+              placeholder="e.g. ABCTY1234D" oninput="this.value = this.value.toUpperCase()"/>
+          </div>
+
+
+       <div class="col-3 mb-3">
+        <label for="phone_no" class="form-label"> Phone No: </label>
+        <input type="tel" id="phone_no" name="phone_no" maxlength=10 required class="form-control"
+              placeholder="e.g. 1234567812" />
+        </div>
+       </div>
+        
+      <div class="container my-3 bg-light">
+        <div class="col-md-12 text-center">
+            <input type="text" name="btn_clicked" value="register" hidden>
+            <button type="submit" name="btn_see_val" id="btn_see_val" value="register" class="btn btn-primary">Submit</button>
+            <button type="reset" name="btn_reset" id="btn_reset" value="reset" class="btn btn-primary" onclick="resetPage()">Reset</button>
+        </div>
+    </div>
+  </form>
+  </div>
+</section>
+{% endblock %}

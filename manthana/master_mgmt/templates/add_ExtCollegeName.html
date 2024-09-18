@@ -1,0 +1,73 @@
+{% extends 'base_template.html' %} {% load static %} {% block title %}
+<title>Add College</title>{% endblock %} {% block page-content %}
+<link href="{% static 'fonts/SansationLight/font.css' %}" rel="stylesheet">
+{% if usrName is None %}
+<h3>You are not authorized to view this page!!</h3>
+{% else %}
+<div class="col-md mx-auto text-center h6" style="font-size: 0.9rem;">
+    <h5 align="center"><strong>Add College</strong></h5>
+    <hr>
+    <form role="form" action="/CreateExtValCollege" method="POST" id="Extrn_College_Regr_form" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="card">
+            <div class="card-body">
+                <table class="table table-borderless table-sm">
+                    <tr>
+                        {% for field in form %}
+                        <div class="form-group">
+                            <td class="text-end"><label>{{ field.label_tag }}</label></td>
+                            <td class="text-start">{{ field }}
+                                <span class="text-danger">{{ field.errors }}</span>
+                            </td>
+                        </div>
+                    </tr>
+                    {% endfor %}
+                    <tr>
+                        <div class="form-group">
+                            <td colspan="2">
+                                <button type="submit" name="btn_Extrn_College_Regr_details" id="btn_Extrn_College_Regr_details"
+                                    value="Extrn_College_Regr_details" class="btn btn-success btn-sm"><b>Add College</b></button>
+                            </td>
+                        </div>
+                    </tr>
+                </table>
+                <div class="form-group">
+                    {% if messages %}
+                    {% for message in messages %}
+                    {% if message.tags == 'error' %}
+                    <div class="alert alert-danger" style="margin-top:10px">{{ message }}</div>
+                    {% endif %}
+                    {% if message.tags == 'success' %}
+                    <div class="alert alert-success" style="margin-top:10px">{{ message }}</div>
+                    {% endif %}
+                    {% endfor %}
+                    {% endif %}
+                </div>
+                <div class="card showTable" id="sTable">
+                    <div class="card-body">
+                        <table id="CollegenameAllocation" class="table table-sm table-hover table-left">
+                            <thead class="table-dark">
+                                <tr class="header">
+                                    <th>Sl.No.</th>
+                                    <th>College Name</th>
+                                    <th>Modify</th>
+                                </tr>
+                            </thead>
+                            {% for clglist in extclglist %}
+                            <tr>
+                                <td>{{forloop.counter}}</td>
+                                <td>{{clglist.name}}</td>
+                                <td>
+                                    <a href="/EditExtValCollege/{{ clglist.id }}" class="btn btn-primary btn-sm">Edit</a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endif %}
+{% endblock %}

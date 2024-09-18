@@ -1,0 +1,88 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link href="{% static 'fontawesome-free-5.15.4-web/css/all.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.css' %}" rel="stylesheet">
+
+  <title>SDMCET Management Information System</title>
+
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon" />
+  <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+  <script src="{% static 'js/style.js' %}"></script>
+</head>
+<!--
+  xs<576 | 576<sm<768 | 768<md<992 | 992<lg<1200 | 1200<xl
+-->
+
+<body>
+  <header class="full-header fixed-top">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-2 p-1">
+          <img class="img-fluid rounded mx-auto d-block" src="{% static 'images/sdm_logo.jfif' %}" alt="" width="60px">
+        </div>
+        <div class="col-sm-10 p-1 text-center">
+          <div class="header-text p-1">
+            Shri Dharmasthala Manjunatheshwara College of Engineering & Technology
+            <div class="p-1 header-line">
+              (An Autonomous College under
+              Visvesvaraya Technological University, Belegavi and Recognised by All India Council for Technical
+              Education, New Delhi)
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <nav class="navbar navbar-dark navbar-expand-md" style="background-color: #a12b29; font-weight: 600;">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarToggler"
+          aria-controls="navbarToggler" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarToggler">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link text-right" href="{% url 'About Us' %}" target="_blank" style="color: white;">About Us</a>
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-4 mx-auto text-center">
+        <div class="card">
+          <div class="card-body login-card-body">
+            <img class="img-fluid rounded mx-auto d-block" width="450" height="450" src="{% static 'images/error_500.gif' %}">
+            <p class="login-box-msg" style="font-weight: 500; color:#383c3d;">Unforunately Manthana Application Encountered a Serious Error.</p>
+            <p class="login-box-msg" style="font-weight: 500; color:#383c3d;"><a href="{% url 'LoginDashBoard' %}">Click Here</a> to Goto Home Page.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="full-footer fixed-bottom p-1">
+    <div class="container-fluid text-center">
+      <div class="row">
+        <div class="col-sm">
+          &copy; Copyright <a href="http://www.sdmcet.ac.in" target="_blank">SDMCET.</a> All Rights Reserved
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script src="{% static 'bootstrap/js/jquery.min.js' %}"></script>
+  <script src="{% static 'bootstrap/js/popper.min.js' %}"></script>
+  <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+</body>
+
+</html>

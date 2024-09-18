@@ -1,0 +1,273 @@
+
+{% load static %}
+
+
+
+{% block page-content %}
+
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Academic Calender</title>
+    
+
+</head>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+    @page{
+      size: "A4";
+      margin: 0.5cm;
+    }
+    html {
+        font-family: 'Inter', sans-serif;
+        font-size: 8.0px;
+      }
+      table{
+          width: 100%;
+      }
+      
+      img {
+          width: 80px;
+          height : 80px;
+          max-height: 100%;
+          max-width: 100%;
+      }
+      h1{
+          margin-top: 0;
+          
+      }
+      table, th, td {
+          text-align: left;
+          
+      }
+      
+      .table-border{
+          border: .5px solid black;
+          border-collapse: collapse; 
+          text-align: center;
+          
+      }
+      .box{
+          margin-left: 50px;
+          
+      }
+    h5{
+        margin-top: 4px;
+        margin-bottom: 4px;
+    }
+    h5{
+        margin-top: 4px;
+        margin-bottom: 4px;
+        align-items:left;
+    }
+    .box1{
+        height: 10px;
+    }
+    .hr{
+        border: 1px solid black;
+        border-collapse:collapse;
+        align-items:left;
+    }
+    .college{
+        padding: 0px 40px;
+    }
+    .lbl{
+        height: 15px;
+    }
+    
+    .box {
+        display: flex;
+        align-items: stretch;
+      }
+
+      .spec_table {
+        border: none !important;
+       
+        }
+     
+    hr.new3 {
+        border: 1px dotted rgb(5, 5, 5);
+      }
+
+
+      td.course_grade{
+        width: 5px;
+      }
+      .student_list{
+        height: 400px;
+      }
+      .he{
+        text-align: center;
+        border: 1px solid black;
+      }
+
+</style>
+
+<body>
+    
+    <table>
+        <tr>
+            <td><div class="college">
+                <h3 style="text-align:center"> SDM College of Engineering & Technology, Dhavalagiri, Dharwad</h3>
+                <div>
+                    <h3 style="text-align:center">Academic Calender for {{acad_cal_obj.acad_cal_sem}} Semester B.E. {{acad_cal_obj.acad_cal_acad_year}}</h3></div>
+            </div></td>
+            
+        </tr>
+    </table>
+
+
+    <table><tr></tr>
+    </table>
+    <table class ="hr">
+        <tr>
+            <td class = "hr"><h4 style="text-align:center" >SL no</h4></td>
+            <td class = "hr"><h4 style="text-align:center">Particulars</h4></td>
+            <td class = "hr"><h4 style="text-align:center">Date</h4></td>
+        </tr>
+        <tr>
+            <td class = "he "><h5>1</h5></td>
+            <td class = "hr"><h5>Registration</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_reg_date_from}} To {{acad_cal_obj.acad_cal_reg_date_to}}  </h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>2</h5></td>
+            <td class = "hr"><h5>Commencement of Teaching</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_teaching_commences}}
+            </h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>3</h5></td>
+            <td class = "hr"><h5>Last date for registration with late fee</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_reg_last_date_fee}}</h5></td>
+        </tr>
+
+        <tr>
+            <td class = "he"><h5>4</h5></td>
+            <td class = "hr"><h5>Display of attendence</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_att_display_ia_1}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>5</h5></td>
+            <td class = "hr"><h5>Internal Assessment-1</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_ia_1_from}} To {{acad_cal_obj.acad_cal_ia_1_to}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>6</h5></td>
+            <td class = "hr"><h5>Communication of performance to the students</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_commn_to_parent_ia_1}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>7</h5></td>
+            <td class = "hr"><h5>Last date to drop the course</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_drop_course}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>8</h5></td>
+            <td class = "hr"><h5>Teacher-Parents Meet</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_parents_meet}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>9</h5></td>
+            <td class = "hr"><h5>Display of attendence</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_att_display_ia_2}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>10</h5></td>
+            <td class = "hr"><h5>Internal Assessment-IA-2</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_ia_2_from}} To {{acad_cal_obj.acad_cal_ia_2_to}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>11</h5></td>
+            <td class = "hr"><h5>Communication of performance to the parents</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_commn_to_parent_ia_2}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>12</h5></td>
+            <td class = "hr"><h5>Last date to withdraw the course</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_withdraw_course}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>13</h5></td>
+            <td class = "hr"><h5>Students Feedback</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_st_feedback_from}} To {{acad_cal_obj.acad_cal_st_feedback_to}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>14</h5></td>
+            <td class = "hr"><h5>Display of attendence</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_attendance_display}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>15</h5></td>
+            <td class = "hr"><h5>Makeup/Improvement Internal Assessment</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_ia_3_from}} To {{acad_cal_obj.acad_cal_ia_3_to}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>16</h5></td>
+            <td class = "hr"><h5>Last date of teaching</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_last_day_teaching}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>17</h5></td>
+            <td class = "hr"><h5>Lab test for integrated courses & Semester End Examination(Laboratory/Projects)</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_see_lab_from}} To {{acad_cal_obj.acad_cal_see_lab_to}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>18</h5></td>
+            <td class = "hr"><h5>Display of consolidated Continuous Internal Evaluation (CIE) & Attendance</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_cie_marks_display}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>19</h5></td>
+            <td class = "hr"><h5>Communication of performance to the parents</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_commn_to_parent_cie}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>20</h5></td>
+            <td class = "hr"><h5>Semester End Examination</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_see_theory_from}} To {{acad_cal_obj.acad_cal_see_theory_to}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>21</h5></td>
+            <td class = "hr"><h5>Declaration of SEE Results</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_results_declaration}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>22</h5></td>
+            <td class = "hr"><h5>Communication of performance to the parents through website</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_reg_date_from}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>23</h5></td>
+            <td class = "hr"><h5>Makeup SEE</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_results_declaration}}</h5></td>
+        </tr>
+        <tr>
+            <td class = "he"><h5>24</h5></td>
+            <td class = "hr"><h5>Supplementary Semester</h5></td>
+            <td class = "hr"><h5>{{acad_cal_obj.acad_cal_makeup_from}} To {{acad_cal_obj.acad_cal_makeup_to}}</h5></td>
+        </tr>
+        
+
+        
+    </table>
+<br><br><br>
+<br><br><br>
+<br><br><br>
+<table>
+        <tr>
+            <td></td>
+            <td>&nbsp;&nbsp;&nbsp;Dean (Academic Program)</td>
+           
+            <td>Principal</td>
+            <td></td>
+           
+        </tr>
+        
+</table>
+
+</body>
+
+</html>
+{% endblock %}
